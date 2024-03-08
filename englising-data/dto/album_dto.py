@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 class AlbumDto(BaseModel):
     album_id: Optional[int]
-    artists: Optional[List[str]]
     title: Optional[str]
     type: Optional[str]
     total_tracks: Optional[int]
