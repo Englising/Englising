@@ -14,5 +14,8 @@ class Artist(Base):
     image = Column(String(512))
     created_at = Column(TIMESTAMP, nullable=False, default=func.now())
     updated_at = Column(TIMESTAMP, onupdate=func.now())
-    tracks = relationship("ArtistTrack", back_populates="artist")
+
+    albums = relationship('Album', secondary='artist_album', back_populates='artists')
+    tracks = relationship('Track', secondary='artist_track', back_populates='artists')
+
 

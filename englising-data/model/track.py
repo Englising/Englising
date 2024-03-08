@@ -19,9 +19,9 @@ class Track(Base):
     feature_acousticness = Column(Float, nullable=True)
     feature_danceability = Column(Float, nullable=True)
     feature_energy = Column(Float, nullable=True)
-    feature_tempo = Column(Float, nullable=True)
     feature_positiveness = Column(Float, nullable=True)
     created_at = Column(TIMESTAMP, nullable=False, default=func.now())
     updated_at = Column(TIMESTAMP, onupdate=func.now())
-    album = relationship("Album", back_populates="tracks")
-    artists = relationship("ArtistTrack", back_populates="track")
+
+    lyrics = relationship('Lyric', backref='track', uselist=False)
+    artists = relationship('Artist', secondary='artist_track', back_populates='tracks')

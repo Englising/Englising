@@ -14,4 +14,6 @@ class Album(Base):
     release_date = Column(Date)
     created_at = Column(TIMESTAMP, nullable=False, default=func.now())
     updated_at = Column(TIMESTAMP, onupdate=func.now())
-    tracks = relationship("Track", back_populates="album")
+
+    tracks = relationship('Track', backref='album')
+    artists = relationship('Artist', secondary='artist_album', back_populates='albums')

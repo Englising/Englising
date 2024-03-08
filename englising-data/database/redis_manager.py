@@ -5,4 +5,4 @@ from util.worklist import WorkList
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
 for enum in WorkList :
-    redis_client.rpush(enum, str(enum))
+    redis_client.rpush(str(enum), str(enum))

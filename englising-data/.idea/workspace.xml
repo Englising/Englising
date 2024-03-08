@@ -5,13 +5,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2924fc65-dde8-4dec-9c7e-b1f5a433e0fd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/util/worklist.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core_service/lyric_gather_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core_service/track_gather_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crud/album_crud.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crud/artist_album_crud.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crud/artist_crud.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crud/artist_track_crud.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crud/lyric_crud.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crud/track_crud.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_service/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dto/album_dto.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dto/artist_dto.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dto/lyric_dto.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dto/track_dto.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/log/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/log/englising_logger.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/log/log_format.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/log/log_info.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/log/logging_config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/musix_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/logging_config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/redis_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/album.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/temp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/spotify_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/spotify_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/papago_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/logging_config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/crud/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/youtube_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/mysql_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/mysql_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/redis_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/redis_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dto/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/album_gather_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/album.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/album.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/artist.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/artist.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/artist_album.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/artist_album.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/artist_track.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/artist_track.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/lyric.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/lyric.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/track.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/track.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/artist_gather_service.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,11 +55,27 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="develop-be" />
+        <entry key="$PROJECT_DIR$/.." value="develop-fe" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="GitLabMergeRequestFiltersHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPENED",
+    "assignee": {
+      "type": "org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue",
+      "username": "canon1107",
+      "fullname": "김아영"
+    }
+  }
+}]]></component>
+  <component name="GitLabMergeRequestsSettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "first": "https://lab.ssafy.com/s10-bigdata-recom-sub2/S10P22A106.git",
+    "second": "a144d77d-937d-47fd-a828-966333d8fe31"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -44,21 +87,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature-be/data-gather&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/SSAFY/Desktop/S10P22A106/englising-data/venv&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.log_format.executor": "Run",
+    "Python.logging_config.executor": "Run",
+    "Python.loglist.executor": "Run",
+    "Python.spotify_client.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "feature-be/data-gather",
+    "last_opened_file_path": "C:/Users/SSAFY/Desktop/S10P22A106/englising-data/venv",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "vcs.Git",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\SSAFY\Desktop\S10P22A106\englising-data\log" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -93,5 +145,11 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/englising_data$spotify_client.coverage" NAME="spotify_client Coverage Results" MODIFIED="1709887028013" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
+    <SUITE FILE_PATH="coverage/englising_data$log_format.coverage" NAME="log_format Coverage Results" MODIFIED="1709882440331" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/englising_data$logging_config.coverage" NAME="logging_config Coverage Results" MODIFIED="1709882946121" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/englising_data$loglist.coverage" NAME="loglist Coverage Results" MODIFIED="1709883017035" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/util" />
   </component>
 </project>
