@@ -3,16 +3,17 @@ from pydantic import BaseModel
 
 
 class TrackDto(BaseModel):
-    track_id: Optional[int]
-    track_index: Optional[int]
-    title: Optional[str]
-    spotify_id: Optional[str]
-    youtube_id: Optional[str]
-    isrc: Optional[str]
-    spotify_popularity: Optional[int]
-    duration_ms: Optional[int]
-    is_lyrics: Optional[bool]
-    feature_acousticness: Optional[float]
-    feature_danceability: Optional[float]
-    feature_energy: Optional[float]
-    feature_positiveness: Optional[float]
+    track_id: Optional[int] = None
+    track_index: Optional[int] = None
+    title: Optional[str] = None
+    spotify_id: Optional[str] = None
+    youtube_id: Optional[str] = None
+    isrc: Optional[str] = None
+    spotify_popularity: Optional[int] = None
+    duration_ms: Optional[int] = None
+    is_lyrics: Optional[bool] = None
+    feature_acousticness: Optional[float] = None
+    feature_danceability: Optional[float] = None
+    feature_energy: Optional[float] = None
+    feature_positiveness: Optional[float] = None
+    artists = Optional[List[str]] = None

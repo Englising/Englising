@@ -5,8 +5,8 @@ from pydantic import BaseModel
 
 
 class LyricDto(BaseModel):
-    lyric_id: Optional[int]
-    start_time: Optional[Decimal]
-    end_time: Optional[Decimal]
-    en_text: Optional[str]
-    kr_text: Optional[datetime]
+    lyric_id: Optional[int] = None
+    start_time: Optional[Decimal] = None
+    end_time: Optional[Decimal] = None
+    en_text: Optional[str] = None
+    kr_text: Optional[datetime] = None

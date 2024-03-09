@@ -7,13 +7,14 @@ from dto.track_dto import TrackDto
 
 
 class ArtistJobDto(BaseModel):
-    album: AlbumDto
-    artists: List[str]
-    tracks: List[str]
+    album: AlbumDto = None
+    artists: List[str] = None
+    tracks: List[str] = None
 
 
 class TrackJobDto(BaseModel):
-    album: AlbumDto
-    artist: List[int]
-    track: str
+    album: AlbumDto = None
+    artist: List[int] = None
+    track: str = None
+
 

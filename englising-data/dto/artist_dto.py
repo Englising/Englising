@@ -3,9 +3,9 @@ from pydantic import BaseModel
 
 
 class ArtistDto(BaseModel):
-    artist_id: Optional[int]
-    name: Optional[str]
-    genres: Optional[str]
-    spotify_id: Optional[str]
-    spotify_popularity: Optional[int]
-    image: Optional[str]
+    artist_id: Optional[int] = None
+    name: Optional[str] = None
+    genres: Optional[str] = None
+    spotify_id: Optional[str] = None
+    spotify_popularity: Optional[int] = None
+    image: Optional[str] = None

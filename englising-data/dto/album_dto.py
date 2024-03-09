@@ -4,10 +4,10 @@ from pydantic import BaseModel
 
 
 class AlbumDto(BaseModel):
-    album_id: Optional[int]
-    title: Optional[str]
-    type: Optional[str]
-    total_tracks: Optional[int]
-    spotify_id: Optional[str]
-    cover_image: Optional[str]
-    release_date: Optional[datetime]
+    album_id: Optional[int] = None
+    title: Optional[str] = None
+    type: Optional[str] = None
+    total_tracks: Optional[int] = None
+    spotify_id: Optional[str] = None
+    cover_image: Optional[str] = None
+    release_date: Optional[datetime] = None
