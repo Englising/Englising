@@ -1,6 +1,8 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
+from dto.lyric_dto import LyricDto
+
 
 class TrackDto(BaseModel):
     track_id: Optional[int] = None
@@ -17,6 +19,7 @@ class TrackDto(BaseModel):
     feature_energy: Optional[float] = None
     feature_positiveness: Optional[float] = None
     artists: Optional[List[str]] = None
+    lyrics: Optional[List[LyricDto]] = None
 
 
 class YoutubeDto(BaseModel):

@@ -8,6 +8,7 @@ class LogList(Enum):
     TRACK = "TRACK"
     LYRICS = "LYRICS"
     YOUTUBE = "YOUTUBE"
+    MUSIX = "MUSIX"
 
 
 class LogKind:

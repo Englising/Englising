@@ -29,6 +29,7 @@ class ArtistWorker:
             job_dto.artists = []
             for artist_id in job_dto.artist_ids:
                 job_dto.artists.append(get_artist_by_spotify_id(artist_id))
+            job_dto.retry = 0
             self.redis_connection.rpush(WorkList.TRACK.name, job_dto.json())
         except ArtistException as e:
             log(LogList.ARTIST.name, LogKind.ERROR, str(e))

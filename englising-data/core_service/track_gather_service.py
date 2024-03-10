@@ -49,7 +49,10 @@ class TrackWorker:
                         return
                     else:
                         track.youtube_id = closest_youtube.youtube_id
+                #TODO 장르 정보 가져오기
+
                 job_dto.tracks.append(track)
+            job_dto.retry = 0
             self.redis_connection.rpush(WorkList.LYRICS.name, job_dto.json())
         except TrackException as e:
             log(LogList.TRACK.name, LogKind.ERROR, str(e))
@@ -63,9 +66,9 @@ class TrackWorker:
         else:
             log(LogList.TRACK.name, LogKind.ERROR, f"Job failed after {MAX_RETRY} retries: {job_dto}")
 
-    def remove_job(self, track:TrackDto, track_id: str, job_dto):
+    def remove_job(self, track:TrackDto, track_spotify_id: str, job_dto):
         job_dto.tracks.remove(track)
-        job_dto.track_ids.remove(track_id)
+        job_dto.track_ids.remove(track_spotify_id)
 
     def get_audio(self, track:TrackDto, track_audio:TrackDto):
         track.feature_acousticness = track_audio.feature_acousticness

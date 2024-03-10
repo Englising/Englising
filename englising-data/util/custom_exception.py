@@ -16,5 +16,6 @@ class TrackException(Exception):
 
 
 class LyricException(Exception):
-    def __init__(self, message="An error occurred with a lyric operation"):
+    def __init__(self, message="An error occurred with a lyric operation", track_spotify_id=0):
         super().__init__(message)
+        self.track_spotify_id = track_spotify_id

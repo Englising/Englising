@@ -44,7 +44,6 @@ def get_video_from_youtube_ids(youtube_ids: List[str]):
         youtube_list.append(get_video_from_youtube_id(id))
     return youtube_list
 
-
 def get_video_from_youtube_id(youtube_id: str):
     log(LogList.YOUTUBE.name, LogKind.INFO, f"Getting {youtube_id}")
     try:
@@ -84,3 +83,4 @@ def figure_closest_time(youtube_list, duration_ms: int):
         return None
     return closest_youtube
 
+print(search_youtube("HYAENA", "Travis Scott", 222085))
