@@ -4,13 +4,14 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from dotenv import load_dotenv
 import os
 
+from dto.job_dto import JobDto
 from log.log_info import LogList, LogKind
 from log.englising_logger import log
 
 from dto.artist_dto import ArtistDto
-from dto.job_dto import ArtistJobDto
 from dto.track_dto import TrackDto
 from dto.album_dto import AlbumDto
+from util.custom_exception import ArtistException, TrackException, AlbumException
 
 load_dotenv()
 
@@ -31,7 +32,7 @@ def get_albums_new() -> List[str]:
 
 
 def get_search_albums(query: str) -> List[str]:
-    log(LogList.SPOTIFY, LogKind.INFO, "Getting search albums {query}".format(query=query))
+    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting search albums {query}".format(query=query))
     try:
         albums: List[str] = []
         offset = 0
@@ -46,11 +47,11 @@ def get_search_albums(query: str) -> List[str]:
         return albums
     except Exception as e:
         log(LogList.SPOTIFY, LogKind.ERROR, "Failed search albums {e}".format(e=e))
-        return None
+        raise AlbumException()
 
 
-def get_album_by_spotify_id(spotify_id: str) -> ArtistJobDto:
-    log(LogList.SPOTIFY, LogKind.INFO, "Getting album {id}".format(id=spotify_id))
+def get_album_by_spotify_id(spotify_id: str) -> JobDto:
+    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting album {id}".format(id=spotify_id))
     try:
         result = spotify.album(spotify_id)
         artists: List[str] = []
@@ -67,18 +68,18 @@ def get_album_by_spotify_id(spotify_id: str) -> ArtistJobDto:
             cover_image = result["images"][0]["url"],
             release_date = result["release_date"]
         )
-        return ArtistJobDto(
+        return JobDto(
             album = album,
-            artists = artists,
-            tracks = tracks
+            artist_ids = artists,
+            track_ids = tracks
         )
     except Exception as e:
         log(LogList.SPOTIFY, LogKind.ERROR, "Failed album {e}".format(e=e))
-        return None
+        raise AlbumException()
 
 
 def get_artist_by_spotify_id(spotify_id) -> ArtistDto:
-    log(LogList.SPOTIFY, LogKind.INFO, "Getting artist {id}".format(id=spotify_id))
+    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting artist {id}".format(id=spotify_id))
     try:
         result = spotify.artist(spotify_id)
         print(result)
@@ -91,11 +92,11 @@ def get_artist_by_spotify_id(spotify_id) -> ArtistDto:
         )
     except Exception as e:
         log(LogList.SPOTIFY, LogKind.ERROR, "Failed artist {e}".format(e=e))
-        return None
+        raise ArtistException()
 
 
-def get_track(spotify_id) -> TrackDto:
-    log(LogList.SPOTIFY, LogKind.INFO, "Getting track {id}".format(id=spotify_id))
+def get_track_by_spotify_id(spotify_id) -> TrackDto:
+    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting track {id}".format(id=spotify_id))
     try:
         result = spotify.track(spotify_id)
         track = TrackDto(
@@ -111,23 +112,35 @@ def get_track(spotify_id) -> TrackDto:
         )
         for artist in result["artists"]:
             track.artists.append(artist["id"])
-    except Exception as e:
-        log(LogList.SPOTIFY, LogKind.ERROR, "Failed track {e}".format(e=e))
-        return None
-
-
-def get_track_audiofeature(spotify_id:str, track:TrackDto) -> TrackDto:
-    log(LogList.SPOTIFY, LogKind.INFO, "Getting track audiofeatures {id}".format(id=spotify_id))
-    try:
-        result = spotify.audio_features(spotify_id)
-        track.feature_acousticness = result["acousticness"]
-        track.feature_danceability = result["danceability"]
-        track.feature_energy = result["energy"]
-        track.feature_positiveness = result["valence"]
         return track
     except Exception as e:
+        log(LogList.SPOTIFY, LogKind.ERROR, "Failed track {e}".format(e=e))
+        raise TrackException()
+
+
+def get_track_audiofeature(spotify_id:str) -> TrackDto:
+    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting track audiofeatures {id}".format(id=spotify_id))
+    try:
+        result = spotify.audio_features(spotify_id)[0]
+        # if 0.33 < result["speechiness"] < 0.66 and result["liveness"] < 0.8:
+        #     return TrackDto(
+        #         feature_acousticness = result["acousticness"],
+        #         feature_danceability = result["danceability"],
+        #         feature_energy = result["energy"],
+        #         feature_positiveness = result["valence"]
+        #     )
+        if result["liveness"] < 0.8:
+            return TrackDto(
+                feature_acousticness = result["acousticness"],
+                feature_danceability = result["danceability"],
+                feature_energy = result["energy"],
+                feature_positiveness = result["valence"]
+            )
+    except Exception as e:
         log(LogList.SPOTIFY, LogKind.ERROR, "Failed track audiofeatures {e}".format(e=e))
-        return None
+        raise TrackException()
 
 
 
+print(get_track_by_spotify_id("0hL9gOw6XBWsygEUcVjxEc"))
+print(get_track_audiofeature("0hL9gOw6XBWsygEUcVjxEc"))

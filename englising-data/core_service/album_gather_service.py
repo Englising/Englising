@@ -1,39 +1,38 @@
+import time
+import redis
+
+from util.worklist import WorkList
 from client.spotify_client import *
 
-
-# Ablum Queue로 작업 관리
-# 년도별로 앨범 정보들을 가져옴
-
-# spotify_id로 앨범 정보 상세조회
-# Artist Queue에 넣음
+from log.log_info import LogList, LogKind
+from log.englising_logger import log
 
 
-# Year Album
+class AlbumWorker:
+    def __init__(self, redis_host='localhost', redis_port=6379, redis_db=0, queue_name=WorkList.ALBUM.name):
+        self.redis_connection = redis.Redis(host=redis_host, port=redis_port, db=redis_db)
+        self.queue_name = queue_name
 
+    def start(self):
+        while True:
+            job_left = self.redis_connection.llen(WorkList.TRACK.name)
+            if job_left <= 10:
+                _, year = self.redis_connection.blpop(self.queue_name, timeout=None)
+                self.process_job(year)
+            time.sleep(300)
 
-class AlbumGatherService:
-    def __init__(self, redis_host='localhost', redis_port=6379, redis_db=0, channel_name=str(WorkList.ARTIST)):
-        self.redis_host = redis_host
-        self.redis_port = redis_port
-        self.redis_db = redis_db
-        self.channel_name = channel_name
-        self.redis_connection = redis.Redis(host=self.redis_host, port=self.redis_port, db=self.redis_db)
-        self.pubsub = self.redis_connection.pubsub()
-
-    def subscribe_to_channel(self):
-        self.pubsub.subscribe(**{self.channel_name: self.handle_message})
-        print(f"Subscribed to {self.channel_name}")
-
-        thread = threading.Thread(target=self.pubsub.run_in_thread, kwargs={'sleep_time': 0.001})
-        thread.start()
-        print("Listening for messages...")
-
-    def get_artist_from_spotify(self, spotify_id):
-        print(f"Retrieving artist with Spotify ID: {spotify_id}")
-
-    def handle_message(self, message):
-        print(f"Received message: {message}")
-        if message['type'] == 'message':
-            spotify_id = message['data'].decode('utf-8')
-            self.get_artist_from_spotify(spotify_id)
+    def process_job(self, year):
+        log(LogList.ALBUM.name, LogKind.INFO, "Starting Job: "+str(year))
+        try:
+            album_ids = get_albums_by_year(year)
+            jobs = []
+            for album_id in album_ids:
+                jobs.append(get_album_by_spotify_id(album_id))
+                time.sleep(1)
+            for job in jobs:
+                self.redis_connection.rpush(WorkList.ARTIST.name, job.json())
+            self.redis_connection.rpush(WorkList.ALBUM.name, year-1)
+        except AlbumException as e:
+            log(LogList.ALBUM.name, LogKind.ERROR, str(e))
+            self.redis_connection.rpush(WorkList.ALBUM.name, year)
 
