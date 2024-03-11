@@ -15,22 +15,22 @@ class AlbumWorker:
 
     def start(self):
         while True:
-            job_left = self.redis_connection.llen(WorkList.TRACK.name)
+            job_left = self.redis_connection.llen(WorkList.ALBUM.name)
             if job_left <= 10:
                 _, year = self.redis_connection.blpop(self.queue_name, timeout=None)
-                self.process_job(year)
-            time.sleep(300)
+                self.process_job(int(year.decode('utf-8')))
+            time.sleep(3000)
 
     def process_job(self, year):
         log(LogList.ALBUM.name, LogKind.INFO, "Starting Job: "+str(year))
         try:
             album_ids = get_albums_by_year(year)
-            jobs = []
             for album_id in album_ids:
-                jobs.append(get_album_by_spotify_id(album_id))
-                time.sleep(1)
-            for job in jobs:
+                job = get_album_by_spotify_id(album_id)
+                # print("artist que push" + str(job))
                 self.redis_connection.rpush(WorkList.ARTIST.name, job.json())
+                break
+                time.sleep(10)
             self.redis_connection.rpush(WorkList.ALBUM.name, year-1)
         except AlbumException as e:
             log(LogList.ALBUM.name, LogKind.ERROR, str(e))

@@ -9,6 +9,8 @@ class LogList(Enum):
     LYRICS = "LYRICS"
     YOUTUBE = "YOUTUBE"
     MUSIX = "MUSIX"
+    PAPAGO = "PAPAGO"
+    SAVE = "SAVE"
 
 
 class LogKind:

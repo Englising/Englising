@@ -82,7 +82,6 @@ def get_artist_by_spotify_id(spotify_id) -> ArtistDto:
     log(LogList.SPOTIFY.name, LogKind.INFO, "Getting artist {id}".format(id=spotify_id))
     try:
         result = spotify.artist(spotify_id)
-        print(result)
         return ArtistDto(
             name=result["name"],
             genres=str(result["genres"]),
@@ -99,11 +98,13 @@ def get_track_by_spotify_id(spotify_id) -> TrackDto:
     log(LogList.SPOTIFY.name, LogKind.INFO, "Getting track {id}".format(id=spotify_id))
     try:
         result = spotify.track(spotify_id)
+        if result["explicit"] :
+            print("explicit"+spotify_id)
+            return None
         track = TrackDto(
             track_index = result["track_number"],
             title = result["name"],
             spotify_id = result["id"],
-            youtube_id = "",
             isrc = result["external_ids"]["isrc"],
             spotify_popularity = result["popularity"],
             duration_ms = result["duration_ms"],
@@ -141,6 +142,4 @@ def get_track_audiofeature(spotify_id:str) -> TrackDto:
         raise TrackException()
 
 
-
-print(get_track_by_spotify_id("0hL9gOw6XBWsygEUcVjxEc"))
-print(get_track_audiofeature("0hL9gOw6XBWsygEUcVjxEc"))
+# get_track_by_spotify_id("0hL9gOw6XBWsygEUcVjxEc")

@@ -1,10 +1,10 @@
 import time
 import redis
 
-from util.custom_exception import LyricException
 from util.worklist import WorkList
 from client.spotify_client import *
 from client.musix_client import *
+from client.papago_client import *
 
 from log.log_info import LogList, LogKind
 from log.englising_logger import log
@@ -27,29 +27,36 @@ class LyricWorker:
     def process_job(self, job_dto):
         log(LogList.LYRICS.name, LogKind.INFO, "Starting Job: "+str(job_dto))
         try:
-            # TODO 가사 가져오기
             for track in job_dto.tracks:
-                track.lyrics = find_lyrics(MusixMatchDto(
-                    album=job_dto.album.title,
-                    artist=self.figure_artist(track, job_dto),
-                    track_name=track.title,
-                    track_spotify_id=track.spotify_id,
-                    track_duration=track.duration_ms
-                ))
-            #TODO 가사 영어인지 확인하기
-
-            #TODO 가사 해석본 가져오기
-
+                # 가사 가져오기
+                if track.lyrics is None or len(track.lyrics) == 0:
+                    track.lyrics = find_lyrics(MusixMatchDto(
+                        album=job_dto.album.title,
+                        artist=self.figure_artist(track, job_dto).name,
+                        track_name=track.title,
+                        track_spotify_id=track.spotify_id,
+                        track_duration=track.duration_ms
+                    ))
+                # 가사 영어인지 확인하기
+                if not detect_lyric_language(track.lyrics[0].en_text) :
+                    log(LogList.LYRICS.name, LogKind.INFO, "Lyric is not english " + track.title)
+                    self.remove_job(track.spotify_id, job_dto)
+                    return
+                # 가사 해석본 가져오기
+                for lyric in track.lyrics:
+                    if lyric.kr_text is None:
+                        lyric.kr_text = get_lyric_translation(lyric.en_text, track.spotify_id)
             job_dto.retry = 0
-            self.redis_connection.rpush(WorkList.LYRICS.name, job_dto.json())
+            print(job_dto)
+            self.redis_connection.rpush(WorkList.SAVE.name, job_dto.json())
         except LyricException as e:
             log(LogList.LYRICS.name, LogKind.ERROR, str(e))
             if "DROP" in e.args:
                 self.remove_job(e.track_spotify_id, job_dto)
                 return
             elif "TIMEOUT" in e.args:
-                time.sleep(300)
                 self.retry_job(job_dto)
+                time.sleep(300)
 
     def retry_job(self, job_dto):
         if job_dto.retry < MAX_RETRY:

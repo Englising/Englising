@@ -31,28 +31,34 @@ class TrackWorker:
             for track_id in job_dto.track_ids:
                 # Spotify Track 정보 가져오기
                 track = get_track_by_spotify_id(track_id)
+                if track is None:
+                    self.remove_job(track_id, job_dto)
+                    continue
                 # Spotify Audiofeatures 정보 가져오기
                 if track.feature_acousticness is None:
                     track_audio = get_track_audiofeature(track_id)
                     if track_audio is None:
                         log(LogList.TRACK.name, LogKind.WARNING,"AudioFeature is not present, skipping track "+str(track_id))
-                        self.remove_job(track, track_id, job_dto)
-                        return
+                        self.remove_job(track_id, job_dto)
+                        continue
                     else:
                         track = self.get_audio(track, track_audio)
-                # Youtube Id 정보 가져오기
-                if track.youtube_id is None:
-                    closest_youtube = search_youtube(track.title, self.figure_artist(track, job_dto.artists).name, track.duration_ms)
-                    if closest_youtube is None:
-                        log(LogList.TRACK.name, LogKind.WARNING,"Close youtube video is not present, skipping track "+str(track_id))
-                        self.remove_job(track, track_id, job_dto)
-                        return
-                    else:
-                        track.youtube_id = closest_youtube.youtube_id
-                #TODO 장르 정보 가져오기
+                # # Youtube Id 정보 가져오기
+                # if track.youtube_id is None:
+                #     closest_youtube = search_youtube(track.title, self.figure_artist(track, job_dto).name, track.duration_ms)
+                #     if closest_youtube is None:
+                #         log(LogList.TRACK.name, LogKind.WARNING,"Close youtube video is not present, skipping track "+str(track_id))
+                #         # self.remove_job(track_id, job_dto)
+                #         # continue
+                #     else:
+                #         print("closest youtube id: " + str(closest_youtube))
+                #         track.youtube_id = closest_youtube.youtube_id
+
+                #TODO 장르 정보 어떻게 할지 결정 필요
 
                 job_dto.tracks.append(track)
             job_dto.retry = 0
+            print(job_dto)
             self.redis_connection.rpush(WorkList.LYRICS.name, job_dto.json())
         except TrackException as e:
             log(LogList.TRACK.name, LogKind.ERROR, str(e))
@@ -66,8 +72,7 @@ class TrackWorker:
         else:
             log(LogList.TRACK.name, LogKind.ERROR, f"Job failed after {MAX_RETRY} retries: {job_dto}")
 
-    def remove_job(self, track:TrackDto, track_spotify_id: str, job_dto):
-        job_dto.tracks.remove(track)
+    def remove_job(self, track_spotify_id: str, job_dto):
         job_dto.track_ids.remove(track_spotify_id)
 
     def get_audio(self, track:TrackDto, track_audio:TrackDto):

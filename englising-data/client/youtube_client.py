@@ -34,8 +34,8 @@ def search_youtube(track_title, artist_name, duration_ms)->YoutubeDto:
         youtube_list = get_video_from_youtube_ids(youtube_ids)
         return figure_closest_time(youtube_list, duration_ms)
     except Exception as e:
-        log(LogList.YOUTUBE, LogKind.ERROR, f"Failed Searching {track_title} {artist_name}")
-        raise TrackException()
+        log(LogList.YOUTUBE, LogKind.ERROR, f"Failed Searching {track_title} {artist_name} {e}")
+        # raise TrackException()
 
 
 def get_video_from_youtube_ids(youtube_ids: List[str]):
@@ -55,7 +55,7 @@ def get_video_from_youtube_id(youtube_id: str):
         return YoutubeDto(youtube_id=request["id"], duration_ms=duration_ms)
     except Exception as e:
         log(LogList.YOUTUBE, LogKind.ERROR, f"Failed Getting {youtube_id}")
-        raise TrackException()
+        # raise TrackException()
 
 
 def convert_duration_to_ms(duration: str) -> int:
@@ -83,4 +83,3 @@ def figure_closest_time(youtube_list, duration_ms: int):
         return None
     return closest_youtube
 
-print(search_youtube("HYAENA", "Travis Scott", 222085))

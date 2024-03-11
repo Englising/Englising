@@ -11,7 +11,7 @@ logger = logging.getLogger("Spotify")
 logger.setLevel(logging.DEBUG)
 
 # 파일 핸들러 설정
-file_handler = RotatingFileHandler(log_file_path, maxBytes=10485760, backupCount=5)
+file_handler = RotatingFileHandler(log_file_path, maxBytes=10485760, backupCount=5, encoding="utf-8")
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(CustomFormatter())
 

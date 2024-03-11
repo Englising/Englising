@@ -5,6 +5,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from _pydecimal import Decimal
+from typing import List
 
 from dotenv import load_dotenv
 import os
@@ -12,7 +13,7 @@ import os
 from dto.lyric_dto import LyricDto
 from log.log_info import LogList, LogKind
 from log.englising_logger import log
-from util.custom_exception import TrackException, LyricException
+from util.custom_exception import LyricException
 
 from dto.track_dto import MusixMatchDto
 
@@ -27,7 +28,7 @@ headers = {
 }
 
 
-def find_lyrics(musixmatch_dto:MusixMatchDto):
+def find_lyrics(musixmatch_dto:MusixMatchDto) -> List[LyricDto]:
     duration = musixmatch_dto.track_duration / 1000 if musixmatch_dto.track_duration else ""
     params = {
         "q_album": musixmatch_dto.album,
@@ -74,7 +75,7 @@ def find_lyrics(musixmatch_dto:MusixMatchDto):
     return musixmatch_reqult_to_lyric(body['track.subtitles.get']['message']['body']['subtitle_list'][0])
 
 
-def musixmatch_reqult_to_lyric(body):
+def musixmatch_reqult_to_lyric(body) -> List[LyricDto]:
     lyrics = []
     subtitles = json.loads(body['subtitle']['subtitle_body'])
     for i, subtitle in enumerate(subtitles):
@@ -93,10 +94,10 @@ def musixmatch_reqult_to_lyric(body):
     return lyrics
 
 
-print(find_lyrics(MusixMatchDto(
-    album="UTOPIA",
-    artist="Travis Scott",
-    track_name = "HYAENA",
-    track_spotify_id="0hL9gOw6XBWsygEUcVjxEc",
-    track_duration = 222085
-)))
+# print(find_lyrics(MusixMatchDto(
+#     album="UTOPIA",
+#     artist="Travis Scott",
+#     track_name = "HYAENA",
+#     track_spotify_id="0hL9gOw6XBWsygEUcVjxEc",
+#     track_duration = 222085
+# )))

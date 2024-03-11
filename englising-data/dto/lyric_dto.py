@@ -6,10 +6,7 @@ from pydantic import BaseModel
 
 class LyricDto(BaseModel):
     lyric_id: Optional[int] = None
-    start_time: Optional[Decimal] = None
-    end_time: Optional[Decimal] = None
+    start_time: Optional[float] = None
+    end_time: Optional[float] = None
     en_text: Optional[str] = None
     kr_text: Optional[str] = None
-
-    class Config:
-        arbitrary_types_allowed = True

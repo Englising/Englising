@@ -10,7 +10,7 @@ class Lyric(Base):
     start_time = Column(DECIMAL(10, 3), nullable=False)
     end_time = Column(DECIMAL(10, 3), nullable=False)
     en_text = Column(Text, nullable=False)
-    kr_text = Column(Text, nullable=False)
+    kr_text = Column(Text, nullable=True)
     created_at = Column(TIMESTAMP, nullable=False, default=func.now())
     updated_at = Column(TIMESTAMP, onupdate=func.now())
 

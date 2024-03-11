@@ -10,6 +10,6 @@ class JobDto(BaseModel):
     album: AlbumDto = None
     artist_ids: List[str] = None
     track_ids: List[str] = None
-    artists: List[ArtistDto] = None
-    tracks: List[TrackDto] = None
+    artists: List[ArtistDto] = []
+    tracks: List[TrackDto] = []
     retry: int = 0
