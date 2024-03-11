@@ -7,7 +7,7 @@ import imgYouth from '../assets/youth.jpg';
 import imgMe from '../assets/me.jpg';
 import Sidebar from '../component/main/Sidebar.tsx';
 import LpPlayer from '../component/main/LpPlayer.tsx';
-import Multiroom from '../component/main/Multiroom.tsx';
+import Multiroom from '../component/main/SingleRoom.tsx';
 
 interface Music {
     album_title: string;
