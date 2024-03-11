@@ -4,7 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2924fc65-dde8-4dec-9c7e-b1f5a433e0fd" name="Changes" comment="" />
+    <list default="true" id="2924fc65-dde8-4dec-9c7e-b1f5a433e0fd" name="Changes" comment="✨feat-be: 데이터 게더링 작성 중">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/musix_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/musix_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/papago_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/papago_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/spotify_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/spotify_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/youtube_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/youtube_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core_service/album_gather_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/album_gather_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core_service/lyric_gather_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/lyric_gather_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core_service/track_gather_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/track_gather_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dto/job_dto.py" beforeDir="false" afterPath="$PROJECT_DIR$/dto/job_dto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dto/lyric_dto.py" beforeDir="false" afterPath="$PROJECT_DIR$/dto/lyric_dto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/log_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/log/log_info.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/logging_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/log/logging_config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/lyric.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/lyric.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/track.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/track.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,30 +33,77 @@
       </list>
     </option>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="develop-fe" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitLabMergeRequestFiltersHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPENED&quot;,
+    &quot;assignee&quot;: {
+      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,
+      &quot;username&quot;: &quot;canon1107&quot;,
+      &quot;fullname&quot;: &quot;김아영&quot;
+    }
+  }
+}</component>
+  <component name="GitLabMergeRequestsSettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;first&quot;: &quot;https://lab.ssafy.com/s10-bigdata-recom-sub2/S10P22A106.git&quot;,
+    &quot;second&quot;: &quot;a144d77d-937d-47fd-a828-966333d8fe31&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="2dNrjjEcnXteSB3aKov8rtItz4K" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.album_gather_service.executor": "Run",
+    "Python.artist_gather_service.executor": "Run",
+    "Python.job_dto.executor": "Run",
+    "Python.log_format.executor": "Run",
+    "Python.logging_config.executor": "Run",
+    "Python.loglist.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.musix_client.executor": "Run",
+    "Python.papago_client.executor": "Run",
+    "Python.soundchart_client.executor": "Run",
+    "Python.spotify_client.executor": "Run",
+    "Python.youtube_client.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "feature-be/data-gather",
+    "last_opened_file_path": "C:/Users/SSAFY/Desktop/S10P22A106/englising-data/venv",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "vcs.Git",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\SSAFY\Desktop\S10P22A106\englising-data\log" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
+        <option value="bundled-python-sdk-d68999036c7f-b11f5e8da5ad-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.14475.56" />
       </set>
     </attachedChunks>
   </component>
@@ -53,10 +116,78 @@
       <option name="presentableId" value="Default" />
       <updated>1709859513941</updated>
       <workItem from="1709859517924" duration="1262000" />
+      <workItem from="1709868411624" duration="531000" />
+      <workItem from="1709868951613" duration="4568000" />
+      <workItem from="1709896138947" duration="3671000" />
+      <workItem from="1709975156976" duration="14123000" />
+      <workItem from="1710043828464" duration="19589000" />
+      <workItem from="1710114247562" duration="18835000" />
     </task>
+    <task id="LOCAL-00001" summary="✨feat-be: 데이터 게더링 작성 중">
+      <option name="closed" value="true" />
+      <created>1709899800443</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1709899800443</updated>
+    </task>
+    <task id="LOCAL-00002" summary="✨feat-be: 데이터 게더링 작성 중">
+      <option name="closed" value="true" />
+      <created>1709997599219</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1709997599219</updated>
+    </task>
+    <task id="LOCAL-00003" summary="✨feat-be: 데이터 게더링 작성 중">
+      <option name="closed" value="true" />
+      <created>1710065718620</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1710065718620</updated>
+    </task>
+    <task id="LOCAL-00004" summary="✨feat-be: 데이터 게더링 작성 중">
+      <option name="closed" value="true" />
+      <created>1710071093977</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1710071093977</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="✨feat-be: 데이터 게더링 작성 중" />
+    <option name="LAST_COMMIT_MESSAGE" value="✨feat-be: 데이터 게더링 작성 중" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/englising_data$spotify_client.coverage" NAME="spotify_client Coverage Results" MODIFIED="1710131933311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
+    <SUITE FILE_PATH="coverage/englising_data$papago_client.coverage" NAME="papago_client Coverage Results" MODIFIED="1710121257918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
+    <SUITE FILE_PATH="coverage/englising_data$musix_client.coverage" NAME="musix_client Coverage Results" MODIFIED="1710069840800" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
+    <SUITE FILE_PATH="coverage/englising_data$youtube_client.coverage" NAME="youtube_client Coverage Results" MODIFIED="1710065828626" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
+    <SUITE FILE_PATH="coverage/englising_data$main.coverage" NAME="main Coverage Results" MODIFIED="1710136606995" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/englising_data$album_gather_service.coverage" NAME="album_gather_service Coverage Results" MODIFIED="1710123336899" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
+    <SUITE FILE_PATH="coverage/englising_data$artist_gather_service.coverage" NAME="artist_gather_service Coverage Results" MODIFIED="1710123307709" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
+    <SUITE FILE_PATH="coverage/englising_data$logging_config.coverage" NAME="logging_config Coverage Results" MODIFIED="1709882946121" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/englising_data$log_format.coverage" NAME="log_format Coverage Results" MODIFIED="1709882440331" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/englising_data$loglist.coverage" NAME="loglist Coverage Results" MODIFIED="1709883017035" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/util" />
+    <SUITE FILE_PATH="coverage/englising_data$soundchart_client.coverage" NAME="soundchart_client Coverage Results" MODIFIED="1710114976564" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
+    <SUITE FILE_PATH="coverage/englising_data$job_dto.coverage" NAME="job_dto Coverage Results" MODIFIED="1710123304256" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/dto" />
   </component>
 </project>
