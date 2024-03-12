@@ -8,6 +8,7 @@ function App() {
   return (
     <div>
     헤윙
+    <SinglePage/>
     </div>
   )
 }

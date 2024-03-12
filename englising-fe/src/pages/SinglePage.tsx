@@ -3,21 +3,34 @@ import Lyrics from "../component/single/Lyrics";
 import MusicPlayer from "../component/single/MusicPlayer";
 
 
-const SinglePage = () => {
-    const [startTime, setStartTime] = useState<number>(0);
-    const [endTime, setEndTime] = useState<number>(0);
-    const [toggle, setToggle] = useState<number>(0);
+export interface PlayInfo {
+    idx: number,
+    startTime: number,
+    endTime: number,
+    toggle: number
+}
 
-    const onSetTime = (start: number, end: number): void => {
-        setStartTime(start);
-        setEndTime(end);
-        setToggle((toggle+1)%2);
+const SinglePage = () => {
+    const [playInfo, setPlayInfo] = useState<PlayInfo>({
+        idx: 0,
+        startTime: 0,
+        endTime: 0,
+        toggle: 0
+    });
+
+    const onSetInfo = (currIdx: number, start: number, end: number): void => {
+        setPlayInfo({
+            idx: currIdx,
+            startTime: start,
+            endTime: end,
+            toggle: (playInfo.toggle+1)%2
+        })
     }
 
     return (
         <div className="flex">
-            <MusicPlayer startTime={startTime} endTime={endTime} toggle={toggle}/>
-            <Lyrics onSetTime = {onSetTime}/>
+            <MusicPlayer playInfo = {playInfo}/>
+            <Lyrics onSetInfo = {onSetInfo}/>
         </div>
     );
 };
