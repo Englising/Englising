@@ -1,26 +1,35 @@
 import { useEffect, useRef, useState } from "react";
 import { singleData } from "./example.tsx"
+import { PlayInfo } from "../../pages/SinglePage.tsx";
 
 interface Props {
-    onSetInfo(currIdx: number, start: number, end: number): void;
+    onSetInfo(currIdx: number, start: number, end: number): void,
+    playInfo: PlayInfo,
+    answer: string
 }
 
-const Lyrics = ({onSetInfo}:Props) => {
+interface Lyric {
+    start_time: number;
+    end_time: number;
+    lyric: string[];
+}
+
+const Lyrics = ({onSetInfo, playInfo, answer}:Props) => {
     const [lyrics, setLyrics] = useState<Lyric[]>([]);
     const scrollRef = useRef<(HTMLDivElement | null)[]>([]);
-    
-    interface Lyric {
-        start_time: number;
-        end_time: number;
-        lyric: string[];
-    }
+    const {idx, startTime, endTime, toggle} = playInfo;
     
     // 실제론 axios를 사용한 호출이 필요함 (sing)
     const data:Lyric[] = singleData.data.lyrics;
-
     useEffect(() => {
         setLyrics([...data]);
     },[])
+
+    // FootVar에서 답안이 입력되었을 때
+    useEffect(() => {
+        if(answer === "") return;
+        handleLyricsClick(idx+1, lyrics[idx+1].start_time, lyrics[idx+1].end_time)
+    },[answer])
     
     const handleLyricsClick = (currIdx: number, start: number, end: number) => {
         /*

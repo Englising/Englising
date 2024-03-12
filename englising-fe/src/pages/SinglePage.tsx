@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Lyrics from "../component/single/Lyrics";
 import MusicPlayer from "../component/single/MusicPlayer";
+import FooterVar from "../component/single/FooterVar";
 
 
 export interface PlayInfo {
@@ -18,6 +19,12 @@ const SinglePage = () => {
         toggle: 0
     });
 
+    const [answer, setAnswer] = useState<string>("");
+
+    const onSetAnswer = (answer: string): void => {
+        setAnswer(answer);
+    }
+
     const onSetInfo = (currIdx: number, start: number, end: number): void => {
         setPlayInfo({
             idx: currIdx,
@@ -28,9 +35,14 @@ const SinglePage = () => {
     }
 
     return (
-        <div className="flex">
-            <MusicPlayer playInfo = {playInfo}/>
-            <Lyrics onSetInfo = {onSetInfo}/>
+        <div>            
+            <div className="flex">
+                <MusicPlayer playInfo = {playInfo} />
+                <Lyrics onSetInfo = {onSetInfo} playInfo = {playInfo} answer = {answer}/>
+            </div>
+            <div>
+                <FooterVar onSetAnswer = {onSetAnswer}/>
+            </div>
         </div>
     );
 };

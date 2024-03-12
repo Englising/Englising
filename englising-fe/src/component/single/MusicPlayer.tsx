@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
+import { useEffect, useRef, useState } from "react";
 import { PlayInfo } from "../../pages/SinglePage.tsx";
 import { OnProgressProps } from "react-player/base";
 
