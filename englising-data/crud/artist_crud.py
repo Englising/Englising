@@ -5,11 +5,12 @@ def create_artist(artist: Artist, session):
     session.add(artist)
     session.flush()
     session.refresh(artist)
+    # print("!!!!!!!!!!!!!!"+artist)
     return artist
 
 
 def get_artist_by_spotify_id(spotify_id: str, session):
-    result = session.flush().query(Artist).filter(Artist.spotify_id == spotify_id).one_or_none()
+    result = session.query(Artist).filter(Artist.spotify_id == spotify_id).one_or_none()
     return result
 
 
