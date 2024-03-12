@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { singleData } from "./example.tsx"
-import { PlayInfo } from "../../pages/SinglePage.tsx";
 
 interface Props {
     onSetInfo(currIdx: number, start: number, end: number): void;
