@@ -6,114 +6,114 @@ export const singleData = {
             singleplay_id : 1,
             lyrics : [
                 {
-                    start_time: 7.5,
-                    end_time: 12.0,
+                    startTime: 7.5,
+                    endTime: 12.0,
                     lyric: ["떠나는", "길에", "네가", "내게", "말했지"]
                 },
                 {
-                    start_time: 12.0,
-                    end_time: 15.9,
+                    startTime: 12.0,
+                    endTime: 15.9,
                     lyric: ["너는", "바라는", "게", "너무나", "많아"]
                 },
                 {
-                    start_time: 15.9,
-                    end_time: 20.0,
+                    startTime: 15.9,
+                    endTime: 20.0,
                     lyric: ["잠깐이라도", "널", "안", "바라보면"]
                 },
                 {
-                    start_time: 20.0,
-                    end_time: 24.3,
+                    startTime: 20.0,
+                    endTime: 24.3,
                     lyric: ["머리에", "불이", "나버린다니까"]
                 },
                 {
-                    start_time: 24.3,
-                    end_time: 28.3,
+                    startTime: 24.3,
+                    endTime: 28.3,
                     lyric: ["나는", "흐르려는", "눈물을", "참고"]
                 },
                 {
-                    start_time: 28.3,
-                    end_time: 32.4,
+                    startTime: 28.3,
+                    endTime: 32.4,
                     lyric: ["하려던", "얘길", "어렵게", "누르고"]
                 },
                 {
-                    start_time: 32.4,
-                    end_time: 36.4,
+                    startTime: 32.4,
+                    endTime: 36.4,
                     lyric: ["그래,", "미안해라는", "한", "마디로"]
                 },
                 {
-                    start_time: 36.4,
-                    end_time: 41.4,
+                    startTime: 36.4,
+                    endTime: 41.4,
                     lyric: ["너랑", "나눈", "날들", "마무리했었지"]
                 },
                 {
-                    start_time: 41.4,
-                    end_time: 49.7,
+                    startTime: 41.4,
+                    endTime: 49.7,
                     lyric: ["달디달고,", "달디달고,", "달디단,", "밤양갱,", "밤양갱"]
                 },
                 {
-                    start_time: 49.7,
-                    end_time: 56.4,
+                    startTime: 49.7,
+                    endTime: 56.4,
                     lyric: ["내가", "먹고", "싶었던", "건,", "달디단,", "밤양갱,", "밤양갱이야"]
                 },
                 {
-                    start_time: 56.4,
-                    end_time: 60.6,
+                    startTime: 56.4,
+                    endTime: 60.6,
                     lyric: ["떠나는", "길에", "네가", "내게", "말했지"]
                 },
                 {
-                    start_time: 60.6,
-                    end_time: 65.0,
+                    startTime: 60.6,
+                    endTime: 65.0,
                     lyric: ["너는", "바라는", "게", "너무나", "많아"]
                 },
                 {
-                    start_time: 65.0,
-                    end_time: 68.8,
+                    startTime: 65.0,
+                    endTime: 68.8,
                     lyric: ["아냐,", "내가", "늘", "바란", "건", "하나야"]
                 },
                 {
-                    start_time: 68.8,
-                    end_time: 90.3,
+                    startTime: 68.8,
+                    endTime: 90.3,
                     lyric: ["한", "개뿐이야,", "달디단,", "밤양갱"]
                 },
                 {
-                    start_time: 90.3,
-                    end_time: 98.4,
+                    startTime: 90.3,
+                    endTime: 98.4,
                     lyric: ["달디달고,", "달디달고,", "달디단,", "밤양갱,", "밤양갱"]
                 },
                 {
-                    start_time: 98.4,
-                    end_time: 100,
+                    startTime: 98.4,
+                    endTime: 100,
                     lyric: ["내가", "먹고", "싶었던", "건,", "달디단,", "밤양갱,", "밤양갱이야"]
                 },
             ],
             words : [
                 {
-                    singleplay_word_id : 1,
-                    sentence_index : 0,
-                    word_index : 2,
-                    word : "apple",
-                    is_right : false
+                    singlePlayWordId: 1,
+                    sentenceIndex: 1,
+                    wordIndex: 1,
+                    word: "바라는",
+                    isRight: false
                 },
                 {
-                    "singleplay_word_id" : 2,
-                    sentence_index : 0,
-                    word_index : 2,
-                    word : "apple",
-                    is_right : false
+                    singlePlayWordId: 2,
+                    sentenceIndex: 3,
+                    wordIndex: 2,
+                    word: "나버린다니까",
+                    isRight: false
                 },
                 {
-                    singleplay_word_id : 3,
-                    sentence_index : 0,
-                    word_index : 2,
-                    word : "apple",
-                    is_right : false
+                    singlePlayWordId: 3,
+                    sentenceIndex: 5,
+                    wordIndex: 0,
+                    word: "하려던",
+                    isRight: false
                 },
                 {
-                    singleplay_word_id : 4,
-                    sentence_index : 0,
-                    word_index : 2,
-                    word : "apple",
-                    is_right : false
+                    singlePlayWordId: 4,
+                    sentenceIndex: 8,
+                    wordIndex: 1,
+                    word: "달디달고",
+                    isRight: false
                 },
             ],
             total_word_cnt : 20,
