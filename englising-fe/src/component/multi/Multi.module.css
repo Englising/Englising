@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "Hana_handwriting";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/naverfont_05@1.0/Hana_handwriting.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* 스크롤바의 폭 너비 */
 .scrollbar::-webkit-scrollbar {
   width: 6px;
@@ -19,4 +26,20 @@
 
 dialog::backdrop {
   background-color: rgba(255, 255, 255, 0.3);
+}
+
+.tooltip::before {
+  display: block;
+  position: absolute;
+  content: "";
+  top: -8px;
+  left: 50%;
+  /* border-top: 8px solid transparent; */
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid rgb(0, 0, 0);
+  border-left: 8px solid transparent;
+}
+
+.symbol {
+  font-family: "Hana_handwriting";
 }
