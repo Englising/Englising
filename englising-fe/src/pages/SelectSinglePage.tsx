@@ -7,7 +7,7 @@ import imgYouth from '../assets/youth.jpg';
 import imgMe from '../assets/me.jpg';
 import Sidebar from '../component/main/Sidebar.tsx';
 import LpPlayer from '../component/main/LpPlayer.tsx';
-import Multiroom from '../component/main/SingleRoom.tsx';
+import Singleroom from '../component/main/SingleRoom.tsx';
 
 interface Music {
     album_title: string;
@@ -72,13 +72,13 @@ const MainPage: React.FC = () => {
     }];
 
     return (
-        <div className="bg-black h-screen w-screen m-0 p-0 flex">
+        <div className="bg-black h-svh w-screen m-0 p-0 flex">
             {/* sideBar */}
             <Sidebar/>
 
             {/*검색창*/}
-            <div className='flex flex-col pt-10 pl-8'>
-            <div className="h-24 w-3/5 rounded-lg bg-gradient-to-r from-[white] via-[#00ffff] to-[#3F4685] p-0.5 relative">
+            <div className='flex flex-col pt-10 pl-8 '>
+            <div className="h-11 w-3/5 rounded-lg bg-gradient-to-r from-[white] via-[#00ffff] to-[#3F4685] p-0.5 relative">
                 <div className="flex h-full w-full rounded-lg items-center bg-primary-950 back ">
                     <div className="text-sm text-primary-200 font-thin pl-5 py-2 flex-1">플레이하고 싶은 노래를 검색해보세요!</div>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" className="w-6 h-6 absolute right-4 top-1/2 transform -translate-y-1/2">
@@ -87,34 +87,33 @@ const MainPage: React.FC = () => {
                 </div>
             </div>
 
-                <div className='pt-8 flex flex-row'>
-                    {/* lp판 */}
-                    <div className='h-5/6'>
-                        <h1 className='text-white font-bold text-xl w-60 pb-6'>싱글 플레이</h1>
-                        <LpPlayer/>
-                    </div>
+            <div className='pt-5 flex flex-row h-5/6'>
+                {/* lp판 */}
+                <div >
+                    <h1 className='text-white font-bold text-xl w-60 pb-6'>싱글 플레이</h1>
+                    <LpPlayer/>
+                </div>
 
                     {/* 플레이리스트 목록 */}
-                    <div className='pl-14 w-4/5'>
-                        <h1 className=' text-white font-bold text-xl w-60 pb-3'>추천 플레이리스트</h1>
-                        <div className='flex flex-row pb-6 w-full'>
-                            <h1 className=' text-white font-thin text-sm w-60 flex-1'>플레이 할 노래를 선택해주세요!</h1>
-                            <h1 className=' text-white font-thin text-sm w-60 text-right flex-1 pr-5'>ⓘ 플레이 할 노래를 선택해주세요!</h1>
-                        </div>
-                        <div className="relative flex flex-col">
-                            <div className='text-white grid grid-cols-3 gap-4 justify-items-start'>
-                                {music.map((item)=> (
-                                    <Multiroom album_title={item.album_title} title={item.track_title} artists={item.artists} img={item.album_img} is_like={item.is_like} score={item.score}/>
-                                ))}
-                            </div>
+                    {/* 자꾸 화면 삐져나와... 고쳐줘...*/}
+                <div className='pl-14 w-4/5'>
+                    <h1 className=' text-white font-bold text-xl w-60 pb-3'>추천 플레이리스트</h1>
+                    <div className='flex flex-row pb-6 w-full'>
+                        <h1 className=' text-white font-thin text-sm w-60 flex-1'>플레이 할 노래를 선택해주세요!</h1>
+                        <h1 className=' text-white font-thin text-sm w-60 text-right flex-1 pr-5'>ⓘ 플레이 할 노래를 선택해주세요!</h1>
+                    </div>
+    
+                    <div className="relative flex flex-col overflow-y-auto h-full">
+                        <div className='text-white grid grid-cols-3 gap-4 justify-items-start '>
+                            {music.map((item)=> (
+                                <Singleroom album_title={item.album_title} title={item.track_title} artists={item.artists} img={item.album_img} is_like={item.is_like} score={item.score}/>
+                            ))}
                         </div>
                     </div>
+                </div>
             </div>
 
             </div>
-
-           
-            
         </div>
     );
 };
