@@ -67,7 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 리프레시 토큰 재발급, db에 업데이트
     //todo. Redis로 수정
     private String reIssueRefreshToken(User user) {
-        String reIssuedRefreshToken = jwtTokenProvider.createRefreshToken();
+        String reIssuedRefreshToken = jwtTokenProvider.createRefreshToken(user.getUsername());
         user.updateRefreshToken(reIssuedRefreshToken);
         userRepository.saveAndFlush(user);
         return reIssuedRefreshToken;
