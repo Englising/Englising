@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SecurityConfig {
-    //todo. 추후 추가
+
 
 
 
