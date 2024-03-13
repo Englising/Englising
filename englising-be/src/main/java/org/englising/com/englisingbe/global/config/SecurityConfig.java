@@ -1,20 +1,61 @@
 package org.englising.com.englisingbe.global.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
-    //todo. 추후 추가
+    private final String[] allowedUrls = {"/webjars/**","/v3/api-docs/**","/swagger-ui/**"};
 
+    // WebSecurity Configuration --------------------------
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> {
+//                    web.ignoring().requestMatchers("*");
+//        };
+//    }
 
-
+    // HTTPSecurity Configuration -------------------------
+    @Bean
+    protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+                .cors(cors -> {
+                    cors.configurationSource(corsConfigurationSource());
+                })
+                .csrf().disable()
+                .authorizeHttpRequests(requests ->
+                        requests.requestMatchers(allowedUrls).permitAll()
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .anyRequest().authenticated()
+                )
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+//                .addFilterBefore(new JwtFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+    // Cors Configuration -----------------------------------------------------
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
+        configuration.addExposedHeader("*");
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
-
-/**
-*  1. 클라이언트에서 카카오로그인으로 생성된 AccessToken 서버로 전송
- * 2. 서버는 받은 AccessToken 가지고 카카오 API를 사용하여 유저정보 가져옴
- * 3. 유저정보 DB에 저장하고, AccessToken과 Refresh Token 생성
- * 4. Refresh Token은 유저 테이블에 저장 ( 추후 Redis에 저장하는 걸로 수정)
- * 5. 서버에서 생성한 Acces Token을 클라이언트에 Json으로 전달 ? (Header에 설정)
- * 6. 클라이언트는 Access Token이 만료될 때마다 Refresh Token으로 Access Token 갱신
-* */
