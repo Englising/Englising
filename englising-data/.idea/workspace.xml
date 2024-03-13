@@ -5,30 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2924fc65-dde8-4dec-9c7e-b1f5a433e0fd" name="Changes" comment="✨feat-be: 데이터 게더링 작성 중">
-      <change afterPath="$PROJECT_DIR$/client/google_trans_client.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core_service/lyric_translate_service.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core_service/youtube_gather_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/spotify_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/spotify_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/youtube_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/youtube_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core_service/album_gather_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/album_gather_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core_service/artist_gather_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/artist_gather_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core_service/lyric_gather_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/lyric_gather_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core_service/save_service.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core_service/track_gather_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/track_gather_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crud/album_crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/crud/album_crud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crud/artist_album_crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/crud/artist_album_crud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crud/artist_crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/crud/artist_crud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crud/artist_track_crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/crud/artist_track_crud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crud/lyric_crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/crud/lyric_crud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crud/track_crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/crud/track_crud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/album_dto.py" beforeDir="false" afterPath="$PROJECT_DIR$/dto/album_dto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/track_dto.py" beforeDir="false" afterPath="$PROJECT_DIR$/dto/track_dto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/log_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/log/log_info.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/track.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/track.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/custom_exception.py" beforeDir="false" afterPath="$PROJECT_DIR$/util/custom_exception.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/worklist.py" beforeDir="false" afterPath="$PROJECT_DIR$/util/worklist.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,35 +54,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.album.executor": "Run",
-    "Python.album_gather_service.executor": "Run",
-    "Python.artist_gather_service.executor": "Run",
-    "Python.google_trans_client.executor": "Run",
-    "Python.job_dto.executor": "Run",
-    "Python.log_format.executor": "Run",
-    "Python.logging_config.executor": "Run",
-    "Python.loglist.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.musix_client.executor": "Run",
-    "Python.papago_client.executor": "Run",
-    "Python.soundchart_client.executor": "Run",
-    "Python.spotify_client.executor": "Run",
-    "Python.youtube_client.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature-be/data-gather",
-    "last_opened_file_path": "C:/Users/SSAFY/Desktop/S10P22A106/englising-data/venv",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "vcs.Git",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.album.executor&quot;: &quot;Run&quot;,
+    &quot;Python.album_gather_service.executor&quot;: &quot;Run&quot;,
+    &quot;Python.artist_gather_service.executor&quot;: &quot;Run&quot;,
+    &quot;Python.google_trans_client.executor&quot;: &quot;Run&quot;,
+    &quot;Python.job_dto.executor&quot;: &quot;Run&quot;,
+    &quot;Python.log_format.executor&quot;: &quot;Run&quot;,
+    &quot;Python.logging_config.executor&quot;: &quot;Run&quot;,
+    &quot;Python.loglist.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.musix_client.executor&quot;: &quot;Run&quot;,
+    &quot;Python.papago_client.executor&quot;: &quot;Run&quot;,
+    &quot;Python.soundchart_client.executor&quot;: &quot;Run&quot;,
+    &quot;Python.spotify_client.executor&quot;: &quot;Run&quot;,
+    &quot;Python.youtube_client.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature-be/data-gather&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/SSAFY/Desktop/S10P22A106/englising-data/venv&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\SSAFY\Desktop\S10P22A106\englising-data\log" />
@@ -133,7 +110,8 @@
       <workItem from="1709975156976" duration="14123000" />
       <workItem from="1710043828464" duration="19589000" />
       <workItem from="1710114247562" duration="18835000" />
-      <workItem from="1710201625867" duration="25502000" />
+      <workItem from="1710201625867" duration="25927000" />
+      <workItem from="1710287373881" duration="954000" />
     </task>
     <task id="LOCAL-00001" summary="✨feat-be: 데이터 게더링 작성 중">
       <option name="closed" value="true" />
@@ -167,7 +145,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710071093977</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="✨feat-be: 데이터 게더링 작성 중">
+      <option name="closed" value="true" />
+      <created>1710233781888</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1710233781888</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -194,7 +180,7 @@
     <SUITE FILE_PATH="coverage/englising_data$musix_client.coverage" NAME="musix_client Coverage Results" MODIFIED="1710069840800" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$youtube_client.coverage" NAME="youtube_client Coverage Results" MODIFIED="1710065828626" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$album.coverage" NAME="album Coverage Results" MODIFIED="1710220793304" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model" />
-    <SUITE FILE_PATH="coverage/englising_data$main.coverage" NAME="main Coverage Results" MODIFIED="1710232651858" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/englising_data$main.coverage" NAME="main Coverage Results" MODIFIED="1710288042966" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/englising_data$google_trans_client.coverage" NAME="google_trans_client Coverage Results" MODIFIED="1710229590505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$album_gather_service.coverage" NAME="album_gather_service Coverage Results" MODIFIED="1710219430133" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
     <SUITE FILE_PATH="coverage/englising_data$artist_gather_service.coverage" NAME="artist_gather_service Coverage Results" MODIFIED="1710123307709" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />

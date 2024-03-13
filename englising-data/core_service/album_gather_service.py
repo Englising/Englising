@@ -30,7 +30,7 @@ class AlbumWorker:
             for album in albums:
                 if detect_lyric_language(album.title):
                     album_db = get_album_by_spotify_id(album.spotify_id, session)
-                    if album_db is None and get_album_popularity_by_spotify_id(album.spotify_id) >= 80:
+                    if album_db is None :
                         album_db = create_album(Album(
                             title=album.title,
                             type=album.type,
