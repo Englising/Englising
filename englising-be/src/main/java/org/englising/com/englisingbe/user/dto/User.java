@@ -17,7 +17,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UserDto implements UserDetails {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +44,10 @@ public class UserDto implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    //todo. test용
+    @Column(name = "refresh_token")
+    private String refreshToken; // 리프레시 토큰 todo. Redis로 수정되면 삭제
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -54,9 +58,10 @@ public class UserDto implements UserDetails {
         return null;
     }
 
+    // pk값으로 지정
     @Override
     public String getUsername() {
-        return email;
+        return userId.toString();
     }
 
     @Override
@@ -77,5 +82,9 @@ public class UserDto implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void updateRefreshToken(String updatedRefreshToken) {
+        this.refreshToken = updatedRefreshToken;
     }
 }
