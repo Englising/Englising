@@ -8,7 +8,7 @@ from dto.track_dto import YoutubeDto
 
 from log.log_info import LogList, LogKind
 from log.englising_logger import log
-from util.custom_exception import TrackException
+from util.custom_exception import TrackException, YoutubeException
 
 load_dotenv()
 
@@ -19,7 +19,7 @@ YOUTUBE_API_VERSION="v3"
 youtube = build(YOUTUBE_API_SERVICE_NAME,YOUTUBE_API_VERSION, developerKey=YOUTUBE_API_KEY)
 
 
-def search_youtube(track_title, artist_name, duration_ms)->YoutubeDto:
+def search_youtube(track_title, artist_name, duration_ms) -> YoutubeDto:
     log(LogList.YOUTUBE.name, LogKind.INFO, f"Searching {track_title} {artist_name}")
     try:
         youtube_ids = []
@@ -34,8 +34,8 @@ def search_youtube(track_title, artist_name, duration_ms)->YoutubeDto:
         youtube_list = get_video_from_youtube_ids(youtube_ids)
         return figure_closest_time(youtube_list, duration_ms)
     except Exception as e:
-        log(LogList.YOUTUBE, LogKind.ERROR, f"Failed Searching {track_title} {artist_name} {e}")
-        # raise TrackException()
+        log(LogList.YOUTUBE.name, LogKind.ERROR, f"Failed Searching {track_title} {artist_name} {e}")
+        raise YoutubeException()
 
 
 def get_video_from_youtube_ids(youtube_ids: List[str]):
@@ -43,6 +43,7 @@ def get_video_from_youtube_ids(youtube_ids: List[str]):
     for id in youtube_ids:
         youtube_list.append(get_video_from_youtube_id(id))
     return youtube_list
+
 
 def get_video_from_youtube_id(youtube_id: str):
     log(LogList.YOUTUBE.name, LogKind.INFO, f"Getting {youtube_id}")
@@ -54,8 +55,8 @@ def get_video_from_youtube_id(youtube_id: str):
         duration_ms = convert_duration_to_ms(request["contentDetails"]["duration"])
         return YoutubeDto(youtube_id=request["id"], duration_ms=duration_ms)
     except Exception as e:
-        log(LogList.YOUTUBE, LogKind.ERROR, f"Failed Getting {youtube_id}")
-        # raise TrackException()
+        log(LogList.YOUTUBE, LogKind.ERROR, f"Failed Getting {youtube_id} {str(e)}")
+        raise YoutubeException()
 
 
 def convert_duration_to_ms(duration: str) -> int:

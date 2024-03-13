@@ -33,3 +33,11 @@ class MusixMatchDto(BaseModel):
     track_name: str = "",
     track_spotify_id: str = "",
     track_duration: int = 0
+
+
+class YoutubeQueryDto(BaseModel):
+    track_id: Optional[int] = None
+    title: Optional[str] = None
+    duration_ms: Optional[int] = None
+    youtube_id: Optional[str] = None
+    artist_name: Optional[str] = None
