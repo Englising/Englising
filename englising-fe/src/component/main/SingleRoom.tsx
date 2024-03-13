@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface MultiroomProps {
+interface SingleroomProps {
     album_title: string;
     title: string;
     artists: string;
@@ -47,7 +47,7 @@ const renderStars = (score: number) => {
     return stars;
 }
 
-const Multiroom: React.FC<MultiroomProps> = ({album_title, title, artists, img, is_like, score}) => {
+const Singleroom: React.FC<SingleroomProps> = ({album_title, title, artists, img, is_like, score}) => {
     return (
         <div className='text-white bg-primary-300/50 w-52 relative rounded-lg hover:opacity-50'>
             <div className='absolute left-2 top-2'> {renderLikeIcon(is_like)} </div>
@@ -64,4 +64,4 @@ const Multiroom: React.FC<MultiroomProps> = ({album_title, title, artists, img, 
     );
 };
 
-export default Multiroom;
+export default Singleroom;
