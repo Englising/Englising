@@ -7,18 +7,14 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.englising.com.englisingbe.singleplay.dto.request.SinglePlayStartDto;
+import org.englising.com.englisingbe.singleplay.dto.request.SinglePlayRequestDto;
+import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
+import org.englising.com.englisingbe.singleplay.dto.response.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 @Tag(name = "SinglePlay Controller", description = "싱글플레이 게임 관련 컨트롤러")
@@ -43,47 +39,12 @@ public class SinglePlayController {
     // API Response 정보 기술
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
-                    mediaType = "application/json"
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = PlayListResponseDto.class)
             )
     )
-    @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
-    })
     public ResponseEntity getPlaylists(@RequestParam String type, @RequestParam Integer page, @RequestParam Integer size){
-        Map<String, Object> track = new HashMap<>();
-        track.put("albumId", 1);
-        track.put("albumTitle", "hero");
-        track.put("albumImg", "asdfasdfasd");
-        track.put("trackId", 1);
-        track.put("trackTitle", "asdf");
-        track.put("artists", Arrays.asList("taylor swift", "ddd", "dddd"));
-        track.put("spotifyId", "Ado287Dfs");
-        track.put("score", 2);
-        track.put("isLike", true);
-
-        List<Map<String, Object>> tracks = Arrays.asList(track, track);
-
-        Map<String, Object> sort = new HashMap<>();
-        sort.put("empty", true);
-        sort.put("sorted", false);
-        sort.put("unsorted", true);
-
-        Map<String, Object> data = new HashMap<>();
-        data.put("tracks", tracks);
-        data.put("size", 20);
-        data.put("number", 0);
-        data.put("sort", sort);
-        data.put("first", true);
-        data.put("last", true);
-        data.put("numberOfElements", 1);
-        data.put("empty", false);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", 200);
-        response.put("message", "플레이리스트 정보를 가져왔습니다");
-        response.put("data", data);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping()
@@ -97,13 +58,10 @@ public class SinglePlayController {
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = SinglePlayStartDto.class)
+                    schema = @Schema(implementation = StartResponseDto.class)
             )
     )
-    @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
-    })
-    public ResponseEntity startSingleplay(@RequestBody SinglePlayStartDto startDto){
+    public ResponseEntity startSingleplay(@RequestBody SinglePlayRequestDto startDto){
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -117,14 +75,12 @@ public class SinglePlayController {
     })
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
-                    mediaType = "application/json"
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = WordCheckResponseDto.class)
             )
     )
-    @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
-    })
-    public ResponseEntity checkSingleplayWord(){
-        return null;
+    public ResponseEntity checkSingleplayWord(@RequestBody WordCheckRequestDto wordCheckRequestDto){
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/result")
@@ -134,20 +90,15 @@ public class SinglePlayController {
     )
     @Parameters({
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
-            @Parameter(name = "type", description = "플레이리스트 종류 : RECOMMEND(추천된), LIKE(좋아요 한), RECENT(최근 플레이 한)", in = ParameterIn.QUERY),
-            @Parameter(name = "page", description = "페이지 번호", in = ParameterIn.QUERY),
-            @Parameter(name = "size", description = "(선택적) 페이지당 컨텐츠 개수, 기본 10", in = ParameterIn.QUERY)
     })
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
-                    mediaType = "application/json"
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ResultResponseDto.class)
             )
     )
-    @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
-    })
-    public ResponseEntity getSingleplayResult(){
-        return null;
+    public ResponseEntity getSingleplayResult(@RequestBody Long singleplayId){
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/track/{trackId}")
@@ -157,20 +108,15 @@ public class SinglePlayController {
     )
     @Parameters({
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
-            @Parameter(name = "type", description = "플레이리스트 종류 : RECOMMEND(추천된), LIKE(좋아요 한), RECENT(최근 플레이 한)", in = ParameterIn.QUERY),
-            @Parameter(name = "page", description = "페이지 번호", in = ParameterIn.QUERY),
-            @Parameter(name = "size", description = "(선택적) 페이지당 컨텐츠 개수, 기본 10", in = ParameterIn.QUERY)
     })
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
-                    mediaType = "application/json"
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = TimeResponseDto.class)
             )
     )
-    @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
-    })
-    public ResponseEntity getLyricStartTimes(){
-        return null;
+    public ResponseEntity getLyricStartTimes(@PathVariable Long trackId){
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
 
