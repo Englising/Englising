@@ -1,4 +1,4 @@
-package org.englising.com.englisingbe.singleplay.entity;
+package org.englising.com.englisingbe.track.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,23 +16,29 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "singleplay_word")
-public class SinglePlayWord {
+@Table(name = "track_word")
+public class TrackWord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "singleplay_word_id")
-    private Long singlePlayWordId;
+    @Column(name = "track_word_id")
+    private Long trackWordId;
 
     @ManyToOne
-    @JoinColumn(name = "singleplay_id", referencedColumnName = "singleplay_id")
-    private SinglePlay singlePlay;
+    @JoinColumn(name = "track_id", referencedColumnName = "track_id")
+    private Track track;
 
     @ManyToOne
     @JoinColumn(name = "word_id", referencedColumnName = "word_id")
     private Word word;
 
-    @Column(name = "correct")
-    private Boolean correct;
+    @Column(name = "sentence_num")
+    private Integer sentenceNum;
+
+    @Column(name = "sentence_seq")
+    private String sentenceSeq;
+
+    @Column(name = "importance")
+    private Float importance;
 
     @CreationTimestamp
     @Column(name = "created_at")

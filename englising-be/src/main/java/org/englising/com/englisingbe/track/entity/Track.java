@@ -1,10 +1,11 @@
-package org.englising.com.englisingbe.music.track.entity;
+package org.englising.com.englisingbe.track.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.englising.com.englisingbe.music.album.entity.Album;
+import org.englising.com.englisingbe.album.entity.Album;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,6 +13,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "track")

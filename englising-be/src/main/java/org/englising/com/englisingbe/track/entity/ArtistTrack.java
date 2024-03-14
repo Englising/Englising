@@ -1,12 +1,11 @@
-package org.englising.com.englisingbe.music.mapper.entity;
+package org.englising.com.englisingbe.track.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.englising.com.englisingbe.music.album.entity.Album;
-import org.englising.com.englisingbe.music.artist.entity.Artist;
-import org.englising.com.englisingbe.singleplay.entity.SinglePlayHint;
+import org.englising.com.englisingbe.artist.entity.Artist;
+import org.englising.com.englisingbe.track.entity.Track;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,20 +15,20 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "artist_album")
-public class ArtistAlbum {
+@Table(name = "artist_track")
+public class ArtistTrack {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "artist_album_id")
-    private Long artistAlbumId;
-
-    @ManyToOne
-    @JoinColumn(name = "album_id", referencedColumnName = "album_id")
-    private Album album;
+    @Column(name = "artist_track_id")
+    private Long artistTrackId;
 
     @ManyToOne
     @JoinColumn(name = "artist_id", referencedColumnName = "artist_id")
     private Artist artist;
+
+    @ManyToOne
+    @JoinColumn(name = "track_id", referencedColumnName = "track_id")
+    private Track track;
 
     @CreationTimestamp
     @Column(name = "created_at")

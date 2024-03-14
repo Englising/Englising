@@ -2,8 +2,10 @@ package org.englising.com.englisingbe.singleplay.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.englising.com.englisingbe.user.entity.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,6 +13,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "singleplay")
@@ -24,10 +27,9 @@ public class SinglePlay {
     @JoinColumn(name = "singleplay_level_id", referencedColumnName = "singleplay_level_id")
     private SinglePlayHint singlePlayHint;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-//    @Column(name = "user_id")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private User user;
 
     @Column(name = "track_id")
     private Long trackId;

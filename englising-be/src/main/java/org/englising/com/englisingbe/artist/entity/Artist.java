@@ -1,11 +1,10 @@
-package org.englising.com.englisingbe.singleplay.entity;
+package org.englising.com.englisingbe.artist.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.englising.com.englisingbe.word.entity.Word;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,23 +15,27 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "singleplay_word")
-public class SinglePlayWord {
+@Table(name = "artist")
+public class Artist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "singleplay_word_id")
-    private Long singlePlayWordId;
+    @Column(name = "artist_id")
+    private Long artistId;
 
-    @ManyToOne
-    @JoinColumn(name = "singleplay_id", referencedColumnName = "singleplay_id")
-    private SinglePlay singlePlay;
+    @Column(name = "name")
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "word_id", referencedColumnName = "word_id")
-    private Word word;
+    @Column(name = "genres")
+    private String genres;
 
-    @Column(name = "correct")
-    private Boolean correct;
+    @Column(name = "spotify_id")
+    private Integer spotifyId;
+
+    @Column(name = "spotify_popularity")
+    private Integer spotifyPopularity;
+
+    @Column(name = "image")
+    private String coverImage;
 
     @CreationTimestamp
     @Column(name = "created_at")

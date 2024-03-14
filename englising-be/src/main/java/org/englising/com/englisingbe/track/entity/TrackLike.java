@@ -1,9 +1,11 @@
-package org.englising.com.englisingbe.music.artist.entity;
+package org.englising.com.englisingbe.track.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.englising.com.englisingbe.user.entity.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,29 +13,26 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "artist")
-public class Artist {
+@Table(name = "track_like")
+public class TrackLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "artist_id")
-    private Long artistId;
+    @Column(name = "track_like_id")
+    private Long trackLikeId;
 
-    @Column(name = "name")
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private User user;
 
-    @Column(name = "genres")
-    private String genres;
+    @ManyToOne
+    @JoinColumn(name = "track_id", referencedColumnName = "track_id")
+    private Track track;
 
-    @Column(name = "spotify_id")
-    private Integer spotifyId;
-
-    @Column(name = "spotify_popularity")
-    private Integer spotifyPopularity;
-
-    @Column(name = "image")
-    private String coverImage;
+    @Column(name = "is_liked")
+    private Boolean isLiked;
 
     @CreationTimestamp
     @Column(name = "created_at")
