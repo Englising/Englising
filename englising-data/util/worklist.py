@@ -7,3 +7,4 @@ class WorkList(Enum):
     TRACK = "TRACK"
     LYRICS = "LYRICS"
     SAVE = "SAVE"
+    YOUTUBE="YOUTUBE"

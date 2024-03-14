@@ -1,38 +1,56 @@
 import time
 import redis
 
-from util.worklist import WorkList
+from database.mysql_manager import Session
 from client.spotify_client import *
+from crud.album_crud import *
+from client.google_trans_client import *
 
 from log.log_info import LogList, LogKind
 from log.englising_logger import log
 
+# 변경 사항
+# 1. 5분마다 년도별 앨범 정보 수집
+# 2. 해당 앨범이 DB에 저장되어 있는지 확인 후 저장 되어있지 않을 경우 저장
 
 class AlbumWorker:
-    def __init__(self, redis_host='localhost', redis_port=6379, redis_db=0, queue_name=WorkList.ALBUM.name):
-        self.redis_connection = redis.Redis(host=redis_host, port=redis_port, db=redis_db)
-        self.queue_name = queue_name
-
     def start(self):
-        while True:
-            job_left = self.redis_connection.llen(WorkList.ALBUM.name)
-            if job_left <= 10:
-                _, year = self.redis_connection.blpop(self.queue_name, timeout=None)
-                self.process_job(int(year.decode('utf-8')))
-            time.sleep(3000)
+        year = 2024
+        while year > 1950:
+            self.process_job(year)
+            log(LogList.ALBUM.name, LogKind.INFO, "Finished Job: " + str(year))
+            year -= 1
+            time.sleep(10)
 
     def process_job(self, year):
-        log(LogList.ALBUM.name, LogKind.INFO, "Starting Job: "+str(year))
+        log(LogList.ALBUM.name, LogKind.INFO, "Starting Job: " + str(year))
+        session = Session()
         try:
-            album_ids = get_albums_by_year(year)
-            for album_id in album_ids:
-                job = get_album_by_spotify_id(album_id)
-                # print("artist que push" + str(job))
-                self.redis_connection.rpush(WorkList.ARTIST.name, job.json())
-                break
-                time.sleep(10)
-            self.redis_connection.rpush(WorkList.ALBUM.name, year-1)
+            albums: List[AlbumDto] = get_albums_by_year(year)
+            for album in albums:
+                if detect_lyric_language(album.title):
+                    album_db = get_album_by_spotify_id(album.spotify_id, session)
+                    if album_db is None :
+                        album_db = create_album(Album(
+                            title=album.title,
+                            type=album.type,
+                            total_tracks=album.total_tracks,
+                            spotify_id=album.spotify_id,
+                            cover_image=album.cover_image,
+                            release_date=album.release_date,
+                        ), session)
+                        session.commit()
         except AlbumException as e:
             log(LogList.ALBUM.name, LogKind.ERROR, str(e))
-            self.redis_connection.rpush(WorkList.ALBUM.name, year)
-
+            session.rollback()
+            time.sleep(30)
+        except GoogleException as e:
+            log(LogList.ALBUM.name, LogKind.ERROR, str(e))
+            session.rollback()
+            time.sleep(30)
+        except Exception as e:
+            log(LogList.ALBUM.name, LogKind.ERROR, str(e))
+            session.rollback()
+            time.sleep(30)
+        finally:
+            session.close()
