@@ -67,6 +67,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
 
+        /**
+         * 1. AccessToken 유효 -> 인증 성공 처리
+         * 2. AccessToken 유효하지 않은 경우
+         *  2.1 받은 토큰 타입이 refreshToken인지 확인
+         *   -> refreshToken이라면
+         * 	1. 유효성 검증 후 유효하다면 AccessToken, RefreshToken 재발급
+         * 	2. 유효하지 않다면 로그인 실패, error
+         * */
 
 
 

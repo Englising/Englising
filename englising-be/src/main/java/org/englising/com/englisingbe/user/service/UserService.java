@@ -18,8 +18,6 @@ public class UserService {
     // 게스트 로그인
     public void signUp() throws Exception{
         //게스트 로그인이기 때문에 중복이메일 조회 x
-        // todo. 토큰 확인
-
 
          User user = User.builder()
                     .email("random@email.com") // todo. uuid 사용 ex)오늘 날짜 + uuid + @email.com
