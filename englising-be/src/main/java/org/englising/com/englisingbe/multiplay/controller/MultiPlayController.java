@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.englising.com.englisingbe.singleplay.dto.request.SinglePlayStartDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -101,8 +100,7 @@ public class MultiPlayController {
     })
     @ApiResponse(responseCode = "200", description = "Successful operation",
         content = @Content(
-            mediaType = "application/json",
-            schema = @Schema(implementation = SinglePlayStartDto.class)
+            mediaType = "application/json"
         )
     )
     @ApiResponses({

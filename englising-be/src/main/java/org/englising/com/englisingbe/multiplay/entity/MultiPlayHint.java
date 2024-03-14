@@ -6,38 +6,34 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.sql.Time;
 import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name = "multiplay")
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Multiplay {
+@Table(name ="multiplay_hint")
+public class MultiPlayHint {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "multiplay_id")
-    private Long multiplayId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "multiplay_hint_id")
+    private Long multiplayHintId;
 
-    @Column(name = "room_name")
-    private String roomName;
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "track_id")
-    private Long trackId;
-
-    @Column(name = "total_people")
-    private Integer totalPeople;
-
-    @Column(name = "genre")
-    private String genre;
-
-    @Column(name = "is_secret")
-    private Boolean isSecret;
-
+    @CreationTimestamp
     @Column(name = "created_at")
     private Timestamp createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
-    private Timestamp updatedAt;
-}
+    private Timestamp updatedAt;}
