@@ -1,4 +1,4 @@
-package org.englising.com.englisingbe.singleplay.entity;
+package org.englising.com.englisingbe.track.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,29 +16,23 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "singleplay")
-public class SinglePlay {
+@Table(name = "track_like")
+public class TrackLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "singleplay_id")
-    private Long singlePlayId;
-
-    @ManyToOne
-    @JoinColumn(name = "singleplay_level_id", referencedColumnName = "singleplay_level_id")
-    private SinglePlayHint singlePlayHint;
+    @Column(name = "track_like_id")
+    private Long trackLikeId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
-    @Column(name = "track_id")
-    private Long trackId;
+    @ManyToOne
+    @JoinColumn(name = "track_id", referencedColumnName = "track_id")
+    private Track track;
 
-    @Column(name = "score")
-    private Integer score;
-
-    @Column(name = "correct_rate")
-    private Integer correctRate;
+    @Column(name = "is_liked")
+    private Boolean isLiked;
 
     @CreationTimestamp
     @Column(name = "created_at")

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.englising.com.englisingbe.user.entity.User;
+import org.englising.com.englisingbe.word.entity.Word;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,29 +16,23 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "singleplay")
-public class SinglePlay {
+@Table(name = "singleplay_word")
+public class SinglePlayWord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "singleplay_id")
-    private Long singlePlayId;
+    @Column(name = "singleplay_word_id")
+    private Long singlePlayWordId;
 
     @ManyToOne
-    @JoinColumn(name = "singleplay_level_id", referencedColumnName = "singleplay_level_id")
-    private SinglePlayHint singlePlayHint;
+    @JoinColumn(name = "singleplay_id", referencedColumnName = "singleplay_id")
+    private SinglePlay singlePlay;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private User user;
+    @JoinColumn(name = "word_id", referencedColumnName = "word_id")
+    private Word word;
 
-    @Column(name = "track_id")
-    private Long trackId;
-
-    @Column(name = "score")
-    private Integer score;
-
-    @Column(name = "correct_rate")
-    private Integer correctRate;
+    @Column(name = "correct")
+    private Boolean correct;
 
     @CreationTimestamp
     @Column(name = "created_at")
