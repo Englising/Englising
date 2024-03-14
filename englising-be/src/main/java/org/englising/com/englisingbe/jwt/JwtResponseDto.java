@@ -1,8 +1,6 @@
 package org.englising.com.englisingbe.jwt;
 
-
 import lombok.*;
-
 
 @Data
 @AllArgsConstructor

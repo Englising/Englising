@@ -17,15 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] allowedUrls = {"/webjars/**","/v3/api-docs/**","/swagger-ui/**"};
-
-    // WebSecurity Configuration --------------------------
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        return (web) -> {
-//                    web.ignoring().requestMatchers("*");
-//        };
-//    }
+    private final String[] allowedUrls = {"/webjars/**","/v3/api-docs/**","/swagger-ui/**", "/auth/**"};
 
     // HTTPSecurity Configuration -------------------------
     @Bean
