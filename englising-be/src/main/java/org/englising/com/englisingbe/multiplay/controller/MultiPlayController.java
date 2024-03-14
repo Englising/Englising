@@ -1,24 +1,53 @@
 package org.englising.com.englisingbe.multiplay.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.englising.com.englisingbe.singleplay.dto.request.SinglePlayStartDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/multiplay")
 public class MultiPlayController {
 
-    @GetMapping("/multiplay/rooms")
+    @GetMapping("/rooms")
+    @Operation(
+        summary = "멀티플레이 대기방 리스트 조회",
+        description = "genre 파라미터로 멀티플레이 방 장르를 보내주세요. 페이지네이션이 적용되어 있습니다"
+    )
+    @Parameters({
+        @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
+        @Parameter(name = "genre", description = "멀티플레이 방 장르"),
+        @Parameter(name = "page", description = "페이지 번호", in = ParameterIn.QUERY),
+        @Parameter(name = "size", description = "(선택적) 페이지당 컨텐츠 개수, 기본 10", in = ParameterIn.QUERY)
+    })
+    @ApiResponse(responseCode = "200", description = "Successful operation",
+        content = @Content(
+            mediaType = "application/json"
+        )
+    )
+    @ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
+    })
     public ResponseEntity getMultiLists(@RequestParam Integer page, @RequestParam Integer size){
         Map<String, Object> room1 = new HashMap<>();
         room1.put("room_id", 1);
@@ -62,7 +91,23 @@ public class MultiPlayController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/multiplay/createRoom")
+    @PostMapping
+    @Operation(
+        summary = "멀티플레이 방 만들기",
+        description = "멀티플레이 방 생성 시 필요한 방 이름, 총 인원, 장르를 가져옵니다"
+    )
+    @Parameters({
+        @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
+    })
+    @ApiResponse(responseCode = "200", description = "Successful operation",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = SinglePlayStartDto.class)
+        )
+    )
+    @ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
+    })
     public ResponseEntity createMultiplayRoom(@RequestBody Map<String, Object> requestBody) {
         String roomName = (String) requestBody.get("room_name");
         Integer totalPeople = (Integer) requestBody.get("total_people");
@@ -90,7 +135,23 @@ public class MultiPlayController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/multiplay/room/{multiplayId}")
+    @GetMapping("/room/{multiplayId}")
+    @Operation(
+        summary = "멀티플레이 방 조회",
+        description = " "
+    )
+    @Parameters({
+        @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
+        @Parameter(name = "mulitplay_id", description = "멀티플레이 방 아이디"),
+        })
+    @ApiResponse(responseCode = "200", description = "Successful operation",
+        content = @Content(
+            mediaType = "application/json"
+        )
+    )
+    @ApiResponses({
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
+    })
     public ResponseEntity getMultiplayRoom(@PathVariable Integer multiplayId) {
 
         Map<String, Object> user1 = new HashMap<>();
@@ -111,10 +172,17 @@ public class MultiPlayController {
         response.put("data", responseData);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
-
     }
 
-    @GetMapping("/multiplay/result")
+    @GetMapping("/result")
+    @Operation(
+        summary = "멀티플레이 종료 및 결과",
+        description = "멀티플레이 성공 여부"
+    )
+    @Parameters({
+        @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
+        @Parameter(name = "multiplayId", description = "멀티플레이 아이디", in = ParameterIn.QUERY),
+    })
     public ResponseEntity getMultiResult(@RequestParam Integer multiplayId) {
         Map<String, Object> result = new HashMap<>();
         result.put("is_success", true);
