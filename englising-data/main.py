@@ -26,7 +26,7 @@ def main():
     lyric_thread = threading.Thread(target=lyric_worker.start)
     lyric_translate_thread = threading.Thread(target=lyric_translate_worker.start)
 
-    album_thread.start()
+    # album_thread.start()
     artist_thread.start()
     track_thread.start()
     youtube_thread.start()
