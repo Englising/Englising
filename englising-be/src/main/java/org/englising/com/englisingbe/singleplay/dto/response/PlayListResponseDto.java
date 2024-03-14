@@ -3,7 +3,6 @@ package org.englising.com.englisingbe.singleplay.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
 
 import java.util.List;
 
