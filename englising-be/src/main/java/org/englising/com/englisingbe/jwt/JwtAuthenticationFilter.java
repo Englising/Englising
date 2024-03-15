@@ -5,132 +5,87 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-// JwtTokenProvider가 검증을 끝낸 Jwt로부터 유저 정보를 조회해와서
+// Filter를 적용함으로써 servlet에 도달하기 전에 검증 완료 가능
+// JwtProvider가 검증을 끝낸 Jwt로부터 유저 정보를 조회해와서
 // UserPasswordAuthenticationFilter로 전달
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-//    private static final String NO_CHECK_URL = "/login";
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
-    private JwtTokenType jwtTokenType;
+    private static final String NO_CHECK_URL = "/auth";
+    //todo. 토큰 재발급 url은 빼야 함
+
+    private final JwtProvider jwtProvider;
 
     // 토큰 유효한지 확인 후 SecurityContext에 계정정보 저장하는 메소드
+    /**
+     * 1. 헤더에서 JWT 받아온다
+     * 2. 유효한 토큰인지 확인한다
+     * 3. 토큰이 유효하면 토큰으로부터 유저 정보 받아온다
+     * 4. SecurityContext에 Authentication 객체 저장한다.
+     * */
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-//        if (request.getRequestURI().equals(NO_CHECK_URL)) {
-//            filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
-//            return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
-//        } //todo. 게스트, 카카오 로그인 요청 시 필터 진행 x 하도록 수정
 
+        if (request.getRequestURI().equals(NO_CHECK_URL)) {
+            filterChain.doFilter(request, response); // "/auth" 요청이 들어오면, 다음 필터 호출
+            return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
+        } // -> 로그인 요청 시 필터 진행 x
 
-        // 해당 토큰이 refreshToken인지 확인
-        // (refreshToken이 null이면 accessToken 유효성 검사, null이 아니면 refreshToken 유효성 검사)
-        // filter해서 null이 아니라면 refreshToken이고 유효한 것
-        // -> 클라이언트가 AccessToken 만료되어 RefreshToken을 보낸 것
-//        String refreshToken = jwtTokenProvider.getRefreshTokenFromHeader(request)
-//                .filter(jwtTokenProvider::isTokenValid)
-//                .orElse(null);
+        // 1
+        String token = jwtProvider.extractTokenFromHeader(request).toString();
 
-
-        // 헤더에서 토큰 추출
-        String token = jwtTokenProvider.extractTokenFromHeader(request)
-                .filter(jwtTokenProvider::isTokenValid)
-                .orElse(null);
-
-        // 토큰 타입 받기 (accessToken인지 refreshToken인지)
-        if(token != null) {
-            jwtTokenType = jwtTokenProvider.getTokenTypeFromHeader(token);
-        }
-
-        // JwtTokenType이 accessToken이면
-        if(jwtTokenType == JwtTokenType.ACCESS_TOKEN) {
-            checkAccessTokenAndAuthentication(request, response, filterChain);
-        }
-        else if (jwtTokenType == JwtTokenType.REFRESH_TOKEN) { // JwtTokenType이 refreshToken이면
-
-
-
-
-        } else {
-            // 두가지 타입이 모두 아닌경우 예외처리
-
-        }
-
-
-
-        /**
-         * 1. AccessToken 유효 -> 인증 성공 처리
-         * 2. AccessToken 유효하지 않은 경우
-         *  2.1 받은 토큰 타입이 refreshToken인지 확인
-         *   -> refreshToken이라면
-         * 	1. 유효성 검증 후 유효하다면 AccessToken, RefreshToken 재발급
-         * 	2. 유효하지 않다면 로그인 실패, error
-         * */
-
-
-
-
-
-
-
-
-//        if(refreshToken != null) {
-//            checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
-//            return;
-//        }
-//
-//        if(refreshToken == null) {
-//            checkAccessTokenAndAuthentication(request,response, filterChain);
-//        }
-    }
-
-    // RefreshToken으로 유저 정보 찾기, Access/Refresh Token 재발급
-//    private JwtResponseDto checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-//        userRepository.findByRefreshToken(refreshToken)
-//                .ifPresent(user -> {
-//                    String reIssuedAccessToken = jwtTokenProvider.createAccessToken(user.getUsername());
-//                    String reIssuedRefreshToken = reIssueRefreshToken(user);
-//
-//                    //todo. 헤더에 담아서 토큰 보내는 방식 아니고 ResponseData로 보내는 형식으로 수정
-////                    JwtResponseDto jwtResponseDto = new JwtResponseDto(reIssuedAccessToken, reIssuedRefreshToken);
-//                    return new JwtResponseDto(reIssuedAccessToken, reIssuedRefreshToken);
-//                });
-//        return null;
-//    };
-//
-//    // 리프레시 토큰 재발급, db에 업데이트
-//    //todo. Redis로 수정
-//    private String reIssueRefreshToken(User user) {
-//        String reIssuedRefreshToken = jwtTokenProvider.createRefreshToken(user.getUsername());
-//        user.updateRefreshToken(reIssuedRefreshToken);
-//        userRepository.saveAndFlush(user);
-//        return reIssuedRefreshToken;
-//    }
-
-    // 액세스 토큰 유효성 검사, 인증 처리
-    private void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                                   FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = jwtTokenProvider.extractTokenFromHeader(request).toString();
-
-        if(jwtTokenProvider.isTokenValid(accessToken)) {// 토큰 유효하면 토큰으로부터 유저 정보 가져옴
-            String userId = jwtTokenProvider.getUserId(accessToken).toString();
-            User user = userRepository.findByUserId(Integer.valueOf(userId))
-                    .orElseThrow(IllegalAccessError::new);
-
-            // SecurityContext에 인증 객체 등록
-            Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            //  2 3 4
+            if (StringUtils.hasText(token) && jwtProvider.isTokenValid(token)) {
+                //유효한 토큰이면 해당 토큰으로 Authentication 가져와서 SecurityContext에 저장
+                Authentication authentication = jwtProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            request.setAttribute("exeption", e.getMessage());
         }
         filterChain.doFilter(request, response);
-    }
 
+
+    }
 }
+
+//          todo. UserService로 이동?
+//        // RefreshToken으로 유저 정보 찾기, Access/Refresh Token 재발급
+//        private JwtResponseDto checkRefreshTokenAndReIssueAccessToken (HttpServletResponse response, String refreshToken)
+//        {
+//            // RefreshToken의 Claim에서 userId 추출
+//            String userId = jwtProvider.getUserId(refreshToken).toString();
+//
+//            // DB에 해당 userId가 있다면 토큰 재발급
+//            userRepository.findByUserId(Integer.valueOf(userId))
+//                    .ifPresent(user -> {
+//                        return jwtProvider.getTokens(userId);
+//                    });
+//
+//            // DB에 해당 userId가 없다면
+//            log.info("유효하지 않은 RefreshToken입니다.");
+//            return null;
+//        }
+//        ;
+//
+//        // 리프레시 토큰 재발급, db에 업데이트
+//        //todo. Redis로 수정
+//        private String reIssueRefreshToken (User user){
+//            String reIssuedRefreshToken = jwtProvider.createRefreshToken(user.getUsername());
+//            user.updateRefreshToken(reIssuedRefreshToken);
+//            userRepository.saveAndFlush(user);
+//            return reIssuedRefreshToken;
+//        }
