@@ -18,11 +18,16 @@ const MusicPlayer = ({playInfo}:Props ) => {
     const [muted, setMuted] = useState<boolean>(true);
     const player = useRef<ReactPlayer | null>(null);
 
+    // onProgress 속성 테스트 -> 재생후 1초 단위로 현재 재생중인 시간대 리턴
+    // 개선 방향 -> 어차피 끝나는 endTIme을 주니까 그걸 기준으로 재생하고 그다음 진헹 (await 쓰자)
+    const [test, setTest] = useState<number>(0);
+
     const handleReady = () => {
         setMuted(false);
     }
 
     const handleProgress = (e: OnProgressProps) => {
+        // 속성: onProgress={(event) => {handleProgress(event)}}
         // 현재 재생중인 위치(비율/시간), 현재 로드된 위치(비율/시간)
         // loaded 는 브라우저에 로드된 부분 (유튜브 흰색게이지)
         /* console.log("played", e.played); 
@@ -31,7 +36,9 @@ const MusicPlayer = ({playInfo}:Props ) => {
          * console.log("loadedSeconds", e.loadedSeconds);
          */
 
-        if(timeData[idx+1] < e.playedSeconds){
+        //onChange로 테스트 진행하기
+        setTest(e.playedSeconds);
+        if(timeData[idx+1] < e.playedSeconds+0.5){
             setPlaying(false);
         }
     }
@@ -52,8 +59,8 @@ const MusicPlayer = ({playInfo}:Props ) => {
                 controls = {true} // 기본 control를 띄울 것인지 - 나중에 지울것
                 loop = {true} // 노래 재생이 끝나면 loop를 돌리는지
                 onReady={handleReady} // 재생 준비가 완료되면 호출될 함수? 재생 준비 기준이 뭔지
-                onProgress={(event) => {handleProgress(event)}}
-            />         
+            />        
+            <div >{test}</div> 
         </div>
     )
 }

@@ -1,39 +1,27 @@
 import { useEffect, useRef, useState } from "react";
-import { singleData } from "./example.tsx"
-import { PlayInfo } from "../../pages/SinglePage.tsx";
+import { PlayInfo, SingleData, Lyric, Word} from "../../pages/SinglePage.tsx";
 
 interface Props {
     onSetInfo(currIdx: number, start: number, end: number): void,
     playInfo: PlayInfo,
-    answer: string
+    singleData: SingleData,
+    answer: string,
 }
 
 
-interface Lyric {
-    startTime: number;
-    endTime: number;
-    lyric: string[];
-}
-
-interface Blank {
-    singlePlayWordId : number,
-    sentenceIndex : number,
-    wordIndex : number,
-    word : string,
-    isRight : boolean
-}
-
-const Lyrics = ({onSetInfo, playInfo, answer}:Props) => {
+const Lyrics = ({onSetInfo, playInfo, answer, singleData}:Props) => {
     const [lyrics, setLyrics] = useState<Lyric[]>([]);
-    const [blank, setBlank] = useState<Blank[]>([]);
+    const [blank, setBlank] = useState<Word[]>([]);
     const scrollRef = useRef<(HTMLDivElement | null)[]>([]);
     const {idx, startTime, endTime, toggle} = playInfo;
     
     // aixos 호출로 데이터 받기 ///////////////////
-    const lyricsData:Lyric[] = singleData.data.lyrics;
-    const blankData:Blank[] = singleData.data.words;
+   
+    
 
     useEffect(() => {
+        const lyricsData:Lyric[] = singleData.data.lyrics;
+        const blankData:Word[] = singleData.data.words;
         setLyrics([...lyricsData]);
         setBlank([...blankData]);
     },[])
@@ -79,7 +67,12 @@ const Lyrics = ({onSetInfo, playInfo, answer}:Props) => {
                             })
                             //만약 해당 단어가 빈칸이 필요하다면 -> isBlank 속성 값 결정
                             return (
-                                isBlank ? (<span key={j} data-sntIdx={i} data-wdInx={j} className="bg-secondary-800"> 
+                                isBlank ? 
+                                (<span 
+                                key={j} 
+                                data-sntIdx={i} 
+                                data-wdInx={j} 
+                                className="bg-secondary-800 rounded-3xl text-secondary-800"> 
                                 {word}
                                 </span>) 
                                 : (<span key={j} data-blank={isBlank}> {word} </span>)
