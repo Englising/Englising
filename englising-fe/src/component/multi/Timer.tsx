@@ -1,35 +1,30 @@
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect } from "react";
 import styles from "./Multi.module.css";
+import useTimer from "../../hooks/useTimer";
 
 type TimerProps = {
   roundTime: number;
+  onModalOpen: () => void;
 };
 
 const RADIUS = Math.PI * 2 * 50;
 
-const Timer = forwardRef(function Timer({ roundTime }: TimerProps, ref) {
-  const [time, setTime] = useState(roundTime);
-
+const Timer = forwardRef(function Timer({ roundTime, onModalOpen }: TimerProps, ref) {
   function calculateTime(time: number) {
     const min = Math.floor(time / 60);
     const sec = Math.floor(time - 60 * min);
 
     return min + " : " + String(sec).padStart(2, "0");
   }
+  const [isOpen, time] = useTimer(roundTime, false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTime((prev) => {
-        return prev - 0.5;
-      });
-    }, 1000);
-
-    setTimeout(() => {
-      clearInterval(interval);
+    if (isOpen) {
       ref.current?.showModal();
+      onModalOpen();
       console.log("모달 오픈");
-    }, roundTime * 1000);
-  }, []);
+    }
+  }, [isOpen]);
 
   return (
     <div className="relatvie w-20 h-20 mt-4 flex justify-center items-center border-4 border-white rounded-full">
@@ -48,8 +43,8 @@ const Timer = forwardRef(function Timer({ roundTime }: TimerProps, ref) {
           transform="rotate(-90) translate(-100 0)"
         />
       </svg>
-      <p className={`absolute text-xl font-bold text-secondary-500 drop-shadow-md z-10`}>{calculateTime(time)}</p>
-      <p className={`absolute text-xl font-bold text-secondary-500 drop-shadow-md ${styles["text-shadow"]}`}>
+      <p className={`absolute text-2xl font-bold text-secondary-500 drop-shadow-md z-10`}>{calculateTime(time)}</p>
+      <p className={`absolute text-2xl font-bold text-secondary-500 drop-shadow-md ${styles["text-shadow"]}`}>
         {calculateTime(time)}
       </p>
     </div>

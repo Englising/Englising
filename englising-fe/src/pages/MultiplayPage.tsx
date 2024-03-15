@@ -10,6 +10,7 @@ import Success from "../component/multi/modalContent/Success";
 import Fail from "../component/multi/modalContent/Fail";
 import Input from "../component/multi/Input";
 import { sentence } from "../assets/data/sample.js";
+import HintRoulette from "../component/multi/modalContent/HintRoulette.js";
 
 export interface User {
   userId: number;
@@ -22,11 +23,11 @@ interface Sentence {
   word: string;
 }
 
-const TIME = 3;
+const TIME = 5;
 
 function MultiplayPage() {
   const dialog = useRef<HTMLDialogElement>(null);
-  const [time, setTime] = useState<number>(TIME);
+  const [modalOpen, setModalOpen] = useState(false);
   const [quiz, setQuiz] = useState<Sentence[][][]>();
   const [userList, setUserList] = useState([
     {
@@ -42,29 +43,21 @@ function MultiplayPage() {
     },
   ]);
 
+  const handleModalOpen = () => {
+    setModalOpen(!modalOpen);
+  };
+
   useEffect(() => {
     setQuiz(sentence);
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTime((prev) => prev - 1);
-    }, 1000);
-
-    const timer = setTimeout(
-      () => {
-        clearInterval(interval);
-        dialog.current?.close();
-        console.log("모달 클로즈");
-      },
-      time * 1000 + 1000
-    );
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timer);
-    };
-  }, [time]);
+    if (modalOpen) {
+      dialog.current?.showModal();
+    } else {
+      dialog.current?.close();
+    }
+  }, [modalOpen]);
 
   return (
     <>
@@ -76,7 +69,7 @@ function MultiplayPage() {
               return <UserProfile key={user.userId} user={user} classes={"w-10 h-10"} />;
             })}
           </div>
-          <Timer ref={dialog} roundTime={1} />
+          <Timer ref={dialog} roundTime={TIME} onModalOpen={handleModalOpen} />
         </section>
         <section className="grow grid grid-rows-[1fr_7fr_2fr] gap-4">
           <p className="text-xl font-bold text-secondary-400 text-center">아보카도 좋아하는 모임</p>
@@ -116,11 +109,14 @@ function MultiplayPage() {
           <MemoArea />
         </section>
       </div>
-      {/* <Modal ref={dialog}>
-        <Timeout time={TIME} /> */}
-      {/* <Success /> */}
-      {/* <Fail /> */}
-      {/* </Modal> */}
+      {modalOpen && (
+        <Modal ref={dialog}>
+          {/* <Timeout time={3}  /> */}
+          {/* <Success /> */}
+          {/* <Fail /> */}
+          <HintRoulette />
+        </Modal>
+      )}
     </>
   );
 }
