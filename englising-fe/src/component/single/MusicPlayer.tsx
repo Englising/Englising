@@ -11,9 +11,8 @@ interface Props {
 //임시 데이터: 음원의 id를 보내주면, 문장마다 시작하는 시간 리스트를 받아오는 코드로 대체
 const timeData = [7.5, 12.0, 15.9, 20.0, 24.3, 28.3, 32.4, 36.4, 41.4, 49.7, 56.4, 60.6, 65.0, 68.8, 90.3, 98.4];
 const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
-    const {idx, startTime, endTime, toggle} = playInfo
-
-
+    const {idx, isBlank, startTime, endTime, toggle} = playInfo
+    // 유튜브 아이디를 주는 axios
     const [url, setUrl] = useState<string>("https://www.youtube.com/watch?v=EVJjmMW7eII");
     const [playing, setPlaying] = useState<boolean>(true);
     const [muted, setMuted] = useState<boolean>(true);
@@ -24,24 +23,8 @@ const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
     const [test, setTest] = useState<number>(0);
 
     const handleReady = () => {
+        onSetInfoIdx(0);
         setMuted(false);
-    }
-
-    const handleProgress = (e: OnProgressProps) => {
-        // 속성: onProgress={(event) => {handleProgress(event)}}
-        // 현재 재생중인 위치(비율/시간), 현재 로드된 위치(비율/시간)
-        // loaded 는 브라우저에 로드된 부분 (유튜브 흰색게이지)
-        /* console.log("played", e.played); 
-         * console.log("loaded", e.loaded); 
-         * console.log("playedSeconds", e.playedSeconds);
-         * console.log("loadedSeconds", e.loadedSeconds);
-         */
-
-        //onChange로 테스트 진행하기
-        setTest(e.playedSeconds);
-        if(timeData[idx+1] < e.playedSeconds+0.5){
-            setPlaying(false);
-        }
     }
 
     // 특정 구간 가사를 누를 때 발생하는 이벤트
