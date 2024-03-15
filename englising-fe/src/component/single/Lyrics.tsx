@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { PlayInfo, SingleData, Lyric, Word} from "../../pages/SinglePage.tsx";
 
 interface Props {
-    onSetInfo(currIdx: number, start: number, end: number): void,
+    onSetInfo(currIdx: number,  blank: boolean, start: number, end: number): void,
     playInfo: PlayInfo,
     singleData: SingleData,
     answer: string,
@@ -31,10 +31,10 @@ const Lyrics = ({onSetInfo, playInfo, answer, singleData}:Props) => {
     // FootVar에서 답안이 입력되었을 때
     useEffect(() => {
         if(answer === "") return;
-        handleLyricsClick(idx+1, lyrics[idx+1].startTime, lyrics[idx+1].endTime)
+        handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime)
     },[answer])
     
-    const handleLyricsClick = (currIdx: number, start: number, end: number) => {
+    const handleLyricsClick = (currIdx: number, blank: boolean, start: number, end: number) => {
         /*
         선택된 Element
         console.log(scrollRef.current[index]);
@@ -42,7 +42,7 @@ const Lyrics = ({onSetInfo, playInfo, answer, singleData}:Props) => {
         scrollRef.current[currIdx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         // single page -> player (가사의 시작시간, 종료시간)
-        onSetInfo(currIdx, start, end);
+        onSetInfo(currIdx, blank, start, end);
     }
     
     const testClick = () => {
@@ -58,7 +58,7 @@ const Lyrics = ({onSetInfo, playInfo, answer, singleData}:Props) => {
                     className="h-10" 
                     ref={(el) => scrollRef.current[i] = el} 
                     onClick={() => 
-                    handleLyricsClick(i, lyric.startTime, lyric.endTime)}>
+                    handleLyricsClick(i, lyric.isBlank, lyric.startTime, lyric.endTime)}>
                         {lyric.lyric.map((word, j) => {
                             let isBlank:boolean = false;
 

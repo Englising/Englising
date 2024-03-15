@@ -4,12 +4,13 @@ import { PlayInfo } from "../../pages/SinglePage.tsx";
 import { OnProgressProps } from "react-player/base";
 
 interface Props {
+    onSetInfoIdx(currIdx: number):void,
     playInfo: PlayInfo
 }
 
 //임시 데이터: 음원의 id를 보내주면, 문장마다 시작하는 시간 리스트를 받아오는 코드로 대체
 const timeData = [7.5, 12.0, 15.9, 20.0, 24.3, 28.3, 32.4, 36.4, 41.4, 49.7, 56.4, 60.6, 65.0, 68.8, 90.3, 98.4];
-const MusicPlayer = ({playInfo}:Props ) => {
+const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
     const {idx, startTime, endTime, toggle} = playInfo
 
 

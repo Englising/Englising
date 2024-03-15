@@ -7,12 +7,14 @@ import { singleData } from "../component/single/example"
 
 export interface PlayInfo {
     idx: number,
+    isBlank: boolean,
     startTime: number,
     endTime: number,
     toggle: number
 }
 
 export interface Lyric {
+    isBlank: boolean,
     startTime: number;
     endTime: number;
     lyric: string[];
@@ -38,10 +40,10 @@ export interface SingleData {
     };
 }
 
-
 const SinglePage = () => {
     const [playInfo, setPlayInfo] = useState<PlayInfo>({
         idx: 0,
+        isBlank: false,
         startTime: 0,
         endTime: 0,
         toggle: 0
@@ -53,19 +55,31 @@ const SinglePage = () => {
         setAnswer(answer);
     }
 
-    const onSetInfo = (currIdx: number, start: number, end: number): void => {
+    const onSetInfo = (currIdx: number, blank: boolean, start: number, end: number): void => {
         setPlayInfo({
             idx: currIdx,
+            isBlank: blank,
             startTime: start,
             endTime: end,
             toggle: (playInfo.toggle+1)%2
         })
     }
 
+    const onSetInfoIdx = (currIdx: number): void => {
+        const lyric = singleData.data.lyrics[currIdx];
+        setPlayInfo({
+            idx: currIdx,
+            isBlank: lyric.isBlank,
+            startTime: lyric.startTime,
+            endTime: lyric.endTime,
+            toggle: playInfo.toggle
+        })
+    }
+
     return (
         <div>            
             <div className="flex">
-                <MusicPlayer playInfo = {playInfo} />
+                <MusicPlayer onSetInfoIdx = {onSetInfoIdx} playInfo = {playInfo} />
                 <Lyrics onSetInfo = {onSetInfo} playInfo = {playInfo} answer = {answer} singleData={singleData}/>
             </div>
             <div>
