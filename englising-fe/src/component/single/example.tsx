@@ -45,7 +45,7 @@ export const singleData = {
                     isBlank: false,
                     startTime: 32.4,
                     endTime: 36.4,
-                    lyric: ["그래,", "미안해라는", "한", "마디로"]
+                    lyric: ["그래", "미안해라는", "한", "마디로"]
                 },
                 {
                     isBlank: false,
@@ -57,13 +57,13 @@ export const singleData = {
                     isBlank: true,
                     startTime: 41.4,
                     endTime: 49.7,
-                    lyric: ["달디달고,", "달디달고,", "달디단,", "밤양갱,", "밤양갱"]
+                    lyric: ["달디달고", "달디달고", "달디단", "밤양갱", "밤양갱"]
                 },
                 {
                     isBlank: false,
                     startTime: 49.7,
                     endTime: 56.4,
-                    lyric: ["내가", "먹고", "싶었던", "건,", "달디단,", "밤양갱,", "밤양갱이야"]
+                    lyric: ["내가", "먹고", "싶었던", "건", "달디단", "밤양갱", "밤양갱이야"]
                 },
                 {
                     isBlank: false,
@@ -81,19 +81,19 @@ export const singleData = {
                     isBlank: false,
                     startTime: 65.0,
                     endTime: 68.8,
-                    lyric: ["아냐,", "내가", "늘", "바란", "건", "하나야"]
+                    lyric: ["아냐", "내가", "늘", "바란", "건", "하나야"]
                 },
                 {
                     isBlank: false,
                     startTime: 68.8,
                     endTime: 90.3,
-                    lyric: ["한", "개뿐이야,", "달디단,", "밤양갱"]
+                    lyric: ["한", "개뿐이야", "달디단", "밤양갱"]
                 },
                 {
                     isBlank: false,
                     startTime: 90.3,
                     endTime: 98.4,
-                    lyric: ["달디달고,", "달디달고,", "달디단,", "밤양갱,", "밤양갱"]
+                    lyric: ["달디달고", "달디달고", "달디단", "밤양갱", "밤양갱"]
                 },
                 {
                     isBlank: false,

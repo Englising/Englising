@@ -10,72 +10,80 @@ interface Props {
 
 
 const Lyrics = ({onSetInfo, playInfo, answer, singleData}:Props) => {
-    const [lyrics, setLyrics] = useState<Lyric[]>([]);
-    const [blank, setBlank] = useState<Word[]>([]);
-    const scrollRef = useRef<(HTMLDivElement | null)[]>([]);
     const {idx, startTime, endTime, toggle} = playInfo;
-    
-    // aixos 호출로 데이터 받기 ///////////////////
-   
-    
+    const [lyrics, setLyrics] = useState<Lyric[]>([]);
+    const [blankWord, setBlankWord] = useState<Word[]>([]);
+    const lyricsRef = useRef<(HTMLDivElement | null)[]>([]);
+    const blanksRef = useRef<(HTMLSpanElement | null)[]>([]);
 
+    // aixos 호출로 데이터 받기 ///////////////////
     useEffect(() => {
         const lyricsData:Lyric[] = singleData.data.lyrics;
         const blankData:Word[] = singleData.data.words;
         setLyrics([...lyricsData]);
-        setBlank([...blankData]);
+        setBlankWord([...blankData]);
     },[])
-
     /////////////////////////////////////////////
 
     // FootVar에서 답안이 입력되었을 때
     useEffect(() => {
         if(answer === "") return;
+        // 현재 답이랑 입력된 답이랑 비교한뒤에 같을경우1 스타일변경 다를경우 스타일2 건너뛰기는 다른버튼으로
+        // 그리고 빈칸이 없는 곳은 입력버튼 비활성화
+
+
         handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime)
     },[answer])
+
+    useEffect(() => {
+        lyricsRef.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, [idx])
     
     const handleLyricsClick = (currIdx: number, blank: boolean, start: number, end: number) => {
         /*
         선택된 Element
-        console.log(scrollRef.current[index]);
+        console.log(lyricsRef.current[index]);
         */
-        scrollRef.current[currIdx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        lyricsRef.current[currIdx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         // single page -> player (가사의 시작시간, 종료시간)
         onSetInfo(currIdx, blank, start, end);
     }
     
-    const testClick = () => {
-        lyrics[0].lyric[0]
-        
-    }
+
     return(
         <div className="h-96 overflow-x-auto">
             {lyrics.map((lyric, i) => {
                 return(
                     <div 
                     key={i} 
-                    className="h-10" 
-                    ref={(el) => scrollRef.current[i] = el} 
+                    className={idx == i ? "h-10 text-xl bg-primary-800 text-white" : "h-10"} 
+                    ref={(el) => lyricsRef.current[i] = el} 
                     onClick={() => 
                     handleLyricsClick(i, lyric.isBlank, lyric.startTime, lyric.endTime)}>
                         {lyric.lyric.map((word, j) => {
                             let isBlank:boolean = false;
+                            let blankIdx:number = 0;
 
-                            blank.forEach((curr) => {
-                                if(word == curr.word) isBlank = true;
+                            blankWord.forEach((blank) => {
+                                if(word == blank.word && i == blank.sentenceIndex && j == blank.wordIndex){
+                                    isBlank = true;
+                                    blankIdx = blank.singlePlayWordId; //이거 고유 인덱스인지 확인
+                                }
                             })
                             //만약 해당 단어가 빈칸이 필요하다면 -> isBlank 속성 값 결정
                             return (
                                 isBlank ? 
                                 (<span 
                                 key={j} 
+                                className="bg-secondary-800 rounded-3xl text-secondary-800"
+                                ref={(el) => blanksRef.current[blankIdx] = el}
                                 data-sntIdx={i} 
-                                data-wdInx={j} 
-                                className="bg-secondary-800 rounded-3xl text-secondary-800"> 
+                                data-wdInx={j}
+                                data-isRight={false}>
                                 {word}
                                 </span>) 
-                                : (<span key={j} data-blank={isBlank}> {word} </span>)
+                                : (<span key={j}> {word} </span>)
                             );
                         })}
                     </div>

@@ -27,6 +27,24 @@ const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
         setMuted(false);
     }
 
+    const handlePlay = () => {
+        const start = performance.now();
+        const diff = endTime - startTime;
+        
+        //실행되면 내가 빈칸이 있는지 확인고
+        //
+        //그리고 재생이 끝날 때 실행시키기
+    }
+    
+    const handleProgress = (e: OnProgressProps) => {
+        if(timeData[idx+1] < e.playedSeconds){
+            if(!isBlank){
+                onSetInfoIdx(idx+1);
+            }else {
+                setPlaying(false);
+            }
+        }
+    }
     // 특정 구간 가사를 누를 때 발생하는 이벤트
     useEffect(() => {
         setPlaying(true);
@@ -42,7 +60,10 @@ const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
                 muted = {muted}
                 controls = {true} // 기본 control를 띄울 것인지 - 나중에 지울것
                 loop = {true} // 노래 재생이 끝나면 loop를 돌리는지
+                progressInterval = {100} // onProgress의 텀을 설정한다.
+                onPlay={handlePlay} // 재생이 됐을때 호출되는 이벤트
                 onReady={handleReady} // 재생 준비가 완료되면 호출될 함수? 재생 준비 기준이 뭔지
+                onProgress={(e) => {handleProgress(e)}}
             />        
             <div >{test}</div> 
         </div>
