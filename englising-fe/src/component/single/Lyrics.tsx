@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { PlayInfo, SingleData, Lyric, Word} from "../../pages/SinglePage.tsx";
+import { PlayInfo, SingleData, Lyric, Word, AnswerInfo} from "../../pages/SinglePage.tsx";
 
 interface Props {
     onSetInfo(currIdx: number,  blank: boolean, start: number, end: number): void,
     playInfo: PlayInfo,
     singleData: SingleData,
-    answer: string,
+    answerInfo: AnswerInfo,
 }
 
-
-const Lyrics = ({onSetInfo, playInfo, answer, singleData}:Props) => {
-    const {idx, startTime, endTime, toggle} = playInfo;
+const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
+    const {idx, startTime, endTime, toggleNext} = playInfo;
+    const {answer, toggleSubmit} = answerInfo;
     const [lyrics, setLyrics] = useState<Lyric[]>([]);
     const [blankWord, setBlankWord] = useState<Word[]>([]);
     const lyricsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -27,13 +27,26 @@ const Lyrics = ({onSetInfo, playInfo, answer, singleData}:Props) => {
 
     // FootVar에서 답안이 입력되었을 때
     useEffect(() => {
-        if(answer === "") return;
+        if(answer === "") return; // 토글로 바꿔라..
         // 현재 답이랑 입력된 답이랑 비교한뒤에 같을경우1 스타일변경 다를경우 스타일2 건너뛰기는 다른버튼으로
         // 그리고 빈칸이 없는 곳은 입력버튼 비활성화
+        const targetBlank = blanksRef.current[idx] ?? null;
+        const solution = blanksRef.current[idx]?.textContent;
+        const isSolve = targetBlank?.dataset.isSolve;
 
-
+        if(answer == solution){
+            if(targetBlank){
+                targetBlank.dataset.isSolve = "true";
+                targetBlank.className="text-green-800"
+            }
+        }else {
+            if(targetBlank){
+                targetBlank.dataset.isSolve = "true";
+                targetBlank.className="text-red-800"
+            }
+        }
         handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime)
-    },[answer])
+    },[toggleSubmit])
 
     useEffect(() => {
         lyricsRef.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -77,10 +90,8 @@ const Lyrics = ({onSetInfo, playInfo, answer, singleData}:Props) => {
                                 (<span 
                                 key={j} 
                                 className="bg-secondary-800 rounded-3xl text-secondary-800"
-                                ref={(el) => blanksRef.current[blankIdx] = el}
-                                data-sntIdx={i} 
-                                data-wdInx={j}
-                                data-isRight={false}>
+                                ref={(el) => blanksRef.current[i] = el}
+                                data-isSolve={false}>
                                 {word}
                                 </span>) 
                                 : (<span key={j}> {word} </span>)

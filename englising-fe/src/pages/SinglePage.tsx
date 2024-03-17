@@ -10,7 +10,12 @@ export interface PlayInfo {
     isBlank: boolean,
     startTime: number,
     endTime: number,
-    toggle: number
+    toggleNext: number
+}
+
+export interface AnswerInfo {
+    answer: string,
+    toggleSubmit: number
 }
 
 export interface Lyric {
@@ -46,14 +51,13 @@ const SinglePage = () => {
         isBlank: false,
         startTime: 0,
         endTime: 0,
-        toggle: 0
+        toggleNext: 0
     });
 
-    const [answer, setAnswer] = useState<string>("");
-
-    const onSetAnswer = (answer: string): void => {
-        setAnswer(answer);
-    }
+    const [answerInfo, setAnswerInfo] = useState<AnswerInfo>({
+        answer: "",
+        toggleSubmit: 0
+    });
 
     const onSetInfo = (currIdx: number, blank: boolean, start: number, end: number): void => {
         setPlayInfo({
@@ -61,7 +65,7 @@ const SinglePage = () => {
             isBlank: blank,
             startTime: start,
             endTime: end,
-            toggle: (playInfo.toggle+1)%2
+            toggleNext: (playInfo.toggleNext+1)%2 // 일시정지 -> 재생
         })
     }
 
@@ -72,15 +76,22 @@ const SinglePage = () => {
             isBlank: lyric.isBlank,
             startTime: lyric.startTime,
             endTime: lyric.endTime,
-            toggle: playInfo.toggle
+            toggleNext: playInfo.toggleNext // 계속 재생상태
         })
+    }
+
+    const onSetAnswer = (answer: string): void => {
+        setAnswerInfo({
+            answer: answer,
+            toggleSubmit: (answerInfo.toggleSubmit+1)%2
+        });
     }
 
     return (
         <div>            
             <div className="flex">
                 <MusicPlayer onSetInfoIdx = {onSetInfoIdx} playInfo = {playInfo} />
-                <Lyrics onSetInfo = {onSetInfo} playInfo = {playInfo} answer = {answer} singleData={singleData}/>
+                <Lyrics onSetInfo = {onSetInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
             </div>
             <div>
                 <FooterVar onSetAnswer = {onSetAnswer}/>
