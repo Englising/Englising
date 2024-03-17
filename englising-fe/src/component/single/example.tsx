@@ -104,31 +104,38 @@ export const singleData = {
             ],
             words : [
                 {
-                    singlePlayWordId: 1,
+                    singlePlayWordId: 0,
                     sentenceIndex: 1,
                     wordIndex: 1,
                     word: "바라는",
                     isRight: false
                 },
                 {
-                    singlePlayWordId: 2,
+                    singlePlayWordId: 1,
                     sentenceIndex: 3,
                     wordIndex: 2,
                     word: "나버린다니까",
                     isRight: false
                 },
                 {
-                    singlePlayWordId: 3,
+                    singlePlayWordId: 2,
                     sentenceIndex: 5,
                     wordIndex: 0,
                     word: "하려던",
                     isRight: false
                 },
                 {
-                    singlePlayWordId: 4,
+                    singlePlayWordId: 3,
                     sentenceIndex: 8,
                     wordIndex: 1,
                     word: "달디달고",
+                    isRight: false
+                },
+                {
+                    singlePlayWordId: 4,
+                    sentenceIndex: 8,
+                    wordIndex: 4,
+                    word: "밤양갱",
                     isRight: false
                 },
             ],
