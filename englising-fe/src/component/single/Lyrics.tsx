@@ -27,30 +27,40 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
 
     // FootVar에서 답안이 입력되었을 때
     useEffect(() => {
-        if(answer === "") return; // 토글로 바꿔라..
-        // 현재 답이랑 입력된 답이랑 비교한뒤에 같을경우1 스타일변경 다를경우 스타일2 건너뛰기는 다른버튼으로
-        // 그리고 빈칸이 없는 곳은 입력버튼 비활성화
-        let blankNum = 0;
+        if(answer === "") return; 
+        
+        // 같은 문장내에 빈칸의 개수 // 
+        // 오답이랑 빈칸 나눠서 해야할 듯
+        let blankNum = 0; 
+        let incorrectNum = 0;
         blanksRef.current.forEach(el => {
             const sentenceIdx = el?.dataset.sentence;
             const isSolve = el?.dataset.solve;
-            if (sentenceIdx == `${idx}` && isSolve === '0') {
-                blankNum++;
+            if (sentenceIdx == `${idx}`) {
+                if (isSolve === '0') blankNum++;
+                if (isSolve === '1') incorrectNum++;
             }
         });
 
+        // 빈칸의 dom을 가져오기
         let targetBlank = blanksRef.current.find(el => {
             const sentenceIdx = el?.dataset.sentence;
             const isSolve = el?.dataset.solve;
             console.log("isSolve,", isSolve);
-            return sentenceIdx == `${idx}` && (isSolve == `0` || isSolve == '1');
+            return sentenceIdx == `${idx}` && isSolve == `0`; 
         }) ?? null;
 
-        
-        
+        // 빈칸을 먼저 찾고 없으면 그때 1 오답인거 가져오기
+        if(targetBlank == null) {
+            targetBlank = blanksRef.current.find(el => {
+                const sentenceIdx = el?.dataset.sentence;
+                const isSolve = el?.dataset.solve;
+                console.log("isSolve,", isSolve);
+                return sentenceIdx == `${idx}` && isSolve == '1'; 
+            }) ?? null;
+        }
 
-        // 만약 다음게 존재하면 다시 재생? 아님 그냥 멈추기 이런식으로
-        // 구간 다시재생
+        // 빈칸에 들어갈 정답 가져오기
         const solution = targetBlank?.textContent;
 
         if(answer == solution){
@@ -58,7 +68,9 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
                 targetBlank.dataset.solve = "2";
                 targetBlank.className="text-green-800"
             }
-            if(blankNum == 1){
+
+            // 문장에 정답을 모두 맞췄을때, SinglePage Data 자체를 바꿔줌 (여긴 더이상 빈칸이 없어!)
+            if(blankNum == 1 && incorrectNum == 0){
                 lyrics[idx].isBlank = !lyrics[idx].isBlank;
             }
         }else {
@@ -67,8 +79,8 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
                 targetBlank.className="text-red-800"
             }
         }
-        
-        if(blankNum <= 1){ // blankNum이 0 일때는 스무스하게 넘어가도록 -> 이거 그냥 그 index셋 주면됨
+        // 연구해보자
+        if(blankNum <= 1 && incorrectNum == 0){ 
             handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime);
         }
        

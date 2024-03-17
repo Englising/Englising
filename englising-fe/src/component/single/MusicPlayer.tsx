@@ -24,12 +24,9 @@ const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
 
     const handleProgress = (e: OnProgressProps) => {
         if(timeData[idx+1] < e.playedSeconds-0.1){
-            // 해당 문제가 해결됐는지 속성을 가져오면 좋을 것 같다.
             if(!isBlank){
                 onSetInfoIdx(idx+1);
             }else {
-
-                // idx를 넘겨줬을때, 해당 문제가 해결됐는지 리턴해주는 함수.
                 setPlaying(false);
             }
         }
