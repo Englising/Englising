@@ -27,7 +27,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
     }
 
     const handleProgress = (e: OnProgressProps) => {
-        if(endTime < e.playedSeconds-0.1){
+        if(timeData[idx+1] < e.playedSeconds-0.1){
             if(!isBlank){
                 onSetInfoIdx(idx+1);
             }else {
