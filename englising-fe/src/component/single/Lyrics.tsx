@@ -9,7 +9,7 @@ interface Props {
 }
 
 const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
-    const {idx, startTime, endTime, toggleNext} = playInfo;
+    const {idx} = playInfo;
     const {answer, toggleSubmit} = answerInfo;
     const [lyrics, setLyrics] = useState<Lyric[]>([]);
     const [blankWord, setBlankWord] = useState<Word[]>([]);
@@ -58,6 +58,9 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
                 targetBlank.dataset.solve = "2";
                 targetBlank.className="text-green-800"
             }
+            if(blankNum == 1){
+                lyrics[idx].isBlank = !lyrics[idx].isBlank;
+            }
         }else {
             if(targetBlank){
                 targetBlank.dataset.solve = "1";
@@ -65,7 +68,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
             }
         }
         
-        if(blankNum < 1){ // blankNum이 0 일때는 스무스하게 넘어가도록 -> 이거 그냥 그 index셋 주면됨
+        if(blankNum <= 1){ // blankNum이 0 일때는 스무스하게 넘어가도록 -> 이거 그냥 그 index셋 주면됨
             handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime);
         }
        
