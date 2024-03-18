@@ -16,13 +16,22 @@ const FooterVar = ({onSetAnswer}:Props) => {
         setAnswer("");
     }
 
+    const handlePressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if(e.key == 'Enter'){
+            onSetAnswer(answer);
+            setAnswer("");  
+        }
+    }
+
     return (
         <div>
             <input 
             className="border border-black"
             placeholder="답안"
             value={answer}
-            onChange={(event) => {handleAnswerChange(event)}}>
+            onChange={(event) => {handleAnswerChange(event)}}
+            onKeyDown={(event) => {handlePressEnter(event)}}
+            >
             </input>
             <div 
             className="border border-black rounded-md my-4  w-20 text-center bg-primary-950 text-secondary-300 text-xl cursor-pointer"
