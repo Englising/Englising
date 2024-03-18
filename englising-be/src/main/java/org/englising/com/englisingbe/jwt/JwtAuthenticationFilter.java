@@ -10,6 +10,7 @@ import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,12 +21,14 @@ import java.io.IOException;
 // UserPasswordAuthenticationFilter로 전달
 @RequiredArgsConstructor
 @Slf4j
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String NO_CHECK_URL = "/auth";
     //todo. 토큰 재발급 url은 빼야 함
 
     private final JwtProvider jwtProvider;
+    private final UserRepository userRepository;
 
     // 토큰 유효한지 확인 후 SecurityContext에 계정정보 저장하는 메소드
     /**
@@ -44,21 +47,48 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } // -> 로그인 요청 시 필터 진행 x
 
         // 1
-        String token = jwtProvider.extractTokenFromHeader(request).toString();
+//        String token = jwtProvider.extractTokenFromHeader(request).toString();
+//
+//        try {
+//            //  2 3 4
+//            if (StringUtils.hasText(token) && jwtProvider.isTokenValid(token)) {
+//                //유효한 토큰이면 해당 토큰으로 Authentication 가져와서 SecurityContext에 저장
+//                Authentication authentication = jwtProvider.getAuthentication(token);
+//                SecurityContextHolder.getContext().setAuthentication(authentication);
+//            }
+//        } catch (Exception e) {
+//            request.setAttribute("exeption", e.getMessage());
+//        }
+//        filterChain.doFilter(request, response);
+
+        // 요청 헤더에서 accessToken 추출 -> null이 아니라면 유효성 체크
+        String accessToken = jwtProvider.extractAccessTokenFromHeader(request).orElse(null);
 
         try {
             //  2 3 4
-            if (StringUtils.hasText(token) && jwtProvider.isTokenValid(token)) {
+            if (accessToken != null && jwtProvider.isTokenValid(accessToken)) {
                 //유효한 토큰이면 해당 토큰으로 Authentication 가져와서 SecurityContext에 저장
-                Authentication authentication = jwtProvider.getAuthentication(token);
+                Authentication authentication = jwtProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                String refreshToken = jwtProvider.extractRefreshTokenFromHeader(request).orElse(null);
+                if (refreshToken != null) { // accessToken 만료되어 refreshToken 보낸것
+                    // refreshToken에서 userId 추출하고 해당 userId 존재하면 accessToken 재발급
+                    Long userId = jwtProvider.getUserId(refreshToken).orElse(null);
+                    if (userRepository.findByUserId(userId).isPresent()) {
+                        JwtResponseDto jwtResponseDto =
+                                jwtProvider.createTokens(jwtProvider.getAuthentication(refreshToken), userId);
+                        jwtProvider.setAccessAndRefreshToken(response, jwtResponseDto.getAccessToken(),
+                                jwtResponseDto.getRefreshToken());
+                        return;// RefreshToken을 보낸 경우에는 AccessToken을 재발급 하고 인증 처리는 하지 않게 하기위해
+                                // 바로 return으로 필터 진행 막기
+                    }
+                }
             }
         } catch (Exception e) {
             request.setAttribute("exeption", e.getMessage());
         }
         filterChain.doFilter(request, response);
-
-
     }
 }
 

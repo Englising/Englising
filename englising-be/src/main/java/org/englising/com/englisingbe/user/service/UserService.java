@@ -5,13 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.englising.com.englisingbe.jwt.JwtProvider;
 import org.englising.com.englisingbe.jwt.JwtResponseDto;
 import org.englising.com.englisingbe.user.dto.CustomUserDetails;
-import org.englising.com.englisingbe.user.dto.KakaoRequestDto;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.repository.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,8 +38,8 @@ public class UserService {
     public JwtResponseDto guest() throws Exception{
          User user = User.builder()
                     .email(makeRandomEmail()) // todo. uuid 사용 ex)오늘 날짜 + uuid + @email.com
-                    .nickname("tempNickname5") //todo. 수정
-                    .profileImg("tempProfileImgUrl5") //todo. 수정
+                    .nickname("tempNickname88") //todo. 수정
+                    .profileImg("tempProfileImgUrl88") //todo. 수정
                     .type("GUEST") // default로 GUEST 되어있으면 빼기
                     .build();
 
@@ -92,19 +90,5 @@ public class UserService {
     public String makeRandomProfileImgUrl() {
         return null;
     }
-
-
-    /** 카카오 로그인 (소셜 로그인)
-     * 1. request로 받은 카카오토큰에서 user의 email 정보 가져오기
-     * 2. findByEmail해서 회원인지 확인
-     * 3. 회원이면 바로 accessToken, refreshToken 발급
-     * 4. 회원이 아니면 회원 등록 (랜덤 닉네임, 이미지 지정) 후 accessToken, refreshTOken 발급
-     * */
-    public JwtResponseDto login(KakaoRequestDto kakaoRequestDto) {
-        return null;
-    };
-
-
-
 
 }

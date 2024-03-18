@@ -42,7 +42,12 @@ public class JwtProvider {
     private Long accessTokenExpiration;
     @Value("${jwt.refresh.expiration}")
     private Long refreshTokenExpiration;
-    private final String header = "Authorization";
+    @Value("{jwt.access.header}")
+    private String accessHeader;
+    @Value("{jwt.refresh.header}")
+    private String refreshHeader;
+
+//    private final String header = "Authorization";
 
     private final UserRepository userRepository;
     private final CustomUserDetailService customUserDetailService;
@@ -50,10 +55,10 @@ public class JwtProvider {
     // secretKey 초기화
     // secretKey는 토큰 생성하거나 토큰 파싱할 때 사용되는 정보로 보안에 유의
     // git에 secretkey 올라가지 않도록 application-dev.yml 파일에 secret값 분리
-    @PostConstruct
-    protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-    }
+//    @PostConstruct
+//    protected void init() {
+//        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+//    }
 
     /**
      * JWT의 헤더에 들어오는 값 : 'Authorization(Key) = Bearer {토큰}'
@@ -65,7 +70,7 @@ public class JwtProvider {
     //jwt 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts.parserBuilder()
-                        .setSigningKey(DatatypeConverter.parseBase64Binary(secretKey))
+                        .setSigningKey(secretKey)
                         .build()
                         .parseClaimsJws(token)
                         .getBody();
@@ -83,7 +88,7 @@ public class JwtProvider {
     public Optional<Long> getUserId(String token) {
         try{
             String userId = Jwts.parserBuilder()
-                    .setSigningKey(DatatypeConverter.parseBase64Binary(secretKey))
+                    .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token)
                     .getBody()
@@ -100,7 +105,7 @@ public class JwtProvider {
         String accessToken = createAccessToken(authentication, userId);
         String refreshToken = createRefreshToken(authentication, userId);
         
-        return new JwtResponseDto(accessToken, refreshToken);
+        return new JwtResponseDto(userId, accessToken, refreshToken);
     }
 
 
@@ -143,7 +148,7 @@ public class JwtProvider {
 
         claims.put("userId", userId);
         claims.put("AUTHORITIES_KEY", authorities);
-        claims.put("token_type", "refresh_token"); // refreshToken 타입 저장
+//        claims.put("token_type", "refresh_token"); // refreshToken 타입 저장
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -151,13 +156,17 @@ public class JwtProvider {
                 .compact();
     }
 
-
-
     /**
      * 헤더에서 순수 Token 추출
      */
-    public Optional<String> extractTokenFromHeader(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(header))
+    public Optional<String> extractAccessTokenFromHeader(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(accessHeader))
+                .filter(token -> token.startsWith("Bearer "))
+                .map(token -> token.replace("Bearer ", ""));
+    }
+
+    public Optional<String> extractRefreshTokenFromHeader(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(refreshHeader))
                 .filter(token -> token.startsWith("Bearer "))
                 .map(token -> token.replace("Bearer ", ""));
     }
@@ -167,7 +176,7 @@ public class JwtProvider {
         try{
             Jws<Claims> claims =
                     Jwts.parserBuilder()
-                            .setSigningKey(DatatypeConverter.parseBase64Binary(secretKey))
+                            .setSigningKey(secretKey)
                             .build()
                             .parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
@@ -184,27 +193,27 @@ public class JwtProvider {
     }
 
     // AccessToken인지 RefreshToken인지 구분하여 반환하는 메서드
-    public JwtType getTokenTypeFromHeader(String token) {
-        if(isTokenValid(token)) {
-            Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(DatatypeConverter.parseBase64Binary(secretKey))
-                    .build()
-                    .parseClaimsJws(token);
-            if(claims.getBody().get("token_type").equals("refresh_token")) {
-                return JwtType.REFRESH_TOKEN;
-            } else {
-                return JwtType.ACCESS_TOKEN;
-            }
-        }
-        return JwtType.INVALID_TOKEN;
-    };
+//    public JwtType getTokenTypeFromHeader(String token) {
+//        if(isTokenValid(token)) {
+//            Jws<Claims> claims = Jwts.parserBuilder()
+//                    .setSigningKey(secretKey)
+//                    .build()
+//                    .parseClaimsJws(token);
+//            if(claims.getBody().get("token_type").equals("refresh_token")) {
+//                return JwtType.REFRESH_TOKEN;
+//            } else {
+//                return JwtType.ACCESS_TOKEN;
+//            }
+//        }
+//        return JwtType.INVALID_TOKEN;
+//    };
 
     // AccessToken + RefreshToken 헤더에 넣기
     public void setAccessAndRefreshToken (HttpServletResponse response, String accessToken, String refreshToken) {
         response.setStatus(HttpServletResponse.SC_OK);
 
-        response.setHeader(header, accessToken);
-        response.setHeader(header, refreshToken);
+        response.setHeader(accessHeader, accessToken);
+        response.setHeader(refreshHeader, refreshToken);
         log.info("Access Token, Refresh Token 헤더 설정 완료", accessToken, refreshToken);
     }
 
@@ -212,7 +221,7 @@ public class JwtProvider {
     public void setAccessToken(HttpServletResponse response, String accessToken) {
         response.setStatus(HttpServletResponse.SC_OK);
 
-        response.setHeader(header, accessToken);
+        response.setHeader(accessHeader, accessToken);
         log.info("AccessToken 헤더 설정 완료 ", accessToken);
     }
 
