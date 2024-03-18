@@ -18,6 +18,7 @@ interface Room {
 }
 
 const SelectMultiPage: React.FC = () => {
+        
     const room: Room[] = [{
         room_id: 1,
         room_name: 'A106 들어와라',
@@ -71,11 +72,11 @@ const SelectMultiPage: React.FC = () => {
                     {/* 대기방 목록 */}
                     <div>            
                         <div className='flex flex-row pb-6 w-full'>
-                            <div className='text-white font-bold text-xl w-48 align-middle'>단체 플레이</div>
+                            <div className='text-white font-bold text-xl align-middle pr-36'>단체 플레이</div>
                             <div className='text-white font-thin text-sm align-middle'>참여할 방을 선택해 입장해주세요!</div>
                         </div>
                         {/* 장르 선택 버튼 */}
-                        <div className='flex flex-row gap-4 pb-6'>
+                        <div className='flex flex-row gap-6 pb-6'>
                             <button className='text-black bg-secondary-500 w-24 h-7 rounded-full text-sm hover:opacity-50'>All</button>
                             <button className='text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50'>POP</button>
                             <button className='text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50'>HIP-HOP</button>
@@ -83,18 +84,15 @@ const SelectMultiPage: React.FC = () => {
                             <button className='text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50'>DANCE</button>
                         </div>
                         <div className="relative flex flex-col overflow-y-auto">
-                            <div className='text-white grid grid-cols-4 gap-4 justify-items-start'>
+                            <div className='text-white grid grid-cols-4 gap-9 justify-items-start'>
                                 {room.map((item)=> (
                                     <Multiroom room_name={item.room_name} room_id={item.room_id} max_user={item.max_user} current_user={item.current_user} multi_img={item.multi_img}/>
                                 ))}
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
-
-            </div>
-
-            
         </div>
     );
 };
