@@ -62,6 +62,8 @@ public class UserService {
         System.out.println("jwt 생성 시작");
         JwtResponseDto jwtResponseDto = jwtProvider.createTokens(authentication, user.getUserId());
 
+        // todo. 프론트에서 cookie에 "Authorization" 이라는 key로 token 보내주도록 요청..
+
         // todo. 4. RefreshToken Redis 저장
 
         return jwtResponseDto;

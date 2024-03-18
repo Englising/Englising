@@ -26,20 +26,6 @@ public class UserController {
                 .body(new DefaultResponseDto<>(200, "토큰 발급이 완료되었습니다.", jwtResponseDto));
     }
 
-    // todo. 카카오 로그인 post 요청
-    // 프론트에서 인가코드 넘겨받지 않고 백엔드에서 모두 처리하는 걸로 변경 -> api 삭제?
-//    @PostMapping("/kakao")
-//    public ResponseEntity<DefaultResponseDto<JwtResponseDto>> kakaoLogin(@RequestBody KakaoRequestDto kakaoRequestDto) {
-//        JwtResponseDto jwtResponseDto = userService.login(kakaoRequestDto);
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(new DefaultResponseDto<>(200, "토큰 발급이 완료되었습니다.", jwtResponseDto));
-//
-//    }
-
-
-
 
     // todo. RefreshToken으로 AccessToken 재발급 Get 요청
 //    @GetMapping("/refresh")
