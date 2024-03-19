@@ -16,10 +16,10 @@ public class SinglePlayServiceImpl {
         switch (type){
             case like -> {
                 //TODO Repository에서 유저가 좋아한 목록 최신 순으로 조회
-                // LikeRepository에서 created at, updated at 순으로 track id 가져오기
-                // TrackRepository에서 trackId로 track 정보 가져오기
-                // AlbumRepository에서 trackId로 album 정보 가져오기
-                // ArtistTrackRepository에서 TrackId로
+                // 1. LikeRepository에서 created at, updated at 순으로 track id 가져오기
+                // 2. TrackRepository에서 trackId로 track 정보 가져오기
+                // 3. AlbumRepository에서 trackId로 album 정보 가져오기
+                // 4. ArtistTrackRepository에서 TrackId로
                 return null;
             }
             case  recent -> {
