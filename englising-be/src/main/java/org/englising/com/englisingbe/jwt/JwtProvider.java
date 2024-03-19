@@ -225,11 +225,7 @@ public class JwtProvider {
         log.info("AccessToken 헤더 설정 완료 ", accessToken);
     }
 
-
-
-
-
-//      RefreshToken DB 저장 (업데이트) -> todo. Redis로 수정 (지금은 DB에)
+//      RefreshToken DB 저장 (업데이트) -> todo. Redis로 수정
 //    public void updateRefreshToken(String email, String refreshToken) {
 //        userRepository.findByEmail(email)
 //                .ifPresentOrElse(

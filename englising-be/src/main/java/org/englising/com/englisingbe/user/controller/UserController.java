@@ -26,17 +26,4 @@ public class UserController {
                 .body(new DefaultResponseDto<>(200, "토큰 발급이 완료되었습니다.", jwtResponseDto));
     }
 
-
-    // todo. RefreshToken으로 AccessToken 재발급 Get 요청
-//    @GetMapping("/refresh")
-//    public ResponseEntity<?> getAccessTokenByRefreshToken(@RequestHeader refresToken 설정) {
-//        JwtResponseDto jwtResponseDto = null; // todo.수정
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(new DefaultResponseDto<>(200, "토큰 발급이 완료되었습니다.", jwtResponseDto));
-//    }
-    
-    //todo. 로그아웃
-
 }

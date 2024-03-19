@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.englising.com.englisingbe.jwt.CookieUtil;
 import org.englising.com.englisingbe.jwt.JwtProvider;
 import org.englising.com.englisingbe.jwt.JwtResponseDto;
 import org.englising.com.englisingbe.user.CustomOAuth2User;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-
 // OAuth2 로그인 성공 시 로직 처리
 // 로그인 성공했으면 accessToken, refreshToken 생성 후 헤더애 넣어주기
 // token 헤더에 넣어주기
@@ -28,6 +28,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+    private final CookieUtil cookieUtil;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -46,17 +47,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 // 유저 정보 기반으로 토큰 생성
                 JwtResponseDto jwtResponseDto = jwtProvider.createTokens(authentication, user.getUserId());
 
-//                // 토큰 헤더에 넣어주기
-//                jwtProvider.setAccessAndRefreshToken(response,
-//                        jwtResponseDto.getAccessToken(), jwtResponseDto.getRefreshToken());
-//                log.info("successHandler -> " + jwtResponseDto.getAccessToken() + " " + jwtResponseDto.getRefreshToken());
-
-                // ****토큰 헤더 말고 쿠키에 넣는 것으로 수정****
-
                 // AccessToken 쿠키로 설정
-                Cookie tokenCookie = createCookie("Authorization", jwtResponseDto.getAccessToken());
+                Cookie tokenCookie = cookieUtil.createCookie("Authorization", jwtResponseDto.getAccessToken());
 
-                // todo. RefreshToken은 Redis에 저장
+                // todo. RefreshToken은 Redis에 저장 (key는 accessToken에 담긴 useID?)
 
                 // 응답에 쿠키 추가
                 response.addCookie(tokenCookie);
@@ -66,15 +60,4 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             throw e; //추후 수정
         }
     }
-
-    private Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(3600);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-
-        return cookie;
-    }
-
-
 }

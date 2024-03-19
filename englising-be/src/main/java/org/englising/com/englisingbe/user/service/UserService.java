@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -38,8 +36,8 @@ public class UserService {
     public JwtResponseDto guest() throws Exception{
          User user = User.builder()
                     .email(makeRandomEmail()) // todo. uuid 사용 ex)오늘 날짜 + uuid + @email.com
-                    .nickname("tempNickname88") //todo. 수정
-                    .profileImg("tempProfileImgUrl88") //todo. 수정
+                    .nickname(makeRandomNickname()) //todo. 수정
+                    .profileImg(makeRandomProfileImgUrl()) //todo. 수정
                     .type("GUEST") // default로 GUEST 되어있으면 빼기
                     .build();
 
@@ -63,6 +61,7 @@ public class UserService {
         JwtResponseDto jwtResponseDto = jwtProvider.createTokens(authentication, user.getUserId());
 
         // todo. 프론트에서 cookie에 "Authorization" 이라는 key로 token 보내주도록 요청..
+        // todo. jwtResponseDto로 받은 accessToken을 Authorization이라는 쿠키로 저장 부탁
 
         // todo. 4. RefreshToken Redis 저장
 
@@ -82,15 +81,21 @@ public class UserService {
      * //동물 이름 데이터셋 db에 저장
      * */
     public String makeRandomNickname() {
-        List<String> adjective = Arrays.asList("귀여운", "행복한", "즐거운", "배고픈", "노란", "동그란", "푸른", "수줍은"
-        , "그리운", "배부른", "부자", "깨발랄한", "웃고있는", "해맑은", "슬픈", "반가운", "무서운", "", "귀여운");
+        //일단 임시로
+        String uuid = UUID.randomUUID().toString();
+        String nickname = uuid + "닉네임";
+
+//        List<String> adjective = Arrays.asList("귀여운", "행복한", "즐거운", "배고픈", "노란", "동그란", "푸른", "수줍은"
+//        , "그리운", "배부른", "부자", "깨발랄한", "웃고있는", "해맑은", "슬픈", "반가운", "무서운", "", "귀여운");
         
-        return null;
+        return nickname;
     }
 
     // todo. 랜덤 프로필이미지 (현지가 만든 알파벳 캐릭터)
     public String makeRandomProfileImgUrl() {
-        return null;
+        String uuid = UUID.randomUUID().toString();
+        String img = uuid + "프로필이미지";
+        return img;
     }
 
 }
