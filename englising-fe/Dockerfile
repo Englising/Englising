@@ -13,7 +13,7 @@ FROM nginx:alpine
 RUN rm -rf /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d
 # 애플리케이션의 빌드 결과물 Nginx가 호스팅할 위치로 복사
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 # 80 포트를 노출
 EXPOSE 5173
 # Nginx 실행
