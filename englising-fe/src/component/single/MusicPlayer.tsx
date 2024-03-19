@@ -11,9 +11,9 @@ interface Props {
 //임시 데이터: 음원의 id를 보내주면, 문장마다 시작하는 시간 리스트를 받아오는 코드로 대체
 const timeData = [7.5, 12.0, 15.9, 20.0, 24.3, 28.3, 32.4, 36.4, 41.4, 49.7, 56.4, 60.6, 65.0, 68.8, 90.3, 98.4];
 const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
-    let {idx, isBlank, startTime, endTime,toggleNext} = playInfo
+    let {idx, isBlank, startTime, toggleNext} = playInfo
     // 유튜브 아이디를 주는 axios
-    const [url, setUrl] = useState<string>("https://www.youtube.com/watch?v=EVJjmMW7eII");
+    const url = "https://www.youtube.com/watch?v=EVJjmMW7eII";
     const [playing, setPlaying] = useState<boolean>(true);
     const [muted, setMuted] = useState<boolean>(true);
     const player = useRef<ReactPlayer | null>(null);
@@ -24,8 +24,6 @@ const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
 
     const handleProgress = (e: OnProgressProps) => {
         if(timeData[idx+1] < e.playedSeconds-0.1){
-            if(timeData[idx+1] == null) alert("zz");
-            
             if(!isBlank){
                 onSetInfoIdx(idx+1);
             }else {
@@ -47,6 +45,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
     return(
         <div>
             <ReactPlayer
+                width={'400px'}
                 ref={player}
                 url= {url}
                 playing = {playing} 

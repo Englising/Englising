@@ -24,9 +24,9 @@ const FooterVar = ({onSetAnswer}:Props) => {
     }
 
     return (
-        <div className="h-24 flex justify-center ">
+        <div className="flex items-center justify-center ">
             <input 
-            className="h-16"
+            className="h-16  w-96 mr-16 rounded-md focus:outline-none border-slate-300 placeholder-slate-400 focus:border-sky-500 focus:ring-sky-500"
             placeholder="답안"
             value={answer}
             onChange={(event) => {handleAnswerChange(event)}}
@@ -34,9 +34,9 @@ const FooterVar = ({onSetAnswer}:Props) => {
             >
             </input>
             <div 
-            className="rounded-md h-16 w-20 text-center bg-secondary-500 text-black text-xl cursor-pointer hover:opacity-50"
+            className="h-16 w-28 text-center rounded-md md bg-secondary-500 text-black text-xl font-bold cursor-pointer hover:opacity-50 flex flex-col"
             onClick={handleAnswerSubmit}> 
-            입력
+            <div className="m-auto text-2xl ">입력</div>
             </div> 
         </div>
     )
