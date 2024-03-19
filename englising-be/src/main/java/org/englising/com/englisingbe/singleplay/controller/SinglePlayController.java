@@ -9,9 +9,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
+import org.englising.com.englisingbe.global.util.PlayListType;
 import org.englising.com.englisingbe.singleplay.dto.request.SinglePlayRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.response.*;
+import org.englising.com.englisingbe.singleplay.service.SinglePlayServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/singleplay")
 public class SinglePlayController {
+    private final SinglePlayServiceImpl singlePlayService;
 
     @GetMapping("/playlist")
     // API 상세 정보 기술
@@ -43,7 +47,8 @@ public class SinglePlayController {
                     schema = @Schema(implementation = PlayListResponseDto.class)
             )
     )
-    public ResponseEntity getPlaylists(@RequestParam String type, @RequestParam Integer page, @RequestParam Integer size){
+    public ResponseEntity getPlaylists(@RequestParam PlayListType type, @RequestParam Integer page, @RequestParam Integer size){
+        DefaultResponseDto<PlayListResponseDto> response = new DefaultResponseDto<>();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
