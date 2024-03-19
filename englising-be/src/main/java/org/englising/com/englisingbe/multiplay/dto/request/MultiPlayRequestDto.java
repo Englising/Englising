@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MultiPlayRequest {
+public class MultiPlayRequestDto {
     public Long multiplayId;
+    public String genre;
 }

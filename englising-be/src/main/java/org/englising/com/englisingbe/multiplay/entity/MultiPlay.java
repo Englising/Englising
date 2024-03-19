@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlayHint;
+import org.englising.com.englisingbe.track.entity.Track;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -25,8 +26,9 @@ public class MultiPlay {
     @Column(name = "room_name")
     private String roomName;
 
-    @Column(name = "track_id")
-    private Long trackId;
+    @ManyToOne
+    @JoinColumn(name = "track_id", referencedColumnName = "track_id")
+    private Track trackId;
 
     @Column(name = "total_people")
     private Integer totalPeople;

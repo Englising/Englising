@@ -5,12 +5,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.englising.com.englisingbe.user.entity.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -26,11 +29,13 @@ public class MultiPlayUser {
     @Column(name = "multiplay_user_id")
     private Integer multiplayUserId;
 
-    @Column(name = "multiplay_id")
-    private Integer multiplayId;
+    @ManyToOne
+    @JoinColumn(name = "multiplay_id", referencedColumnName = "multiplay_id")
+    private MultiPlay multiplay;
 
-    @Column(name = "user_id")
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private User user;
 
     @CreationTimestamp
     @Column(name = "created_at")

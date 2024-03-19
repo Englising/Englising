@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MultiPlayListResponse {
-    public Long multiplayId;
-    public String roomName;
-    public int totalPeople;
-    public String multiplayImg;
+public class MultiPlayResultResponseDto {
+    public Boolean isSuccess;
 }

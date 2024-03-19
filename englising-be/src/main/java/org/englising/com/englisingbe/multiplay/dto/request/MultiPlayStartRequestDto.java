@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MultiplayRoomStartRequest {
+public class MultiPlayStartRequestDto {
     private Long multiplayId;
     private Long trackId;
     private String roomName;

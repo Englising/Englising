@@ -13,6 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayListResponseDto;
+import org.englising.com.englisingbe.multiplay.entity.MultiPlay;
+import org.englising.com.englisingbe.multiplay.repository.MultiPlayRepository;
+import org.englising.com.englisingbe.multiplay.service.MultiPlayService;
+import org.englising.com.englisingbe.multiplay.service.MultiPlayServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/multiplay")
 public class MultiPlayController {
+
+    private final MultiPlayServiceImpl multiPlayService;
 
     @GetMapping("/rooms")
     @Operation(
@@ -47,7 +54,9 @@ public class MultiPlayController {
     @ApiResponses({
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
     })
-    public ResponseEntity getMultiLists(@RequestParam Integer page, @RequestParam Integer size){
+
+    public ResponseEntity getMultiPlayList(@RequestParam String genre, @RequestParam Integer page, @RequestParam Integer size){
+        List<MultiPlay> multiPlayLists = multiPlayService.getMultiPlayList(genre, page, size);
         Map<String, Object> room1 = new HashMap<>();
         room1.put("room_id", 1);
         room1.put("room_name", "손민기 들어와");
@@ -87,7 +96,7 @@ public class MultiPlayController {
         response.put("message", "멀티 플레이 방 리스트를 가져왔습니다.");
         response.put("data", data);
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 
     @PostMapping
@@ -106,7 +115,7 @@ public class MultiPlayController {
     @ApiResponses({
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
     })
-    public ResponseEntity createMultiplayRoom(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity createMultiPlayRoom(@RequestBody Map<String, Object> requestBody) {
         String roomName = (String) requestBody.get("room_name");
         Integer totalPeople = (Integer) requestBody.get("total_people");
         String genre = (String) requestBody.get("genre");
@@ -150,7 +159,7 @@ public class MultiPlayController {
     @ApiResponses({
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
     })
-    public ResponseEntity getMultiplayRoom(@PathVariable Integer multiplayId) {
+    public ResponseEntity getMultiPlayRoom(@PathVariable Integer multiplayId) {
 
         Map<String, Object> user1 = new HashMap<>();
         user1.put("track_id", "3");
@@ -181,7 +190,7 @@ public class MultiPlayController {
         @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
         @Parameter(name = "multiplayId", description = "멀티플레이 아이디", in = ParameterIn.QUERY),
     })
-    public ResponseEntity getMultiResult(@RequestParam Integer multiplayId) {
+    public ResponseEntity getMultiPlayResult(@RequestParam Integer multiplayId) {
         Map<String, Object> result = new HashMap<>();
         result.put("is_success", true);
 
