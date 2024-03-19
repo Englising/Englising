@@ -87,14 +87,23 @@ const SinglePage = () => {
         });
     }
 
+    //동적으로 url 구성
+    const url = 'src/assets/2002.jpg';
+
     return (
-        <div>            
+        <div className={`bg-[url('${url}')] bg-cover bg-center h-screen w-screen  p-0 m-0`}>            
+            <div className="bg-black h-screen w-screen bg-opacity-70">
             <div className="flex">
-                <MusicPlayer onSetInfoIdx = {onSetInfoIdx} playInfo = {playInfo} />
-                <Lyrics onSetInfo = {onSetInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
+                <div className="flex-4">
+                    <MusicPlayer onSetInfoIdx = {onSetInfoIdx} playInfo = {playInfo} /> 
+                </div>
+                <div className="flex-1">
+                    <Lyrics onSetInfo = {onSetInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
+                </div>
             </div>
-            <div>
+            <div className="bg-black">
                 <FooterVar onSetAnswer = {onSetAnswer}/>
+            </div>
             </div>
         </div>
     );
