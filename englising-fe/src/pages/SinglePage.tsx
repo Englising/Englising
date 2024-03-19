@@ -88,23 +88,23 @@ const SinglePage = () => {
     }
 
     //동적으로 url 구성
-    const url = 'src/assets/2002.jpg';
+    const ur1 = 'src/assets/2002.jpg';
 
     return (
-        <div className={`bg-[url('${url}')] bg-cover bg-center h-screen w-screen  p-0 m-0`}>            
-            <div className="bg-black h-screen w-screen bg-opacity-70">
-            <div className="flex">
-                <div className="flex-4">
-                    <MusicPlayer onSetInfoIdx = {onSetInfoIdx} playInfo = {playInfo} /> 
+        <div className={`bg-[url('src/assets/2002.jpg')] bg-cover bg-center h-screen w-screen p-0 m-0`}>            
+            <div className="flex flex-col  bg-black h-screen w-screen bg-opacity-70">
+                <div className="flex h-5/6">
+                    <div className="w-1/4">
+                        <MusicPlayer onSetInfoIdx = {onSetInfoIdx} playInfo = {playInfo} /> 
+                    </div>
+                    <div className="w-3/4">
+                        <Lyrics onSetInfo = {onSetInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
+                    </div>
                 </div>
-                <div className="flex-1">
-                    <Lyrics onSetInfo = {onSetInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
+                <div className="h-1/6 bg-black flex justify-center">
+                    <FooterVar onSetAnswer = {onSetAnswer}/>
                 </div>
-            </div>
-            <div className="bg-black">
-                <FooterVar onSetAnswer = {onSetAnswer}/>
-            </div>
-            </div>
+                </div>
         </div>
     );
 };

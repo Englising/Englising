@@ -55,7 +55,6 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
             targetBlank = blanksRef.current.find(el => {
                 const sentenceIdx = el?.dataset.sentence;
                 const isSolve = el?.dataset.solve;
-                console.log("isSolve,", isSolve);
                 return sentenceIdx == `${idx}` && isSolve == '1'; 
             }) ?? null;
         }
@@ -103,12 +102,12 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
     
 
     return(
-        <div className="h-96 overflow-x-auto">
+        <div className="w-full  max-h-full py-10 px-20 box-border text-center overflow-y-scroll select-none">
             {lyrics.map((lyric, i) => {
                 return(
                     <div 
                     key={i} 
-                    className={idx == i ? "h-10 text-xl bg-primary-800 text-white" : "h-10"} 
+                    className={idx == i ? "w-5/6 h-20 text-4xl bg-black/40 rounded-xl text-white" : "w-5/6 h-20 text-xl text-primary-300 "} 
                     ref={(el) => lyricsRef.current[i] = el} 
                     onClick={() => 
                     handleLyricsClick(i, lyric.isBlank, lyric.startTime, lyric.endTime)}>
@@ -128,7 +127,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
                                 isBlank ? 
                                 (<span 
                                 key={j} 
-                                className="bg-secondary-800 rounded-3xl text-secondary-800"
+                                className={"bg-white rounded-sm text-white"}
                                 ref={(el) => blanksRef.current[blankIdx] = el}
                                 data-sentence ={i}
                                 data-solve="0"> 
