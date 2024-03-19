@@ -79,8 +79,8 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
                 targetBlank.className="text-red-800"
             }
         }
-        // 연구해보자
-        if(blankNum <= 1 && incorrectNum == 0){ 
+        // 마지막 빈칸을 등록했을때 or 마지막 오답이 수정되었을때 넘어감
+        if(blankNum == 1 || incorrectNum <= 1 && blankNum == 0){ 
             handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime);
         }
        
