@@ -2,127 +2,100 @@ package org.englising.com.englisingbe.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
-// JwtTokenProvider가 검증을 끝낸 Jwt로부터 유저 정보를 조회해와서
+// Filter를 적용함으로써 servlet에 도달하기 전에 검증 완료 가능
+// JwtProvider가 검증을 끝낸 Jwt로부터 유저 정보를 조회해와서
 // UserPasswordAuthenticationFilter로 전달
 @RequiredArgsConstructor
+@Slf4j
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-//    private static final String NO_CHECK_URL = "/login";
-    private final JwtTokenProvider jwtTokenProvider;
+//    private static final String[] NO_CHECK_URL = {"/auth/guest", "/auth/login"};
+    private static final String NO_CHECK_URL = "/auth/guest";
+    // todo. "kakao로그인 페이지 get 요청" 추가
+
+    private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
-    private JwtTokenType jwtTokenType;
+    private final CookieUtil cookieUtil;
 
     // 토큰 유효한지 확인 후 SecurityContext에 계정정보 저장하는 메소드
+    /**
+     * 1. 쿠키에서 JWT 받아온다
+     * 2. 유효한 토큰인지 확인한다
+     * 3. 토큰이 유효하면 토큰으로부터 유저 정보 받아온다
+     * 4. SecurityContext에 Authentication 객체 저장한다.
+     * */
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-//        if (request.getRequestURI().equals(NO_CHECK_URL)) {
-//            filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
-//            return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
-//        } //todo. 게스트, 카카오 로그인 요청 시 필터 진행 x 하도록 수정
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) 
+            throws ServletException, IOException {
 
-
-        // 해당 토큰이 refreshToken인지 확인
-        // (refreshToken이 null이면 accessToken 유효성 검사, null이 아니면 refreshToken 유효성 검사)
-        // filter해서 null이 아니라면 refreshToken이고 유효한 것
-        // -> 클라이언트가 AccessToken 만료되어 RefreshToken을 보낸 것
-//        String refreshToken = jwtTokenProvider.getRefreshTokenFromHeader(request)
-//                .filter(jwtTokenProvider::isTokenValid)
-//                .orElse(null);
-
-
-        // 헤더에서 토큰 추출
-        String token = jwtTokenProvider.extractTokenFromHeader(request)
-                .filter(jwtTokenProvider::isTokenValid)
-                .orElse(null);
-
-        // 토큰 타입 받기 (accessToken인지 refreshToken인지)
-        if(token != null) {
-            jwtTokenType = jwtTokenProvider.getTokenTypeFromHeader(token);
-        }
-
-        // JwtTokenType이 accessToken이면
-        if(jwtTokenType == JwtTokenType.ACCESS_TOKEN) {
-            checkAccessTokenAndAuthentication(request, response, filterChain);
-        }
-        else if (jwtTokenType == JwtTokenType.REFRESH_TOKEN) { // JwtTokenType이 refreshToken이면
-
-
-
-
-        } else {
-            // 두가지 타입이 모두 아닌경우 예외처리
-
-        }
-
-
-
-
-
-
-
-
-
-
-
-//        if(refreshToken != null) {
-//            checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
+        // 로그인 요청은 필터 진행 안하고 넘어감
+//        boolean skipFilter = Arrays.stream(NO_CHECK_URL).anyMatch(url -> request.getRequestURI().equals(url));
+//        if (skipFilter) {
+//            filterChain.doFilter(request, response);
 //            return;
 //        }
-//
-//        if(refreshToken == null) {
-//            checkAccessTokenAndAuthentication(request,response, filterChain);
-//        }
-    }
 
-    // RefreshToken으로 유저 정보 찾기, Access/Refresh Token 재발급
-//    private JwtResponseDto checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-//        userRepository.findByRefreshToken(refreshToken)
-//                .ifPresent(user -> {
-//                    String reIssuedAccessToken = jwtTokenProvider.createAccessToken(user.getUsername());
-//                    String reIssuedRefreshToken = reIssueRefreshToken(user);
-//
-//                    //todo. 헤더에 담아서 토큰 보내는 방식 아니고 ResponseData로 보내는 형식으로 수정
-////                    JwtResponseDto jwtResponseDto = new JwtResponseDto(reIssuedAccessToken, reIssuedRefreshToken);
-//                    return new JwtResponseDto(reIssuedAccessToken, reIssuedRefreshToken);
-//                });
-//        return null;
-//    };
-//
-//    // 리프레시 토큰 재발급, db에 업데이트
-//    //todo. Redis로 수정
-//    private String reIssueRefreshToken(User user) {
-//        String reIssuedRefreshToken = jwtTokenProvider.createRefreshToken(user.getUsername());
-//        user.updateRefreshToken(reIssuedRefreshToken);
-//        userRepository.saveAndFlush(user);
-//        return reIssuedRefreshToken;
-//    }
+        if (request.getRequestURI().equals(NO_CHECK_URL)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-    // 액세스 토큰 유효성 검사, 인증 처리
-    private void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                                   FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = jwtTokenProvider.extractTokenFromHeader(request).toString();
+        // 쿠키에서 accessToken 추출.
+        String accessToken = cookieUtil.getAccessTokenFromCookie(request);
+        
+        try {
+            //  2 3 4
+            if (accessToken != null && jwtProvider.isTokenValid(accessToken)) {    // accessToken이 유효한 경우
+                //유효한 토큰이면 해당 토큰으로 Authentication 가져와서 SecurityContext에 저장
+                Authentication authentication = jwtProvider.getAuthentication(accessToken);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else { // accessToken이 유효하지 않은 경우
+                System.out.println("accessToken이 유효하지 않습니다. ");
+                System.out.println("refreshToken 꺼내서 확인 후 유효성 확인 시작. ");
 
-        if(jwtTokenProvider.isTokenValid(accessToken)) {// 토큰 유효하면 토큰으로부터 유저 정보 가져옴
-            String userId = jwtTokenProvider.getUserId(accessToken).toString();
-            User user = userRepository.findByUserId(Integer.valueOf(userId))
-                    .orElseThrow(IllegalAccessError::new);
+                String refreshToken = cookieUtil.getRefreshTokenFromCookie(request);
+                if(refreshToken != null && jwtProvider.isTokenValid(refreshToken)) { // refreshToken 유효한 경우
+                    // refreshToken이 유효하면 둘다 재발급하고 쿠키추가
+                    Long userId = jwtProvider.getUserId(refreshToken).orElse(null);
+                    JwtResponseDto jwtResponseDto =
+                            jwtProvider.createTokens(jwtProvider.getAuthentication(refreshToken), userId);
 
-            // SecurityContext에 인증 객체 등록
-            Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                    Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
+                    Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
+
+                    response.addCookie(accessCookie);
+                    response.addCookie(refreshCookie);
+                    response.sendRedirect("http://localhost:8080/"); //todo. 프론트측 특정 url ex:localhost:3030 넣기 (로그인 후 리다이렉트될)
+
+                    return;
+                } else { // refreshToken 유효하지 않은 경우
+                    // todo. 에러 리턴
+                    return;
+                }
+            }
+        } catch (Exception e) {
+            request.setAttribute("exeption", e.getMessage());
         }
         filterChain.doFilter(request, response);
     }
-
 }
+
+
