@@ -12,6 +12,7 @@ import java.util.List;
 public class PlayListResponseDto {
     public Long albumId;
     public String albumTitle;
+    public String albumImg;
     public Long trackId;
     public String trackTitle;
     public List<String> artists;

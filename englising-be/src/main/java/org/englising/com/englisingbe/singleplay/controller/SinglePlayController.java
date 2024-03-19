@@ -31,7 +31,7 @@ public class SinglePlayController {
     )
     // API Parameter 정보 작성
     @Parameters({
-            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
             @Parameter(name = "type", description = "플레이리스트 종류 : RECOMMEND(추천된), LIKE(좋아요 한), RECENT(최근 플레이 한)", in = ParameterIn.QUERY),
             @Parameter(name = "page", description = "페이지 번호", in = ParameterIn.QUERY),
             @Parameter(name = "size", description = "(선택적) 페이지당 컨텐츠 개수, 기본 10", in = ParameterIn.QUERY)
@@ -89,7 +89,7 @@ public class SinglePlayController {
             description = "싱글플레이를 하기 위해 필요한 노래 정보, 단어 출제 내용, 가사를 가져옵니다"
     )
     @Parameters({
-            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
     })
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
