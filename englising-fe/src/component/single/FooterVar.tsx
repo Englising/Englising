@@ -16,18 +16,27 @@ const FooterVar = ({onSetAnswer}:Props) => {
         setAnswer("");
     }
 
+    const handlePressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if(e.key == 'Enter'){
+            onSetAnswer(answer);
+            setAnswer("");  
+        }
+    }
+
     return (
-        <div>
+        <div className="flex items-center justify-center ">
             <input 
-            className="border border-black"
+            className="h-16  w-96 mr-16 rounded-md focus:outline-none border-slate-300 placeholder-slate-400 focus:border-sky-500 focus:ring-sky-500"
             placeholder="답안"
             value={answer}
-            onChange={(event) => {handleAnswerChange(event)}}>
+            onChange={(event) => {handleAnswerChange(event)}}
+            onKeyDown={(event) => {handlePressEnter(event)}}
+            >
             </input>
             <div 
-            className="border border-black rounded-md my-4  w-20 text-center bg-primary-950 text-secondary-300 text-xl cursor-pointer"
+            className="h-16 w-28 text-center rounded-md md bg-secondary-500 text-black text-xl font-bold cursor-pointer hover:opacity-50 flex flex-col"
             onClick={handleAnswerSubmit}> 
-            입력
+            <div className="m-auto text-2xl ">입력</div>
             </div> 
         </div>
     )

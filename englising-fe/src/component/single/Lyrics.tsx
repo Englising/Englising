@@ -1,88 +1,139 @@
 import { useEffect, useRef, useState } from "react";
-import { singleData } from "./example.tsx"
-import { PlayInfo } from "../../pages/SinglePage.tsx";
+import { PlayInfo, SingleData, Lyric, Word, AnswerInfo} from "../../pages/SinglePage.tsx";
 
 interface Props {
-    onSetInfo(currIdx: number, start: number, end: number): void,
+    onSetInfo(currIdx: number,  blank: boolean, start: number, end: number): void,
     playInfo: PlayInfo,
-    answer: string
+    singleData: SingleData,
+    answerInfo: AnswerInfo,
 }
 
-
-interface Lyric {
-    startTime: number;
-    endTime: number;
-    lyric: string[];
-}
-
-interface Blank {
-    singlePlayWordId : number,
-    sentenceIndex : number,
-    wordIndex : number,
-    word : string,
-    isRight : boolean
-}
-
-const Lyrics = ({onSetInfo, playInfo, answer}:Props) => {
+const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
+    const {idx} = playInfo;
+    const {answer, toggleSubmit} = answerInfo;
     const [lyrics, setLyrics] = useState<Lyric[]>([]);
-    const [blank, setBlank] = useState<Blank[]>([]);
-    const scrollRef = useRef<(HTMLDivElement | null)[]>([]);
-    const {idx, startTime, endTime, toggle} = playInfo;
-    
+    const [blankWord, setBlankWord] = useState<Word[]>([]);
+    const lyricsRef = useRef<(HTMLDivElement | null)[]>([]);
+    const blanksRef = useRef<(HTMLSpanElement | null)[]>([]);
+
     // aixos 호출로 데이터 받기 ///////////////////
-    const lyricsData:Lyric[] = singleData.data.lyrics;
-    const blankData:Blank[] = singleData.data.words;
-
     useEffect(() => {
+        const lyricsData:Lyric[] = singleData.data.lyrics;
+        const blankData:Word[] = singleData.data.words;
         setLyrics([...lyricsData]);
-        setBlank([...blankData]);
+        setBlankWord([...blankData]);
     },[])
-
     /////////////////////////////////////////////
 
     // FootVar에서 답안이 입력되었을 때
     useEffect(() => {
-        if(answer === "") return;
-        handleLyricsClick(idx+1, lyrics[idx+1].startTime, lyrics[idx+1].endTime)
-    },[answer])
+        if(answer === "") return; 
+        
+        // 같은 문장내에 빈칸의 개수 // 
+        // 오답이랑 빈칸 나눠서 해야할 듯
+        let blankNum = 0; 
+        let incorrectNum = 0;
+        blanksRef.current.forEach(el => {
+            const sentenceIdx = el?.dataset.sentence;
+            const isSolve = el?.dataset.solve;
+            if (sentenceIdx == `${idx}`) {
+                if (isSolve === '0') blankNum++;
+                if (isSolve === '1') incorrectNum++;
+            }
+        });
+
+        // 빈칸의 dom을 가져오기
+        let targetBlank = blanksRef.current.find(el => {
+            const sentenceIdx = el?.dataset.sentence;
+            const isSolve = el?.dataset.solve;
+            console.log("isSolve,", isSolve);
+            return sentenceIdx == `${idx}` && isSolve == `0`; 
+        }) ?? null;
+
+        // 빈칸을 먼저 찾고 없으면 그때 1 오답인거 가져오기
+        if(targetBlank == null) {
+            targetBlank = blanksRef.current.find(el => {
+                const sentenceIdx = el?.dataset.sentence;
+                const isSolve = el?.dataset.solve;
+                return sentenceIdx == `${idx}` && isSolve == '1'; 
+            }) ?? null;
+        }
+
+        // 빈칸에 들어갈 정답 가져오기
+        const solution = targetBlank?.textContent;
+
+        if(answer == solution){
+            if(targetBlank){
+                targetBlank.dataset.solve = "2";
+                targetBlank.className="text-green-800"
+            }
+
+            // 문장에 정답을 모두 맞췄을때, SinglePage Data 자체를 바꿔줌 (여긴 더이상 빈칸이 없어!)
+            if(blankNum == 1 && incorrectNum == 0){
+                lyrics[idx].isBlank = !lyrics[idx].isBlank;
+            }
+        }else {
+            if(targetBlank){
+                targetBlank.dataset.solve = "1";
+                targetBlank.className="text-red-800"
+            }
+        }
+        // 마지막 빈칸을 등록했을때 or 마지막 오답이 수정되었을때 넘어감
+        if(blankNum == 1 || incorrectNum <= 1 && blankNum == 0){ 
+            handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime);
+        }
+       
+    },[toggleSubmit])
+
+    useEffect(() => {
+        lyricsRef.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, [idx])
     
-    const handleLyricsClick = (currIdx: number, start: number, end: number) => {
+    const handleLyricsClick = (currIdx: number, blank: boolean, start: number, end: number) => {
         /*
         선택된 Element
-        console.log(scrollRef.current[index]);
+        console.log(lyricsRef.current[index]);
         */
-        scrollRef.current[currIdx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        lyricsRef.current[currIdx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         // single page -> player (가사의 시작시간, 종료시간)
-        onSetInfo(currIdx, start, end);
+        onSetInfo(currIdx, blank, start, end);
     }
     
-    const testClick = () => {
-        lyrics[0].lyric[0]
-        
-    }
+
     return(
-        <div className="h-96 overflow-x-auto">
+        <div className="w-full  max-h-full py-10 px-20 box-border text-center overflow-y-scroll select-none">
             {lyrics.map((lyric, i) => {
                 return(
                     <div 
                     key={i} 
-                    className="h-10" 
-                    ref={(el) => scrollRef.current[i] = el} 
+                    className={idx == i ? "w-5/6 h-20 text-4xl bg-black/40 rounded-xl text-white" : "w-5/6 h-20 text-xl text-primary-300 "} 
+                    ref={(el) => lyricsRef.current[i] = el} 
                     onClick={() => 
-                    handleLyricsClick(i, lyric.startTime, lyric.endTime)}>
+                    handleLyricsClick(i, lyric.isBlank, lyric.startTime, lyric.endTime)}>
                         {lyric.lyric.map((word, j) => {
                             let isBlank:boolean = false;
+                            let blankIdx:number = 0;
 
-                            blank.forEach((curr) => {
-                                if(word == curr.word) isBlank = true;
+                            blankWord.forEach((blank) => {
+                                if(word == blank.word && i == blank.sentenceIndex && j == blank.wordIndex){
+                                    isBlank = true;
+                                    blankIdx = blank.singlePlayWordId; //이거 고유 인덱스인지 확인
+                                }
                             })
                             //만약 해당 단어가 빈칸이 필요하다면 -> isBlank 속성 값 결정
+                            //data-isSolve: 0=미해결, 1=오답, 2=정답
                             return (
-                                isBlank ? (<span key={j} data-sntIdx={i} data-wdInx={j} className="bg-secondary-800"> 
+                                isBlank ? 
+                                (<span 
+                                key={j} 
+                                className={"bg-white rounded-sm text-white"}
+                                ref={(el) => blanksRef.current[blankIdx] = el}
+                                data-sentence ={i}
+                                data-solve="0"> 
                                 {word}
                                 </span>) 
-                                : (<span key={j} data-blank={isBlank}> {word} </span>)
+                                : (<span key={j}> {word} </span>)
                             );
                         })}
                     </div>
