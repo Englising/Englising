@@ -1,7 +1,9 @@
 package org.englising.com.englisingbe.user.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.englising.com.englisingbe.jwt.CookieUtil;
 import org.englising.com.englisingbe.jwt.JwtProvider;
 import org.englising.com.englisingbe.jwt.JwtResponseDto;
 import org.englising.com.englisingbe.user.dto.CustomUserDetails;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.PrimitiveIterator;
 import java.util.UUID;
 
 @Service
@@ -26,13 +29,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final CustomUserDetailService customUserDetailService;
     private final JwtProvider jwtProvider;
+    private final CookieUtil cookieUtil;
 
-    /**
-     * 게스트 로그인
-     * 1. 회원인지 확인할 필요 x 일회용 로그인
-     * -> 랜덤 이메일, 닉네임, 이미지 등록, db에 저장 (type = "Guest")
-     * 2. Access, Refres Token 발급해서 보내주기
-     * */
     public JwtResponseDto guest() throws Exception{
          User user = User.builder()
                     .email(makeRandomEmail()) // todo. uuid 사용 ex)오늘 날짜 + uuid + @email.com
@@ -60,12 +58,17 @@ public class UserService {
         System.out.println("jwt 생성 시작");
         JwtResponseDto jwtResponseDto = jwtProvider.createTokens(authentication, user.getUserId());
 
-        // todo. 프론트에서 cookie에 "Authorization" 이라는 key로 token 보내주도록 요청..
-        // todo. jwtResponseDto로 받은 accessToken을 Authorization이라는 쿠키로 저장 부탁
-
-        // todo. 4. RefreshToken Redis 저장
-
         return jwtResponseDto;
+    }
+
+    public Long getUserID(HttpServletRequest request) {
+        String accessToken = cookieUtil.getAccessTokenFromCookie(request);
+
+        if(accessToken != null && jwtProvider.isTokenValid(accessToken)) {
+            Long userId = jwtProvider.getUserId(accessToken).orElse(null);
+            return userId;
+        }
+        return null;
     }
 
     public String makeRandomEmail() {

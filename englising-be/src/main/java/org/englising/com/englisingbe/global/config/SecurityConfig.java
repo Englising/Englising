@@ -25,7 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final String[] allowedUrls = {"/webjars/**","/v3/api-docs/**","/swagger-ui/**", "/auth/**"};
+    private final String[] allowedUrls = {"/webjars/**","/v3/api-docs/**","/swagger-ui/**", "/auth/**", "/**"}; //일단 전체
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;

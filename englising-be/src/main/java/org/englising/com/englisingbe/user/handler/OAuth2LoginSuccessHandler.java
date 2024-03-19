@@ -48,12 +48,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 JwtResponseDto jwtResponseDto = jwtProvider.createTokens(authentication, user.getUserId());
 
                 // AccessToken 쿠키로 설정
-                Cookie tokenCookie = cookieUtil.createCookie("Authorization", jwtResponseDto.getAccessToken());
+                Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
 
-                // todo. RefreshToken은 Redis에 저장 (key는 accessToken에 담긴 useID?)
+                //refreshToken 쿠키도 설정하고 응답에 쿠키 추가
+                Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
 
                 // 응답에 쿠키 추가
-                response.addCookie(tokenCookie);
+                response.addCookie(accessCookie);
+                response.addCookie(refreshCookie);
                 response.sendRedirect("http://localhost:8080/"); //todo. 프론트측 특정 url ex:localhost:3030 넣기 (로그인 후 리다이렉트될)
             }
         } catch (Exception e) {
