@@ -15,6 +15,7 @@ import org.englising.com.englisingbe.singleplay.dto.request.SinglePlayRequestDto
 import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.response.*;
 import org.englising.com.englisingbe.singleplay.service.SinglePlayServiceImpl;
+import org.englising.com.englisingbe.user.dto.CustomUserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,7 +49,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = PlayListResponseDto.class)
             )
     )
-    public ResponseEntity getPlaylists(@RequestParam PlayListType type, @RequestParam Integer page, @RequestParam Integer size){
+    public ResponseEntity getPlaylists(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam PlayListType type, @RequestParam Integer page, @RequestParam Integer size){
         DefaultResponseDto<PlayListResponseDto> response = new DefaultResponseDto<>();
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -59,7 +60,7 @@ public class SinglePlayController {
             description = "싱글플레이를 하기 위해 필요한 노래 정보, 단어 출제 내용, 가사를 가져옵니다"
     )
     @Parameters({
-            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
     })
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
@@ -67,7 +68,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = StartResponseDto.class)
             )
     )
-    public ResponseEntity startSingleplay(@RequestBody SinglePlayRequestDto startDto){
+    public ResponseEntity startSingleplay(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody SinglePlayRequestDto startDto){
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -77,7 +78,7 @@ public class SinglePlayController {
             description = "싱글플레이 플레이 중 사용자가 입력한 단어 답안의 정답 유무를 확인합니다."
     )
     @Parameters({
-            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
     })
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
@@ -85,7 +86,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = WordCheckResponseDto.class)
             )
     )
-    public ResponseEntity checkSingleplayWord(@RequestBody WordCheckRequestDto wordCheckRequestDto){
+    public ResponseEntity checkSingleplayWord(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody WordCheckRequestDto wordCheckRequestDto){
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -103,7 +104,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = ResultResponseDto.class)
             )
     )
-    public ResponseEntity getSingleplayResult(@RequestBody Long singleplayId){
+    public ResponseEntity getSingleplayResult(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody Long singleplayId){
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -121,7 +122,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = TimeResponseDto.class)
             )
     )
-    public ResponseEntity getLyricStartTimes(@PathVariable Long trackId){
+    public ResponseEntity getLyricStartTimes(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long trackId){
         return new ResponseEntity(HttpStatus.OK);
     }
 }

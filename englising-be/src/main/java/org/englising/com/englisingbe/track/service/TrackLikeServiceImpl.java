@@ -12,6 +12,6 @@ public class TrackLikeServiceImpl {
     private final TrackLikeRepository trackLikeRepository;
 
     public List<Long> getLikedTrackIdsByUserId(Long userId){
-        return null;
+        return trackLikeRepository.findBytrack;
     }
 }
