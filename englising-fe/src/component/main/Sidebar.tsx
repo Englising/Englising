@@ -30,26 +30,26 @@ const SideBar: React.FC = () => {
 
     // 메뉴 아이템 배열
     const single_title: MenuItem[] = [
-        { name: '싱글 플레이', path: '/select' },
+        { name: '싱글 플레이', path: '/englising/selectSingle' },
     ];
 
     const single_menus: MenuItem[] = [
-        { name: '추천 플레이리스트', path: '/select' },
-        { name: '좋아요한 음악', path: '/select' },
-        { name: '최근 플레이한 음악', path: '/select' },
+        { name: '추천 플레이리스트', path: '/englising/selectSingle' },
+        { name: '좋아요한 음악', path: '/englising/selectSingle' },
+        { name: '최근 플레이한 음악', path: '/englising/selectSingle' },
     ];
 
     const multi_title: MenuItem[] = [
-        { name: '단체 플레이', path: '/' },
+        { name: '단체 플레이', path: '/englising/selectMulti' },
     ];
 
     const multi_menus: MenuItem[] = [
-        { name: '방 참여하기', path: '/selectMulti' },
-        { name: '방 생성하기', path: '/settingMulti' },
+        { name: '방 참여하기', path: '/englising/selectMulti' },
+        { name: '방 생성하기', path: '/englising/settingMulti' },
     ];
 
     const other_menus: MenuItem[] = [
-        { name: '단어장', path: '/' },
+        { name: '단어장', path: '/englising/wordList' },
     ];
 
 

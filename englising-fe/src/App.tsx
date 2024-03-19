@@ -12,6 +12,7 @@ import WaitingRoomPage from './pages/WaitingRoomPage'
 import SinglePlay from './pages/SinglePage'
 import Multiplay from './pages/MultiplayPage'
 import WordListPage from './pages/WordListPage'
+import SidebarLayout from './pages/SidebarLayout'
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
     },    
     {
       path: "/englising",
+      element: <SidebarLayout />,
       children: [
         {
           path:"selectSingle",

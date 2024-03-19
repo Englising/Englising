@@ -1,5 +1,4 @@
 import React, { useState, ChangeEvent } from 'react';
-import Sidebar from '../component/main/Sidebar.tsx';
 import imgRoom6 from '../assets/imgRoom6.jpg';
 import Multiroom from '../component/main/MultiRoom.tsx';
 
@@ -23,8 +22,6 @@ const SettingMulti = () => {
 
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 flex">
-            <Sidebar />
-
             <div className='pl-8'>
                 <div className='flex flex-row'>
                     {/* 설정할 카테고리 */}
