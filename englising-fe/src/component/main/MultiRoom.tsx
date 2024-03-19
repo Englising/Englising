@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 interface MultiroomProps {
     room_id: number;
     room_name: string;
@@ -10,13 +9,12 @@ interface MultiroomProps {
 }
 
 
-
 const Multiroom: React.FC<MultiroomProps> = ({room_name, current_user, max_user, multi_img}) => {
     return (
-        <div className='text-white bg-primary-500/50 w-52 relative rounded-lg hover:opacity-50 relative'>
+        <div className='text-white bg-primary-800/50 w-52 relative rounded-lg hover:brightness-150 relative'>
             <img src={multi_img} alt={room_name} className='w-52 h-48 rounded-t-lg '/>
-            <div className='rounded-full h-9 w-9 bg-white absolute right-2 top-44 text-sm text-center font-bold text-black'>
-                <p className=''>입장</p>
+            <div className='flex justify-center items-center rounded-full h-9 w-9 bg-white absolute right-2 top-44 text-xs text-center font-bold text-black'>
+                <p>입장</p>
             </div>
             <div className='flex flex-row'>
                 <div className='pt-2 pl-2'>

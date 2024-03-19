@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import img2002 from '../assets/2002.jpg';
 import imgChanges from '../assets/changes.jpg';
 import imgLover from '../assets/lover.jpg';
@@ -8,6 +8,7 @@ import imgMe from '../assets/me.jpg';
 import Sidebar from '../component/main/Sidebar.tsx';
 import LpPlayer from '../component/main/LpPlayer.tsx';
 import Singleroom from '../component/main/SingleRoom.tsx';
+
 
 interface Music {
     album_title: string;
@@ -19,7 +20,14 @@ interface Music {
     is_like: boolean;
 }
 
-const MainPage: React.FC = () => {
+export interface SelectedMusic {
+    track_title: string;
+    artists: string;
+    album_img: string;
+}
+
+
+const SelectSinglePage: React.FC = () => {
     const music: Music[] = [{
         album_title: 'album_title 1',
         track_id: 1,
@@ -70,7 +78,19 @@ const MainPage: React.FC = () => {
         score: 1,
         is_like: true
     }];
+    const [selectedMusic, setSeletedMusic] = useState<SelectedMusic>({
+        track_title: "",
+        artists: "",
+        album_img: ""
+    })
 
+    const handleClickButton = (index: number):void => {
+        setSeletedMusic({
+            track_title: music[index].track_title,
+            artists: music[index].artists,
+            album_img: music[index].album_img
+        })
+    }
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 flex">
             {/* sideBar */}
@@ -91,7 +111,7 @@ const MainPage: React.FC = () => {
                 {/* lp판 */}
                 <div >
                     <h1 className='text-white font-bold text-xl w-60 pb-6'>싱글 플레이</h1>
-                    <LpPlayer/>
+                    <LpPlayer title={selectedMusic.track_title} img={selectedMusic.album_img} artists={selectedMusic.artists}/>
                 </div>
 
                     {/* 플레이리스트 목록 */}
@@ -105,8 +125,10 @@ const MainPage: React.FC = () => {
     
                     <div className="relative flex flex-col overflow-y-auto h-full">
                         <div className='text-white grid grid-cols-3 gap-4 justify-items-start '>
-                            {music.map((item)=> (
-                                <Singleroom album_title={item.album_title} title={item.track_title} artists={item.artists} img={item.album_img} is_like={item.is_like} score={item.score}/>
+                            {music.map((item, index)=> (
+                                <div key={index} onClick={() => handleClickButton(index)}>
+                                    <Singleroom album_title={item.album_title} title={item.track_title} artists={item.artists} img={item.album_img} is_like={item.is_like} score={item.score} />
+                                </div>
                             ))}
                         </div>
                     </div>
@@ -118,4 +140,4 @@ const MainPage: React.FC = () => {
     );
 };
 
-export default MainPage;
+export default SelectSinglePage;
