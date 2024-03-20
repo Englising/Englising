@@ -1,48 +1,75 @@
 package org.englising.com.englisingbe.user.dto;
 
+import lombok.Getter;
+import org.englising.com.englisingbe.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
 
+// Spring Security는 유저 인증과정에서 UserDetails 참조하여 간단한 인증 진행 가능
+// DB의 위에서 선언한 사용자의 정보를 토대로 인증 진행하도록 설정
+// User에 바로 UserDetials 상속해도 동작 엔티티 관련 여러 단점 존재 (공부)
+
+@Getter
 public class CustomUserDetails implements UserDetails {
 
-    //todo. 전체적으로 수정 !!!
+    private User user;
+    private Map<String, Object> attribute;
 
-    private Long userId;
+    /**
+     * 우리 서비스는 비밀번호를 받지 않기 때문에 password 임의로 지정해둔다.
+     * */
+    private String password = "password";
 
+    public CustomUserDetails(User user) {
+        this.user = user;
+    }
+
+    /**
+     * 우리 서비스는 권한이 따로 없음 (관리자나 다른 권한 x)
+     * -> 이용자에게 가장 기본적인 사용자 권한 (ROLE_USER) 부여해주기
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return new BCryptPasswordEncoder().encode(password);
     }
 
+    /**
+     * email로 가져오기
+     * */
     @Override
     public String getUsername() {
-        return  userId.toString();
+        return  user.getEmail();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
