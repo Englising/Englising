@@ -5,7 +5,6 @@ import imgLover from '../assets/lover.jpg';
 import imgSugar from '../assets/sugar.jpg';
 import imgYouth from '../assets/youth.jpg';
 import imgMe from '../assets/me.jpg';
-import Sidebar from '../component/main/Sidebar.tsx';
 import LpPlayer from '../component/main/LpPlayer.tsx';
 import Singleroom from '../component/main/SingleRoom.tsx';
 
@@ -93,9 +92,6 @@ const SelectSinglePage: React.FC = () => {
     }
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 flex">
-            {/* sideBar */}
-            <Sidebar/>
-
             {/*검색창*/}
             <div className='flex flex-col pt-10 pl-8 '>
             <div className="h-11 w-3/5 rounded-lg bg-gradient-to-r from-[white] via-[#00ffff] to-[#3F4685] p-0.5 relative">

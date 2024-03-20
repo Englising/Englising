@@ -1,5 +1,4 @@
 import React from 'react';
-import Sidebar from '../component/main/Sidebar.tsx';
 import Multiroom from '../component/main/MultiRoom.tsx';
 import imgRoom1 from '../assets/imgRoom1.jpg';
 import imgRoom2 from '../assets/imgRoom2.jpg';
@@ -63,9 +62,6 @@ const SelectMultiPage: React.FC = () => {
 
     return (
         <div className="bg-black h-screen w-screen m-0 p-0 flex">
-            {/* sideBar */}
-            <Sidebar/>
-
             <div className='flex flex-col pt-10 pl-8'>
 
                 <div className='pt-8 flex flex-row'>
