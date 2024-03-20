@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.englising.com.englisingbe.singleplay.dto.TrackWithArtistDto;
 import org.englising.com.englisingbe.artist.entity.Artist;
+import org.englising.com.englisingbe.track.dto.TrackAlbumArtistDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,20 +26,22 @@ public class TrackResponseDto {
     public Integer score;
     public Boolean isLike;
 
-    public static TrackResponseDto getTrackResponseDtoFromTrack(TrackWithArtistDto trackWithArtist){
+    public static TrackResponseDto getTrackResponseFromTrackAlbumArtist(TrackAlbumArtistDto trackAlbumArtistDto, Integer score, Boolean isLike){
         return TrackResponseDto.builder()
-                .albumId(trackWithArtist.getTrack().getAlbum().getAlbumId())
-                .albumTitle(trackWithArtist.getTrack().getAlbum().getTitle())
-                .albumImg(trackWithArtist.getTrack().getAlbum().getCoverImage())
-                .trackId(trackWithArtist.getTrack().getTrackId())
-                .trackTitle(trackWithArtist.getTrack().getTitle())
-                .artists(trackWithArtist.getArtists().stream()
-                        .map(Artist::getName)
-                        .collect(Collectors.toList()))
-                .spotifyId(trackWithArtist.getTrack().getSpotifyId())
-                .youtubeId(trackWithArtist.getTrack().getYoutubeId())
-                .score(0)
-                .isLike(true)
+                .albumId(trackAlbumArtistDto.getAlbum().getAlbumId())
+                .albumTitle(trackAlbumArtistDto.getAlbum().getTitle())
+                .albumImg(trackAlbumArtistDto.getAlbum().getCoverImage())
+                .trackId(trackAlbumArtistDto.getTrack().getTrackId())
+                .trackTitle(trackAlbumArtistDto.getTrack().getTitle())
+                .artists(trackAlbumArtistDto.getArtists()
+                        .stream()
+                        .map(artist -> {
+                            return artist.getName();
+                        }).collect(Collectors.toList()))
+                .spotifyId(trackAlbumArtistDto.getTrack().getSpotifyId())
+                .youtubeId(trackAlbumArtistDto.getTrack().getYoutubeId())
+                .score(score)
+                .isLike(isLike)
                 .build();
     }
 }

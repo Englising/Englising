@@ -37,11 +37,10 @@ public class AuthService {
                     .profileImg(makeRandomProfileImgUrl()) //todo. 수정
                     .type("GUEST") // default로 GUEST 되어있으면 빼기
                     .build();
-
         userRepository.save(user); // 회원 등록
 
         CustomUserDetails customUserDetails =
-                (CustomUserDetails) customUserDetailService.loadUserByUsername(user.getEmail());
+                (CustomUserDetails) customUserDetailService.loadUserByUsername(user.getUserId().toString());
 
         // 1. Authentication 생성
         System.out.println("Authentication 생성 시작");
@@ -99,5 +98,4 @@ public class AuthService {
         String img = uuid + "프로필이미지";
         return img;
     }
-
 }

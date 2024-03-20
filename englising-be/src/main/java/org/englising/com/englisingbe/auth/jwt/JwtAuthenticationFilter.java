@@ -42,7 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) 
             throws ServletException, IOException {
-
         // 로그인 요청은 필터 진행 안하고 넘어감
 //        boolean skipFilter = Arrays.stream(NO_CHECK_URL).anyMatch(url -> request.getRequestURI().equals(url));
 //        if (skipFilter) {
@@ -60,13 +59,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 쿠키에서 accessToken 추출.
         String accessToken = cookieUtil.getAccessTokenFromCookie(request);
-        
+
         try {
             //  2 3 4
             if (accessToken != null && jwtProvider.isTokenValid(accessToken)) {    // accessToken이 유효한 경우
                 //유효한 토큰이면 해당 토큰으로 Authentication 가져와서 SecurityContext에 저장
                 Authentication authentication = jwtProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                System.out.println("인증 성공");
             } else { // accessToken이 유효하지 않은 경우
                 System.out.println("accessToken이 유효하지 않습니다. ");
                 System.out.println("refreshToken 꺼내서 확인 후 유효성 확인 시작. ");
