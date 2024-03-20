@@ -1,17 +1,16 @@
 package org.englising.com.englisingbe.global.config;
 
 import lombok.RequiredArgsConstructor;
-import org.englising.com.englisingbe.jwt.JwtAuthenticationFilter;
-import org.englising.com.englisingbe.jwt.JwtExceptionFilter;
-import org.englising.com.englisingbe.user.handler.OAuth2LoginFailureHandler;
-import org.englising.com.englisingbe.user.handler.OAuth2LoginSuccessHandler;
-import org.englising.com.englisingbe.user.service.CustomOAuth2UserService;
+import org.englising.com.englisingbe.auth.jwt.JwtAuthenticationFilter;
+import org.englising.com.englisingbe.auth.jwt.JwtExceptionFilter;
+import org.englising.com.englisingbe.auth.handler.OAuth2LoginFailureHandler;
+import org.englising.com.englisingbe.auth.handler.OAuth2LoginSuccessHandler;
+import org.englising.com.englisingbe.auth.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

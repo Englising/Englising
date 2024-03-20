@@ -16,7 +16,7 @@ import org.englising.com.englisingbe.singleplay.dto.request.SinglePlayRequestDto
 import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.response.*;
 import org.englising.com.englisingbe.singleplay.service.SinglePlayServiceImpl;
-import org.englising.com.englisingbe.user.dto.CustomUserDetails;
+import org.englising.com.englisingbe.auth.dto.CustomUserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

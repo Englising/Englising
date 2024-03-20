@@ -1,18 +1,15 @@
-package org.englising.com.englisingbe.user.controller;
+package org.englising.com.englisingbe.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
-import org.englising.com.englisingbe.jwt.CookieUtil;
-import org.englising.com.englisingbe.jwt.JwtResponseDto;
-import org.englising.com.englisingbe.user.service.AuthService;
+import org.englising.com.englisingbe.auth.jwt.CookieUtil;
+import org.englising.com.englisingbe.auth.jwt.JwtResponseDto;
+import org.englising.com.englisingbe.auth.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

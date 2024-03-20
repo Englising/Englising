@@ -1,12 +1,12 @@
-package org.englising.com.englisingbe.user.service;
+package org.englising.com.englisingbe.auth.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.englising.com.englisingbe.jwt.CookieUtil;
-import org.englising.com.englisingbe.jwt.JwtProvider;
-import org.englising.com.englisingbe.jwt.JwtResponseDto;
-import org.englising.com.englisingbe.user.dto.CustomUserDetails;
+import org.englising.com.englisingbe.auth.jwt.CookieUtil;
+import org.englising.com.englisingbe.auth.jwt.JwtProvider;
+import org.englising.com.englisingbe.auth.jwt.JwtResponseDto;
+import org.englising.com.englisingbe.auth.dto.CustomUserDetails;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.repository.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.PrimitiveIterator;
 import java.util.UUID;
 
 @Service

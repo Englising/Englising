@@ -1,12 +1,9 @@
 package org.englising.com.englisingbe.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
-import org.englising.com.englisingbe.user.dto.CustomUserDetails;
+import org.englising.com.englisingbe.auth.dto.CustomUserDetails;
 import org.englising.com.englisingbe.user.dto.ProfileDto;
 import org.englising.com.englisingbe.user.service.UserService;
 import org.springframework.http.HttpStatus;

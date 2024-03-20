@@ -1,4 +1,4 @@
-package org.englising.com.englisingbe.user.dto;
+package org.englising.com.englisingbe.auth.dto;
 
 import lombok.Getter;
 import org.englising.com.englisingbe.user.entity.User;
