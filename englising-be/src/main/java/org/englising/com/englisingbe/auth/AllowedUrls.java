@@ -13,7 +13,6 @@ public class AllowedUrls {
             /* swagger v3 */
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/auth/**",
-            "/**"
+            "/auth/**"
     };
 }
