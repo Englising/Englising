@@ -55,7 +55,7 @@ public class SinglePlayController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        DefaultResponseDto.<List<TrackResponseDto>>builder()
+                        DefaultResponseDto.<PlayListDto>builder()
                                 .status(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getCode())
                                 .message(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getMessage())
                                 .data(singlePlayService.getPlayList(PlayListType.like, page, size, 1L))
