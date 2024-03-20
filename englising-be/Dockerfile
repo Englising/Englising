@@ -4,4 +4,5 @@ COPY --from=docker/buildx-bin:latest /buildx /usr/libexec/docker/cli-plugins/doc
 FROM openjdk:17-jdk
 EXPOSE 443
 ADD ./build/libs/englising-be-0.0.1-SNAPSHOT.jar app.jar
+COPY ./src/main/resources/application-prod.yml /application-prod.yml
 ENTRYPOINT ["java", "-jar", "/app.jar"]

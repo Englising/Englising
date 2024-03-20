@@ -23,7 +23,7 @@ public class Album {
     private Long albumId;
 
     @Column(name = "title")
-    private String trackId;
+    private String title;
 
     @Column(name = "type")
     private String type;

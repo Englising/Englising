@@ -63,6 +63,9 @@ public class Track {
     @Column(name = "genre")
     private String genre;
 
+    @Column(name = "lyric_status")
+    private String lyricStatus;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private Timestamp createdAt;
