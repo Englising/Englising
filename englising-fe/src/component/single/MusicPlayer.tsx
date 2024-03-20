@@ -21,7 +21,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
     const handleReady = () => {
         setMuted(false);
     }
-
+    
     const handleProgress = (e: OnProgressProps) => {
         if(timeData[idx+1] < e.playedSeconds-0.1){
             if(!isBlank){
@@ -43,19 +43,23 @@ const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
     },[toggleNext])
 
     return(
-        <div>
-            <ReactPlayer
-                width={'400px'}
-                ref={player}
-                url= {url}
-                playing = {playing} 
-                muted = {muted}
-                controls = {true} // 기본 control를 띄울 것인지 - 나중에 지울것
-                progressInterval = {100} // onProgress의 텀을 설정한다.
-                onReady={handleReady} // 재생 준비가 완료되면 호출될 함수? 재생 준비 기준이 뭔지
-                onProgress={(e) => {handleProgress(e)}}
-                onEnded={handleEnded}
-            />        
+        <div className="flex flex-col items-center">
+            <div>비비 밤양갱</div>
+            <div>
+                <ReactPlayer
+                    width={'600px'}
+                    height={'400px'}
+                    ref={player}
+                    url= {url}
+                    playing = {playing} 
+                    muted = {muted}
+                    controls = {true} // 기본 control를 띄울 것인지 - 나중에 지울것
+                    progressInterval = {100} // onProgress의 텀을 설정한다.
+                    onReady={handleReady} // 재생 준비가 완료되면 호출될 함수? 재생 준비 기준이 뭔지
+                    onProgress={(e) => {handleProgress(e)}}
+                    onEnded={handleEnded}
+                />   
+            </div>     
         </div>
     )
 }

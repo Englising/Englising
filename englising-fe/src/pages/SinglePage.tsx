@@ -87,22 +87,27 @@ const SinglePage = () => {
         });
     }
 
+    const onSkip = async ():Promise<void> => {
+        const lyric = singleData.data.lyrics[playInfo.idx+1];
+        onSetInfo(playInfo.idx+1, lyric.isBlank, lyric.startTime, lyric.endTime);
+    }
+
     //동적으로 url 구성
     const ur1 = 'src/assets/2002.jpg';
 
     return (
-        <div className={`bg-[url('src/assets/2002.jpg')] bg-cover bg-center h-screen w-screen p-0 m-0`}>            
-            <div className="flex flex-col  bg-black h-screen w-screen bg-opacity-70">
-                <div className="flex h-5/6">
-                    <div className="w-1/4">
+        <div className={`bg-[url('src/assets/bam.PNG')] bg-cover bg-center h-svh w-screen p-0 m-0`}>            
+            <div className="flex flex-col  bg-black h-svh w-screen bg-opacity-80">
+                <div className="flex h-[90%]">
+                    <div className="w-1/3">
                         <MusicPlayer onSetInfoIdx = {onSetInfoIdx} playInfo = {playInfo} /> 
                     </div>
-                    <div className="w-3/4">
+                    <div className="w-2/3">
                         <Lyrics onSetInfo = {onSetInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
                     </div>
                 </div>
-                <div className="h-1/6 bg-black flex justify-center">
-                    <FooterVar onSetAnswer = {onSetAnswer}/>
+                <div className="h-[10%] bg-black flex justify-center">
+                    <FooterVar onSetAnswer = {onSetAnswer} onSkip = {onSkip}/>
                 </div>
                 </div>
         </div>

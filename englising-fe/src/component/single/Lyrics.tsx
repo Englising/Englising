@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { PlayInfo, SingleData, Lyric, Word, AnswerInfo} from "../../pages/SinglePage.tsx";
+import { PlayInfo, SingleData, Lyric, Word, AnswerInfo } from "../../pages/SinglePage.tsx";
+import HintModal from "./HintModal.tsx";
 
 interface Props {
     onSetInfo(currIdx: number,  blank: boolean, start: number, end: number): void,
@@ -15,7 +16,10 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
     const [blankWord, setBlankWord] = useState<Word[]>([]);
     const lyricsRef = useRef<(HTMLDivElement | null)[]>([]);
     const blanksRef = useRef<(HTMLSpanElement | null)[]>([]);
-
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [hintWord, setHintWord] = useState<string>("");
+    const [hintNum, setHintNum] = useState<number>(3);
+    
     // aixos 호출로 데이터 받기 ///////////////////
     useEffect(() => {
         const lyricsData:Lyric[] = singleData.data.lyrics;
@@ -26,6 +30,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
     /////////////////////////////////////////////
 
     // FootVar에서 답안이 입력되었을 때
+
     useEffect(() => {
         if(answer === "") return; 
         
@@ -50,7 +55,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
             return sentenceIdx == `${idx}` && isSolve == `0`; 
         }) ?? null;
 
-        // 빈칸을 먼저 찾고 없으면 그때 1 오답인거 가져오기
+        // 빈칸을 먼저 찾고 없으면 그때 오답인거 가져오기
         if(targetBlank == null) {
             targetBlank = blanksRef.current.find(el => {
                 const sentenceIdx = el?.dataset.sentence;
@@ -89,7 +94,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
         lyricsRef.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, [idx])
     
-    const handleLyricsClick = (currIdx: number, blank: boolean, start: number, end: number) => {
+    const handleLyricsClick = (currIdx: number, blank: boolean, start: number, end: number): void => {
         /*
         선택된 Element
         console.log(lyricsRef.current[index]);
@@ -100,17 +105,63 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
         onSetInfo(currIdx, blank, start, end);
     }
     
+    const handleHintClick = (e: React.MouseEvent, word: string): void => {
+        e.stopPropagation();
+        setHintWord(word);
+        setShowModal(true);
+    }
+
+const speak = (word: string): void => {
+    const voicesChangedHandler = () => {
+        const voices: SpeechSynthesisVoice[] = speechSynthesis.getVoices();
+        
+        // 목소리를 설정하고 발화
+        const utter: any = new SpeechSynthesisUtterance(word);
+        utter.voice = voices[2]; 
+        speechSynthesis.speak(utter);
+
+        // 이벤트 핸들러 제거
+        speechSynthesis.onvoiceschanged = null;
+    };
+
+    // 이벤트 핸들러 등록
+    speechSynthesis.onvoiceschanged = voicesChangedHandler;
+
+    // 현재 목소리를 가져와서 발화
+    const voices: SpeechSynthesisVoice[] = speechSynthesis.getVoices();
+    if (voices.length > 0) {
+        const utter: any = new SpeechSynthesisUtterance(word);
+        utter.voice = voices[2]; 
+        speechSynthesis.speak(utter);
+    }
+};
+
+    const onUse = (word: string) => { //힌트 사용 
+        setHintNum(hintNum - 1);
+        setShowModal(!showModal);
+        speak(word);
+    }
+
+    const onCancel = () => { //힌트 취소 -> 힌트 모두 소진시 onCancel만 쓸거임
+        setShowModal(!showModal);
+    }
 
     return(
-        <div className="w-full  max-h-full py-10 px-20 box-border text-center overflow-y-scroll select-none">
+        <div className="w-[90%] h-[1200px] flex flex-col items-center py-10 px-20 box-border text-center overflow-y-scroll select-none">
+            {showModal ? (<div className="relative">
+                <HintModal hintWord={hintWord} hintNum={hintNum} onUse={onUse} onCancel={onCancel} />
+            </div>) : (<></>)}
             {lyrics.map((lyric, i) => {
                 return(
                     <div 
                     key={i} 
-                    className={idx == i ? "w-5/6 h-20 text-4xl bg-black/40 rounded-xl text-white" : "w-5/6 h-20 text-xl text-primary-300 "} 
+                    className={idx == i ? 
+                        `w-[80%] h-80 flex justify-center items-center text-3xl bg-black/50 rounded-xl text-white` : 
+                        `w-[80%] h-44 flex justify-center items-center text-xl text-primary-300`} 
                     ref={(el) => lyricsRef.current[i] = el} 
                     onClick={() => 
                     handleLyricsClick(i, lyric.isBlank, lyric.startTime, lyric.endTime)}>
+                        <div>
                         {lyric.lyric.map((word, j) => {
                             let isBlank:boolean = false;
                             let blankIdx:number = 0;
@@ -125,17 +176,31 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
                             //data-isSolve: 0=미해결, 1=오답, 2=정답
                             return (
                                 isBlank ? 
-                                (<span 
-                                key={j} 
-                                className={"bg-white rounded-sm text-white"}
-                                ref={(el) => blanksRef.current[blankIdx] = el}
-                                data-sentence ={i}
-                                data-solve="0"> 
-                                {word}
-                                </span>) 
+                                    (idx == i ?
+                                        (<span 
+                                        key={j} 
+                                        className={"mx-2 bg-white rounded-lg text-white"}
+                                        ref={(el) => blanksRef.current[blankIdx] = el}
+                                        data-sentence ={i}
+                                        data-solve="0"
+                                        onClick={(e) => handleHintClick(e, word)}
+                                        > 
+                                        {word}
+                                        </span>) :
+                                        (<span 
+                                        key={j} 
+                                        className={"mx-2 bg-white rounded-lg text-white"}
+                                        ref={(el) => blanksRef.current[blankIdx] = el}
+                                        data-sentence ={i}
+                                        data-solve="0"
+                                        > 
+                                        {word}
+                                        </span>))
+                                 
                                 : (<span key={j}> {word} </span>)
                             );
                         })}
+                        </div>
                     </div>
                 );
             })}
