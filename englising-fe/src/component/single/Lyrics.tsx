@@ -100,17 +100,19 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
         onSetInfo(currIdx, blank, start, end);
     }
     
-
     return(
-        <div className="w-full  max-h-full py-10 px-20 box-border text-center overflow-y-scroll select-none">
+        <div className="w-[90%] h-[1200px] flex flex-col items-center py-10 px-20 box-border text-center overflow-y-scroll select-none">
             {lyrics.map((lyric, i) => {
                 return(
                     <div 
                     key={i} 
-                    className={idx == i ? "w-5/6 h-20 text-4xl bg-black/40 rounded-xl text-white" : "w-5/6 h-20 text-xl text-primary-300 "} 
+                    className={idx == i ? 
+                        `w-[80%] h-80 flex justify-center items-center text-3xl bg-black/50 rounded-xl text-white` : 
+                        `w-[80%] h-44 flex justify-center items-center text-xl text-primary-300`} 
                     ref={(el) => lyricsRef.current[i] = el} 
                     onClick={() => 
                     handleLyricsClick(i, lyric.isBlank, lyric.startTime, lyric.endTime)}>
+                        <div>
                         {lyric.lyric.map((word, j) => {
                             let isBlank:boolean = false;
                             let blankIdx:number = 0;
@@ -127,7 +129,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
                                 isBlank ? 
                                 (<span 
                                 key={j} 
-                                className={"bg-white rounded-sm text-white"}
+                                className={"mx-2 bg-white rounded-lg text-white"}
                                 ref={(el) => blanksRef.current[blankIdx] = el}
                                 data-sentence ={i}
                                 data-solve="0"> 
@@ -136,6 +138,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
                                 : (<span key={j}> {word} </span>)
                             );
                         })}
+                        </div>
                     </div>
                 );
             })}
