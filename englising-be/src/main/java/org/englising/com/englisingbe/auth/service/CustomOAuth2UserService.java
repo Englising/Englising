@@ -1,9 +1,9 @@
-package org.englising.com.englisingbe.user.service;
+package org.englising.com.englisingbe.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.englising.com.englisingbe.user.CustomOAuth2User;
-import org.englising.com.englisingbe.user.OAuthAttributes;
+import org.englising.com.englisingbe.auth.CustomOAuth2User;
+import org.englising.com.englisingbe.auth.OAuthAttributes;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,4 +1,4 @@
-package org.englising.com.englisingbe.jwt;
+package org.englising.com.englisingbe.auth.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;

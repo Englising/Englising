@@ -1,7 +1,7 @@
-package org.englising.com.englisingbe.jwt;
+package org.englising.com.englisingbe.auth.jwt;
 
-import org.englising.com.englisingbe.user.dto.CustomUserDetails;
-import org.englising.com.englisingbe.user.service.CustomUserDetailService;
+import org.englising.com.englisingbe.auth.dto.CustomUserDetails;
+import org.englising.com.englisingbe.auth.service.CustomUserDetailService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

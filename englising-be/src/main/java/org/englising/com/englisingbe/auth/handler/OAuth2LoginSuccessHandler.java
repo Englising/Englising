@@ -1,4 +1,4 @@
-package org.englising.com.englisingbe.user.handler;
+package org.englising.com.englisingbe.auth.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -6,10 +6,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.englising.com.englisingbe.jwt.CookieUtil;
-import org.englising.com.englisingbe.jwt.JwtProvider;
-import org.englising.com.englisingbe.jwt.JwtResponseDto;
-import org.englising.com.englisingbe.user.CustomOAuth2User;
+import org.englising.com.englisingbe.auth.jwt.CookieUtil;
+import org.englising.com.englisingbe.auth.jwt.JwtProvider;
+import org.englising.com.englisingbe.auth.jwt.JwtResponseDto;
+import org.englising.com.englisingbe.auth.CustomOAuth2User;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.repository.UserRepository;
 import org.springframework.security.core.Authentication;

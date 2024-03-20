@@ -1,4 +1,4 @@
-package org.englising.com.englisingbe.user;
+package org.englising.com.englisingbe.auth;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,11 +1,9 @@
-package org.englising.com.englisingbe.user;
+package org.englising.com.englisingbe.auth;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.englising.com.englisingbe.user.dto.KakaoOAuth2Response;
-import org.englising.com.englisingbe.user.dto.OAuth2Response;
+import org.englising.com.englisingbe.auth.dto.KakaoOAuth2Response;
+import org.englising.com.englisingbe.auth.dto.OAuth2Response;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.service.UserService;
 
