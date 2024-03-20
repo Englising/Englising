@@ -33,45 +33,4 @@ public class UserService {
         user.updateUser(profileDto.getNickname(), profileDto.getProfileImg());
     }
 
-
-//    @Transactional
-//    public void updateTrade(Long tradeId, User user, MultipartFile image, String content, int duration) {
-//        Trade trade = tradeRepository.findById(tradeId)
-//                .orElseThrow(() -> new BaseException(ErrorCode.TRADE_NOT_FOUND));
-//        s3Service.deleteFile(trade.getImage());
-//        String imagePath = s3Service.saveFile(image);
-//        trade.updateTrade(imagePath, content, duration);
-//    }
-
-
-
-//    public Slice<ReviewResponseDto> getReviewList(Long eventId, Long userId, Pageable pageable) {
-//        return reviewRepository.findSliceByEventId(eventId, userId, pageable);
-//    }
-//
-//    @Transactional
-//    public void saveReview(Long eventId, Long userId, String content, MultipartFile image) {
-//
-//        Event event = eventRepository.findById(eventId).orElseThrow(() -> new BaseException(EVENT_NOT_FOUND));
-//        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
-//
-//        String imagePath = null;
-//        if (image != null) {
-//            imagePath = s3Service.saveFile(image);
-//        }
-//
-//        reviewRepository.save(Review.builder()
-//                .content(content)
-//                .event(event)
-//                .user(user)
-//                .image(imagePath)
-//                .build());
-//    }
-
-    //USER_NOT_FOUND(404, "USER-004", "유저를 찾을 수 없는 경우"),
-
-
-
-
-
 }
