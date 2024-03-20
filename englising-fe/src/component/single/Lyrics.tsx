@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { PlayInfo, SingleData, Lyric, Word, AnswerInfo } from "../../pages/SinglePage.tsx";
+import HintModal from "./HintModal.tsx";
 
 interface Props {
     onSetInfo(currIdx: number,  blank: boolean, start: number, end: number): void,
@@ -15,9 +16,10 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
     const [blankWord, setBlankWord] = useState<Word[]>([]);
     const lyricsRef = useRef<(HTMLDivElement | null)[]>([]);
     const blanksRef = useRef<(HTMLSpanElement | null)[]>([]);
-    const synth: SpeechSynthesis = speechSynthesis;
-    const voices: SpeechSynthesisVoice[] = synth.getVoices();
-
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [hintWord, setHintWord] = useState<string>("");
+    const [hintNum, setHintNum] = useState<number>(3);
+    
     // aixos 호출로 데이터 받기 ///////////////////
     useEffect(() => {
         const lyricsData:Lyric[] = singleData.data.lyrics;
@@ -28,6 +30,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
     /////////////////////////////////////////////
 
     // FootVar에서 답안이 입력되었을 때
+
     useEffect(() => {
         if(answer === "") return; 
         
@@ -101,20 +104,53 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
         // single page -> player (가사의 시작시간, 종료시간)
         onSetInfo(currIdx, blank, start, end);
     }
-
     
     const handleHintClick = (e: React.MouseEvent, word: string): void => {
         e.stopPropagation();
-        // 발화 객체
-        const utter: any = new SpeechSynthesisUtterance(word);
+        setHintWord(word);
+        setShowModal(true);
+    }
 
-        utter.voice = voices.find((voice: SpeechSynthesisVoice) => voice.lang == 'en-US');
-        synth.speak(utter);
+const speak = (word: string): void => {
+    const voicesChangedHandler = () => {
+        const voices: SpeechSynthesisVoice[] = speechSynthesis.getVoices();
         
-        }
+        // 목소리를 설정하고 발화
+        const utter: any = new SpeechSynthesisUtterance(word);
+        utter.voice = voices[2]; 
+        speechSynthesis.speak(utter);
+
+        // 이벤트 핸들러 제거
+        speechSynthesis.onvoiceschanged = null;
+    };
+
+    // 이벤트 핸들러 등록
+    speechSynthesis.onvoiceschanged = voicesChangedHandler;
+
+    // 현재 목소리를 가져와서 발화
+    const voices: SpeechSynthesisVoice[] = speechSynthesis.getVoices();
+    if (voices.length > 0) {
+        const utter: any = new SpeechSynthesisUtterance(word);
+        utter.voice = voices[2]; 
+        speechSynthesis.speak(utter);
+    }
+};
+
+    const onUse = (word: string) => { //힌트 사용 
+        setHintNum(hintNum - 1);
+        setShowModal(!showModal);
+        speak(word);
+    }
+
+    const onCancel = () => { //힌트 취소 -> 힌트 모두 소진시 onCancel만 쓸거임
+        setShowModal(!showModal);
+    }
 
     return(
         <div className="w-[90%] h-[1200px] flex flex-col items-center py-10 px-20 box-border text-center overflow-y-scroll select-none">
+            {showModal ? (<div className="relative">
+                <HintModal hintWord={hintWord} hintNum={hintNum} onUse={onUse} onCancel={onCancel} />
+            </div>) : (<></>)}
             {lyrics.map((lyric, i) => {
                 return(
                     <div 
