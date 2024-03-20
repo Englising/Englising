@@ -1,4 +1,4 @@
-package org.englising.com.englisingbe.user.handler;
+package org.englising.com.englisingbe.auth.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
