@@ -25,7 +25,6 @@ public class UserController {
             description = "회원 프로필을 조회합니다"
     )
     public ResponseEntity<DefaultResponseDto<?>> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
-
         ProfileDto profileDto = userService.getProfile(userDetails.getUsername());
 
         return ResponseEntity
@@ -35,7 +34,6 @@ public class UserController {
                         profileDto));
     }
 
-
     @PutMapping("/profile")
     @Operation(
             summary = "회원 프로필 수정",
@@ -43,14 +41,12 @@ public class UserController {
     )
     public ResponseEntity<DefaultResponseDto<?>> updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                             @RequestBody ProfileDto profileDto) {
-
         userService.updateProfile(userDetails.getUsername(), profileDto);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new DefaultResponseDto<>(HttpStatus.OK.value(), "회원 프로필을 수정합니다", null));
+                .body(new DefaultResponseDto<>(UserResponseMessage.USER_UPDATEPROFILE_MESSAGE.getCode(),
+                        UserResponseMessage.USER_UPDATEPROFILE_MESSAGE.getMessage(),
+                        null));
     }
-
-
-
-
 }
