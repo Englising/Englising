@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.englising.com.englisingbe.auth.dto.KakaoOAuth2Response;
 import org.englising.com.englisingbe.auth.dto.OAuth2Response;
+import org.englising.com.englisingbe.auth.service.AuthService;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.service.UserService;
 
@@ -15,13 +16,13 @@ import java.util.Map;
 public class OAuthAttributes {
     private final String nameAttributeKey; //OAuth2 로그인 진행 시 키가 되는 필드 값
     private final OAuth2Response oAuth2Response; // 소셜 타입별 로그인 유저 응답 정보
-    private final UserService userService;
+    private final AuthService authService;
 
     @Builder
-    private OAuthAttributes (String nameAttributeKey, OAuth2Response oAuth2Response, UserService userService) {
+    private OAuthAttributes (String nameAttributeKey, OAuth2Response oAuth2Response, AuthService authService) {
         this.nameAttributeKey = nameAttributeKey;
         this.oAuth2Response = oAuth2Response;
-        this.userService = userService;
+        this.authService = authService;
     }
 
     public static OAuthAttributes of(String registrationId, String userNameAttributeName,
@@ -51,8 +52,8 @@ public class OAuthAttributes {
     public User toEntity(String registrationId, OAuth2Response oAuth2Response) {
         return User.builder()
                 .email(oAuth2Response.getEmail())
-                .nickname(userService.makeRandomNickname())
-                .profileImg(userService.makeRandomProfileImgUrl())
+                .nickname(authService.makeRandomNickname())
+                .profileImg(authService.makeRandomProfileImgUrl())
                 .type("USER")
                 .build();
     }

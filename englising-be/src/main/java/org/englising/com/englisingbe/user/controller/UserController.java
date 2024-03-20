@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
 import org.englising.com.englisingbe.auth.dto.CustomUserDetails;
 import org.englising.com.englisingbe.user.dto.ProfileDto;
+import org.englising.com.englisingbe.user.dto.UserResponseMessage;
 import org.englising.com.englisingbe.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,9 @@ public class UserController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new DefaultResponseDto<>(HttpStatus.OK.value(), "회원 프로필을 조회합니다.", profileDto));
+                .body(new DefaultResponseDto<>(UserResponseMessage.USER_GETPROFILE_MESSAGE.getCode(),
+                        UserResponseMessage.USER_GETPROFILE_MESSAGE.getMessage(),
+                        profileDto));
     }
 
 
