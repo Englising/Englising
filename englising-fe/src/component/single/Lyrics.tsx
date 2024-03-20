@@ -89,7 +89,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
         lyricsRef.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, [idx])
     
-    const handleLyricsClick = (currIdx: number, blank: boolean, start: number, end: number) => {
+    const handleLyricsClick = (currIdx: number, blank: boolean, start: number, end: number): void => {
         /*
         선택된 Element
         console.log(lyricsRef.current[index]);
@@ -100,6 +100,11 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
         onSetInfo(currIdx, blank, start, end);
     }
     
+    const handleHintClick = (e: React.MouseEvent): void => {
+        e.stopPropagation();
+        alert("헤잉")
+    }
+
     return(
         <div className="w-[90%] h-[1200px] flex flex-col items-center py-10 px-20 box-border text-center overflow-y-scroll select-none">
             {lyrics.map((lyric, i) => {
@@ -127,14 +132,27 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
                             //data-isSolve: 0=미해결, 1=오답, 2=정답
                             return (
                                 isBlank ? 
-                                (<span 
-                                key={j} 
-                                className={"mx-2 bg-white rounded-lg text-white"}
-                                ref={(el) => blanksRef.current[blankIdx] = el}
-                                data-sentence ={i}
-                                data-solve="0"> 
-                                {word}
-                                </span>) 
+                                    (idx == i ?
+                                        (<span 
+                                        key={j} 
+                                        className={"mx-2 bg-white rounded-lg text-white"}
+                                        ref={(el) => blanksRef.current[blankIdx] = el}
+                                        data-sentence ={i}
+                                        data-solve="0"
+                                        onClick={(e) => handleHintClick(e)}
+                                        > 
+                                        {word}
+                                        </span>) :
+                                        (<span 
+                                        key={j} 
+                                        className={"mx-2 bg-white rounded-lg text-white"}
+                                        ref={(el) => blanksRef.current[blankIdx] = el}
+                                        data-sentence ={i}
+                                        data-solve="0"
+                                        > 
+                                        {word}
+                                        </span>))
+                                 
                                 : (<span key={j}> {word} </span>)
                             );
                         })}
