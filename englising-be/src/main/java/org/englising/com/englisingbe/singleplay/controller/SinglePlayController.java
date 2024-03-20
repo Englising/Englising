@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
 import org.englising.com.englisingbe.global.util.PlayListType;
+import org.englising.com.englisingbe.global.util.ResponseMessage;
 import org.englising.com.englisingbe.singleplay.dto.request.SinglePlayRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.response.*;
@@ -52,9 +53,15 @@ public class SinglePlayController {
             )
     )
     public ResponseEntity getPlaylists(@RequestParam PlayListType type, @RequestParam Integer page, @RequestParam Integer size){
-        DefaultResponseDto<List<TrackResponseDto>> response = new DefaultResponseDto<>();
-        response.setData(singlePlayService.getPlayList(PlayListType.like, page, size, 1L));
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        DefaultResponseDto.<List<TrackResponseDto>>builder()
+                                .status(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getCode())
+                                .message(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getMessage())
+                                .data(singlePlayService.getPlayList(PlayListType.like, page, size, 1L))
+                                .build()
+                );
     }
 
     @PostMapping()
