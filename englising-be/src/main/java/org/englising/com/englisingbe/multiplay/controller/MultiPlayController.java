@@ -115,7 +115,7 @@ public class MultiPlayController {
     @ApiResponses({
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
     })
-    public ResponseEntity createMultiPlayRoom(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity createMultiPlay(@RequestBody Map<String, Object> requestBody) {
         String roomName = (String) requestBody.get("room_name");
         Integer totalPeople = (Integer) requestBody.get("total_people");
         String genre = (String) requestBody.get("genre");
@@ -159,7 +159,7 @@ public class MultiPlayController {
     @ApiResponses({
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
     })
-    public ResponseEntity getMultiPlayRoom(@PathVariable Integer multiplayId) {
+    public ResponseEntity getMultiPlayById(@PathVariable Integer multiplayId) {
 
         Map<String, Object> user1 = new HashMap<>();
         user1.put("track_id", "3");
