@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
 import org.englising.com.englisingbe.global.util.PlayListType;
 import org.englising.com.englisingbe.global.util.ResponseMessage;
@@ -22,30 +23,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 
 @Tag(name = "SinglePlay Controller", description = "싱글플레이 게임 관련 컨트롤러")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/singleplay")
+@Slf4j
 public class SinglePlayController {
     private final SinglePlayServiceImpl singlePlayService;
 
     @GetMapping("/playlist")
-    // API 상세 정보 기술
     @Operation(
             summary = "싱글플레이가 가능한 노래의 플레이리스트 조회",
             description = "type 파라미터로 플레이리스트의 종류를 보내주세요. 페이지네이션이 적용되어 있습니다"
     )
-    // API Parameter 정보 작성
     @Parameters({
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
             @Parameter(name = "type", description = "플레이리스트 종류 : RECOMMEND(추천된), LIKE(좋아요 한), RECENT(최근 플레이 한)", in = ParameterIn.QUERY),
             @Parameter(name = "page", description = "페이지 번호", in = ParameterIn.QUERY),
             @Parameter(name = "size", description = "(선택적) 페이지당 컨텐츠 개수, 기본 10", in = ParameterIn.QUERY)
     })
-    // API Response 정보 기술
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
                     mediaType = "application/json",
@@ -56,10 +53,10 @@ public class SinglePlayController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        DefaultResponseDto.<List<TrackResponseDto>>builder()
+                        DefaultResponseDto.<PlayListDto>builder()
                                 .status(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getCode())
                                 .message(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getMessage())
-                                .data(singlePlayService.getPlayList(PlayListType.like, page, size, 1L))
+                                .data(singlePlayService.getPlayList(type, page, size, 1L))
                                 .build()
                 );
     }

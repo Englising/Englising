@@ -6,12 +6,7 @@ import lombok.Getter;
 public enum ErrorHttpStatus {
     UNAUTHORIZED_REFRESH_TOKEN(403,"RefreshToken이 유효하지 않습니다"),
     UNAUTHORIZED_TOKEN(403,"JWT토큰이 유효하지 않습니다"),
-
-    USER_NOT_FOUND(403, "회원을 찾을 수 없습니다.");
-
-
-
-
+    NO_MATCHING_TRACK(404, "일치하는 노래가 없습니다");
 
     private final int code;
     private final String message;
