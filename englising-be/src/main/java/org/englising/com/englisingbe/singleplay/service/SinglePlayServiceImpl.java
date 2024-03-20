@@ -43,6 +43,21 @@ public class SinglePlayServiceImpl {
         return null;
     }
 
+    public void createSinglePlay(){
+        // TODO
+        // SinglePlay Repository에 Create
+        //
+
+    }
+
+    public void checkWord(){
+
+    }
+
+    public void getLyricStartTimes(){
+
+    }
+
     private PlayListDto getLikedTracks(Integer page, Integer size, Long userId){
         Page<TrackLike> trackLikes = trackLikeService.getLikedTrackResponseDtoByUserId(userId, page, size);
         List<TrackAlbumArtistDto> tracks = trackService.getTracksByTrackIds(trackLikes.getContent()
@@ -66,7 +81,7 @@ public class SinglePlayServiceImpl {
     }
 
     private PlayListDto getRecommendedTracks(Integer page, Integer size, Long userId){
-        //TODO FastAPI를 통해 추천 플레이리스트 가져오는 로직 구현
+        // TODO FastAPI를 통해 추천 플레이리스트 가져오는 로직 구현
         return getLikedTracks(page, size, userId);
     }
 
