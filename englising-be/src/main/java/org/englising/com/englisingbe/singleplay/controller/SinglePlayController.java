@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Tag(name = "SinglePlay Controller", description = "싱글플레이 게임 관련 컨트롤러")
 @RestController
@@ -46,12 +48,13 @@ public class SinglePlayController {
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = PlayListResponseDto.class)
+                    schema = @Schema(implementation = TrackResponseDto.class)
             )
     )
-    public ResponseEntity getPlaylists(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam PlayListType type, @RequestParam Integer page, @RequestParam Integer size){
-        DefaultResponseDto<PlayListResponseDto> response = new DefaultResponseDto<>();
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity getPlaylists(@RequestParam PlayListType type, @RequestParam Integer page, @RequestParam Integer size){
+        DefaultResponseDto<List<TrackResponseDto>> response = new DefaultResponseDto<>();
+        response.setData(singlePlayService.getPlayList(PlayListType.like, page, size, 1L));
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping()
