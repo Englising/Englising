@@ -55,7 +55,7 @@ public class CustomUserDetails implements UserDetails {
 
     public String getEmail() {
         // 이메일을 반환하는 로직을 구현
-        return user.getEmail();
+        return user.getUserId().toString();
     }
 
     // 둘 중에 고민
