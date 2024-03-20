@@ -7,13 +7,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.englising.com.englisingbe.auth.AllowedUrls;
 import org.englising.com.englisingbe.user.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 // Filter를 적용함으로써 servlet에 도달하기 전에 검증 완료 가능
 // JwtProvider가 검증을 끝낸 Jwt로부터 유저 정보를 조회해와서
@@ -22,9 +25,6 @@ import java.io.IOException;
 @Slf4j
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-//    private static final String[] NO_CHECK_URL = {"/auth/guest", "/auth/login"};
-    private static final String NO_CHECK_URL = "/auth/guest";
     // todo. "kakao로그인 페이지 get 요청" 추가
 
     private final JwtProvider jwtProvider;
@@ -50,7 +50,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //            return;
 //        }
 
-        if (request.getRequestURI().equals(NO_CHECK_URL)) {
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+        boolean skipFilter = Arrays.stream(AllowedUrls.NO_CHECK_URL).anyMatch(url -> pathMatcher.match(url, request.getRequestURI()));
+
+        if (skipFilter) {
             filterChain.doFilter(request, response);
             return;
         }
