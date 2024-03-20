@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2924fc65-dde8-4dec-9c7e-b1f5a433e0fd" name="Changes" comment="✨feat-be: 데이터 게더링 작성 중">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +23,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="develop-fe" />
+        <entry key="$PROJECT_DIR$/.." value="release-be" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -54,35 +55,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.album.executor&quot;: &quot;Run&quot;,
-    &quot;Python.album_gather_service.executor&quot;: &quot;Run&quot;,
-    &quot;Python.artist_gather_service.executor&quot;: &quot;Run&quot;,
-    &quot;Python.google_trans_client.executor&quot;: &quot;Run&quot;,
-    &quot;Python.job_dto.executor&quot;: &quot;Run&quot;,
-    &quot;Python.log_format.executor&quot;: &quot;Run&quot;,
-    &quot;Python.logging_config.executor&quot;: &quot;Run&quot;,
-    &quot;Python.loglist.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.musix_client.executor&quot;: &quot;Run&quot;,
-    &quot;Python.papago_client.executor&quot;: &quot;Run&quot;,
-    &quot;Python.soundchart_client.executor&quot;: &quot;Run&quot;,
-    &quot;Python.spotify_client.executor&quot;: &quot;Run&quot;,
-    &quot;Python.youtube_client.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature-be/data-gather&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/SSAFY/Desktop/S10P22A106/englising-data/venv&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.album.executor": "Run",
+    "Python.album_gather_service.executor": "Run",
+    "Python.artist_gather_service.executor": "Run",
+    "Python.google_trans_client.executor": "Run",
+    "Python.job_dto.executor": "Run",
+    "Python.log_format.executor": "Run",
+    "Python.logging_config.executor": "Run",
+    "Python.loglist.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.musix_client.executor": "Run",
+    "Python.papago_client.executor": "Run",
+    "Python.soundchart_client.executor": "Run",
+    "Python.spotify_client.executor": "Run",
+    "Python.youtube_client.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "develop-data",
+    "last_opened_file_path": "C:/Users/SSAFY/Desktop/S10P22A106/englising-data/venv",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "vcs.Git",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\SSAFY\Desktop\S10P22A106\englising-data\log" />
@@ -175,14 +176,14 @@
     <option name="LAST_COMMIT_MESSAGE" value="✨feat-be: 데이터 게더링 작성 중" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/englising_data$spotify_client.coverage" NAME="spotify_client Coverage Results" MODIFIED="1710231246087" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
+    <SUITE FILE_PATH="coverage/englising_data$spotify_client.coverage" NAME="spotify_client Coverage Results" MODIFIED="1710131933311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$papago_client.coverage" NAME="papago_client Coverage Results" MODIFIED="1710121257918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$musix_client.coverage" NAME="musix_client Coverage Results" MODIFIED="1710069840800" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$youtube_client.coverage" NAME="youtube_client Coverage Results" MODIFIED="1710065828626" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$album.coverage" NAME="album Coverage Results" MODIFIED="1710220793304" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model" />
-    <SUITE FILE_PATH="coverage/englising_data$main.coverage" NAME="main Coverage Results" MODIFIED="1710288042966" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/englising_data$main.coverage" NAME="main Coverage Results" MODIFIED="1710808324135" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/englising_data$google_trans_client.coverage" NAME="google_trans_client Coverage Results" MODIFIED="1710229590505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
-    <SUITE FILE_PATH="coverage/englising_data$album_gather_service.coverage" NAME="album_gather_service Coverage Results" MODIFIED="1710219430133" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
+    <SUITE FILE_PATH="coverage/englising_data$album_gather_service.coverage" NAME="album_gather_service Coverage Results" MODIFIED="1710123336899" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
     <SUITE FILE_PATH="coverage/englising_data$artist_gather_service.coverage" NAME="artist_gather_service Coverage Results" MODIFIED="1710123307709" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
     <SUITE FILE_PATH="coverage/englising_data$logging_config.coverage" NAME="logging_config Coverage Results" MODIFIED="1709882946121" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/englising_data$log_format.coverage" NAME="log_format Coverage Results" MODIFIED="1709882440331" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />

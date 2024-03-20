@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CookieUtil {
 
-    // 쿠키 생성
-    public Cookie createCookie(String key, String value) {
+    // accessToken 쿠키 생성
+    public Cookie createAccessCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(3600);
         cookie.setPath("/");
@@ -22,6 +22,18 @@ public class CookieUtil {
 
         return cookie;
     }
+
+    // refreshToken 쿠키 생성
+    public Cookie createRefreshCookie(String key, String value) {
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(1209600);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+
+        return cookie;
+    }
+
+
 
     // 쿠키에서 accessToken 추출
     public String getAccessTokenFromCookie (HttpServletRequest request) {
@@ -35,6 +47,19 @@ public class CookieUtil {
             }
         }
         return accessToken;
+    }
+
+    public String getRefreshTokenFromCookie (HttpServletRequest request) {
+        String refreshToken = null;
+
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie : cookies) {
+            System.out.println(cookie.getName());
+            if(cookie.getName().equals("Authorization-refresh")) {
+                refreshToken = cookie.getValue();
+            }
+        }
+        return refreshToken;
     }
 
 

@@ -29,7 +29,7 @@ public class Artist {
     private String genres;
 
     @Column(name = "spotify_id")
-    private Integer spotifyId;
+    private String spotifyId;
 
     @Column(name = "spotify_popularity")
     private Integer spotifyPopularity;
