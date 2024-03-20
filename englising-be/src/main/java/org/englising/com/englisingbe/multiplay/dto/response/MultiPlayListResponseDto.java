@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MultiPlayListResponseDto {
-    public Long multiplayId;
-    public String roomName;
-    public int totalPeople;
-    public String multiplayImg;
+    private Long multiplayId;
+    private String roomName;
+    private Integer currentUser;
+    private Integer maxUser;
+    private String multiImg;
 }

@@ -6,9 +6,10 @@ import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayListRespons
 import org.englising.com.englisingbe.multiplay.entity.MultiPlay;
 
 public interface MultiPlayService {
-    List<MultiPlayListResponseDto> getMultiPlayList(int page, int size);
-    MultiPlay createMultiPlay(MultiPlayRequestDto multiPlayRequestDto);
+    MultiPlay createMultiPlay(MultiPlayRequestDto requestDto);
     MultiPlay getMultiPlayById(Long multiPlayId);
+    List<MultiPlayListResponseDto> getMultiPlayList(String genre, Integer page, Integer size);
+    Boolean getMultiPlayResult(Long multiplayId);
 
-
+    List<Long> getMultiPlayList();
 }

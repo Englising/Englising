@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MultiPlayRequestDto {
-    public Long multiplayId;
     public String genre;
+    public String roomName;
+    public int maxUser;
+    public boolean isSecret;
+    public int roomPw;
+    public String multiImg;
 }
