@@ -1,6 +1,7 @@
 package org.englising.com.englisingbe.global.config;
 
 import lombok.RequiredArgsConstructor;
+import org.englising.com.englisingbe.auth.AllowedUrls;
 import org.englising.com.englisingbe.auth.jwt.JwtAuthenticationFilter;
 import org.englising.com.englisingbe.auth.jwt.JwtExceptionFilter;
 import org.englising.com.englisingbe.auth.handler.OAuth2LoginFailureHandler;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,7 +26,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final String[] allowedUrls = {"/webjars/**","/v3/api-docs/**","/swagger-ui/**", "/auth/**"};
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
@@ -43,7 +44,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable) // Form 로그인 방식 disable
                 .httpBasic(AbstractHttpConfigurer::disable) //httpBasic 인증 방식 disable
                 .authorizeHttpRequests(requests -> // 경로별 인가 작업
-                        requests.requestMatchers(allowedUrls).permitAll()
+                        requests.requestMatchers(AllowedUrls.NO_CHECK_URL).permitAll()
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .anyRequest().authenticated()
                 )
