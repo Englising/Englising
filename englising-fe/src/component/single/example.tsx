@@ -15,7 +15,7 @@ export const singleData = {
                     isBlank: true,
                     startTime: 12.0,
                     endTime: 15.9,
-                    lyric: ["너는", "바라는", "게", "너무나", "많아"]
+                    lyric: ["너는", "test word", "게", "너무나", "많아"]
                 },
                 {
                     isBlank: false,
@@ -107,7 +107,7 @@ export const singleData = {
                     singlePlayWordId: 0,
                     sentenceIndex: 1,
                     wordIndex: 1,
-                    word: "바라는",
+                    word: "test word",
                     isRight: false
                 },
                 {

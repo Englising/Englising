@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { PlayInfo, SingleData, Lyric, Word, AnswerInfo} from "../../pages/SinglePage.tsx";
+import { PlayInfo, SingleData, Lyric, Word, AnswerInfo } from "../../pages/SinglePage.tsx";
 
 interface Props {
     onSetInfo(currIdx: number,  blank: boolean, start: number, end: number): void,
@@ -15,6 +15,8 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
     const [blankWord, setBlankWord] = useState<Word[]>([]);
     const lyricsRef = useRef<(HTMLDivElement | null)[]>([]);
     const blanksRef = useRef<(HTMLSpanElement | null)[]>([]);
+    const synth: SpeechSynthesis = speechSynthesis;
+    const voices: SpeechSynthesisVoice[] = synth.getVoices();
 
     // aixos 호출로 데이터 받기 ///////////////////
     useEffect(() => {
@@ -50,7 +52,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
             return sentenceIdx == `${idx}` && isSolve == `0`; 
         }) ?? null;
 
-        // 빈칸을 먼저 찾고 없으면 그때 1 오답인거 가져오기
+        // 빈칸을 먼저 찾고 없으면 그때 오답인거 가져오기
         if(targetBlank == null) {
             targetBlank = blanksRef.current.find(el => {
                 const sentenceIdx = el?.dataset.sentence;
@@ -99,11 +101,17 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
         // single page -> player (가사의 시작시간, 종료시간)
         onSetInfo(currIdx, blank, start, end);
     }
+
     
-    const handleHintClick = (e: React.MouseEvent): void => {
+    const handleHintClick = (e: React.MouseEvent, word: string): void => {
         e.stopPropagation();
-        alert("헤잉")
-    }
+        // 발화 객체
+        const utter: any = new SpeechSynthesisUtterance(word);
+
+        utter.voice = voices.find((voice: SpeechSynthesisVoice) => voice.lang == 'en-US');
+        synth.speak(utter);
+        
+        }
 
     return(
         <div className="w-[90%] h-[1200px] flex flex-col items-center py-10 px-20 box-border text-center overflow-y-scroll select-none">
@@ -139,7 +147,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
                                         ref={(el) => blanksRef.current[blankIdx] = el}
                                         data-sentence ={i}
                                         data-solve="0"
-                                        onClick={(e) => handleHintClick(e)}
+                                        onClick={(e) => handleHintClick(e, word)}
                                         > 
                                         {word}
                                         </span>) :
