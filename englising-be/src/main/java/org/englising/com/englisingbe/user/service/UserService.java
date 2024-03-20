@@ -1,23 +1,12 @@
 package org.englising.com.englisingbe.user.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.englising.com.englisingbe.jwt.CookieUtil;
-import org.englising.com.englisingbe.jwt.JwtProvider;
-import org.englising.com.englisingbe.jwt.JwtResponseDto;
-import org.englising.com.englisingbe.user.dto.CustomUserDetails;
+import org.englising.com.englisingbe.user.dto.ProfileDto;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.repository.UserRepository;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.PrimitiveIterator;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -25,80 +14,64 @@ import java.util.UUID;
 @Slf4j
 public class UserService {
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
-    private final CustomUserDetailService customUserDetailService;
-    private final JwtProvider jwtProvider;
-    private final CookieUtil cookieUtil;
+//    todo. private final S3Service s3Service;
 
-    public JwtResponseDto guest() throws Exception{
-         User user = User.builder()
-                    .email(makeRandomEmail()) // todo. uuid 사용 ex)오늘 날짜 + uuid + @email.com
-                    .nickname(makeRandomNickname()) //todo. 수정
-                    .profileImg(makeRandomProfileImgUrl()) //todo. 수정
-                    .type("GUEST") // default로 GUEST 되어있으면 빼기
-                    .build();
+    public ProfileDto getProfile(String email) {
 
-        userRepository.save(user); // 회원 등록
+        User user = userRepository.findByEmail(email).orElseThrow(); // todo. 에러 코드 지정
 
-        CustomUserDetails customUserDetails =
-                (CustomUserDetails) customUserDetailService.loadUserByUsername(user.getEmail());
-
-        // 1. Authentication 생성
-        System.out.println("Authentication 생성 시작");
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(customUserDetails, customUserDetails.getPassword(),
-                        customUserDetails.getAuthorities());
-
-        // 2. Authentication 검증
-        System.out.println("Authentication 검증 시작");
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-        // 3. 인증 정보 기반으로 JWT 생성
-        System.out.println("jwt 생성 시작");
-        JwtResponseDto jwtResponseDto = jwtProvider.createTokens(authentication, user.getUserId());
-
-        return jwtResponseDto;
+        return new ProfileDto(user.getProfileImg(), user.getNickname());
     }
 
-    public Long getUserID(HttpServletRequest request) {
-        String accessToken = cookieUtil.getAccessTokenFromCookie(request);
+    public void updateProfile(String email, ProfileDto profileDto) {
+        User user = userRepository.findByEmail(email).orElseThrow(); // todo. 에러 코드 지정
 
-        if(accessToken != null && jwtProvider.isTokenValid(accessToken)) {
-            Long userId = jwtProvider.getUserId(accessToken).orElse(null);
-            return userId;
-        }
-        return null;
+        // todo. s3에서 프로필 이미지 삭제
+        //  후 새로운 이미지 등록
+
+        user.updateUser(profileDto.getNickname(), profileDto.getProfileImg());
     }
 
-    public String makeRandomEmail() {
-        String uuid = UUID.randomUUID().toString();
-        String todayDate = LocalDateTime.now().toString()
-                .replace(":", "").replace(".", "");
-        return todayDate + "" + uuid + "@englising.com";
-    }
 
-    //todo. 랜덤 닉네임
-    /**
-     * "익명의" + 동물 랜덤 이름 + (count+1)
-     * //동물 이름 데이터셋 db에 저장
-     * */
-    public String makeRandomNickname() {
-        //일단 임시로
-        String uuid = UUID.randomUUID().toString();
-        String nickname = uuid + "닉네임";
+//    @Transactional
+//    public void updateTrade(Long tradeId, User user, MultipartFile image, String content, int duration) {
+//        Trade trade = tradeRepository.findById(tradeId)
+//                .orElseThrow(() -> new BaseException(ErrorCode.TRADE_NOT_FOUND));
+//        s3Service.deleteFile(trade.getImage());
+//        String imagePath = s3Service.saveFile(image);
+//        trade.updateTrade(imagePath, content, duration);
+//    }
 
-//        List<String> adjective = Arrays.asList("귀여운", "행복한", "즐거운", "배고픈", "노란", "동그란", "푸른", "수줍은"
-//        , "그리운", "배부른", "부자", "깨발랄한", "웃고있는", "해맑은", "슬픈", "반가운", "무서운", "", "귀여운");
-        
-        return nickname;
-    }
 
-    // todo. 랜덤 프로필이미지 (현지가 만든 알파벳 캐릭터)
-    public String makeRandomProfileImgUrl() {
-        String uuid = UUID.randomUUID().toString();
-        String img = uuid + "프로필이미지";
-        return img;
-    }
+
+//    public Slice<ReviewResponseDto> getReviewList(Long eventId, Long userId, Pageable pageable) {
+//        return reviewRepository.findSliceByEventId(eventId, userId, pageable);
+//    }
+//
+//    @Transactional
+//    public void saveReview(Long eventId, Long userId, String content, MultipartFile image) {
+//
+//        Event event = eventRepository.findById(eventId).orElseThrow(() -> new BaseException(EVENT_NOT_FOUND));
+//        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+//
+//        String imagePath = null;
+//        if (image != null) {
+//            imagePath = s3Service.saveFile(image);
+//        }
+//
+//        reviewRepository.save(Review.builder()
+//                .content(content)
+//                .event(event)
+//                .user(user)
+//                .image(imagePath)
+//                .build());
+//    }
+
+    //USER_NOT_FOUND(404, "USER-004", "유저를 찾을 수 없는 경우"),
+
+
+
+
 
 }
