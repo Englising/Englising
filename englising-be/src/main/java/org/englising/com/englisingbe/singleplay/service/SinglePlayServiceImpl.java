@@ -5,6 +5,8 @@ import org.englising.com.englisingbe.global.dto.PaginationDto;
 import org.englising.com.englisingbe.global.util.PlayListType;
 import org.englising.com.englisingbe.singleplay.dto.response.PlayListDto;
 import org.englising.com.englisingbe.singleplay.dto.response.TrackResponseDto;
+import org.englising.com.englisingbe.singleplay.entity.SinglePlay;
+import org.englising.com.englisingbe.singleplay.repository.SinglePlayRepository;
 import org.englising.com.englisingbe.track.dto.TrackAlbumArtistDto;
 import org.englising.com.englisingbe.track.entity.TrackLike;
 import org.englising.com.englisingbe.track.service.TrackLikeServiceImpl;
@@ -23,6 +25,8 @@ import java.util.stream.Collectors;
 public class SinglePlayServiceImpl {
     private final TrackLikeServiceImpl trackLikeService;
     private final TrackServiceImpl trackService;
+
+    private final SinglePlayRepository singlePlayRepository;
 
     public PlayListDto getPlayList(PlayListType type, Integer page, Integer size, Long userId) {
         switch (type) {
@@ -47,24 +51,41 @@ public class SinglePlayServiceImpl {
                             return trackLike.getTrack().getTrackId();
                         }
                 ).collect(Collectors.toList()));
-        List<TrackResponseDto> trackResponseDtoList = tracks.stream().map(trackAlbumArtistDto -> {
-            return TrackResponseDto.getTrackResponseFromTrackAlbumArtist(trackAlbumArtistDto, 0, true);
-        }).collect(Collectors.toList());
-        return PlayListDto.builder()
-                .playList(trackResponseDtoList)
-                .pagination(PaginationDto.from(trackLikes))
-                .build();
+        return getPlayListDtoFromPageAndList(getTrackResponseDtoFromTrackAlbumArtist(userId, tracks),trackLikes);
     }
 
     private PlayListDto getRecentTracks(Integer page, Integer size, Long userId){
-        // 유저가 플레이한 목록 최신 순으로 조회 로직
-        // PlayRepository 등을 사용한 로직 구현
-        return null;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<SinglePlay> singlePlays = singlePlayRepository.getSinglePlayByUserUserId(userId, pageable);
+        List<TrackAlbumArtistDto> tracks = trackService.getTracksByTrackIds(singlePlays
+                .stream()
+                .map(singlePlay -> {
+                    return singlePlay.getTrack().getTrackId();
+        }).collect(Collectors.toList()));
+        return getPlayListDtoFromPageAndList(getTrackResponseDtoFromTrackAlbumArtist(userId,tracks), singlePlays);
     }
 
     private PlayListDto getRecommendedTracks(Integer page, Integer size, Long userId){
-        // FastAPI를 통해 추천 플레이리스트 가져오는 로직 구현
-        // 예: FastAPIClient.getRecommendations(userId);
-        return null;
+        //TODO FastAPI를 통해 추천 플레이리스트 가져오는 로직 구현
+        return getLikedTracks(page, size, userId);
+    }
+
+    private List<TrackResponseDto> getTrackResponseDtoFromTrackAlbumArtist(Long userId, List<TrackAlbumArtistDto> trackAlbumArtistDtos){
+        return trackAlbumArtistDtos
+                .stream()
+                .map(trackAlbumArtistDto -> {
+                    return TrackResponseDto.getTrackResponseFromTrackAlbumArtist(
+                            trackAlbumArtistDto,
+                            0,
+                            trackLikeService.checkTrackLikeByUserId(userId, trackAlbumArtistDto.getTrack().getTrackId())
+                    );
+                }).toList();
+    }
+
+    private PlayListDto getPlayListDtoFromPageAndList(List<TrackResponseDto> data, Page<?> page){
+        return PlayListDto.builder()
+                .playList(data)
+                .pagination(PaginationDto.from(page))
+                .build();
     }
 }

@@ -23,8 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 
 @Tag(name = "SinglePlay Controller", description = "싱글플레이 게임 관련 컨트롤러")
 @RestController
@@ -58,7 +56,7 @@ public class SinglePlayController {
                         DefaultResponseDto.<PlayListDto>builder()
                                 .status(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getCode())
                                 .message(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getMessage())
-                                .data(singlePlayService.getPlayList(PlayListType.like, page, size, 1L))
+                                .data(singlePlayService.getPlayList(type, page, size, 1L))
                                 .build()
                 );
     }

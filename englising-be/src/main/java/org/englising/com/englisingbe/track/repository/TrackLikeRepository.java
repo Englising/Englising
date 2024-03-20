@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface TrackLikeRepository extends JpaRepository<TrackLike, Long> {
     Page<TrackLike> getTrackLikeByUserUserId(Long userId, Pageable pageable);
+    boolean existsByUserUserIdAndTrackTrackIdAndIsLikedTrue(Long userId, Long trackId);
 }
