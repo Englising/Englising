@@ -50,11 +50,11 @@ public class CustomUserDetails implements UserDetails {
      * */
     @Override
     public String getUsername() {
-        return  getEmail();
+        return  getUserId();
     }
 
-    public String getEmail() {
-        // 이메일을 반환하는 로직을 구현
+    public String getUserId() {
+        // userId을 반환하는 로직을 구현
         return user.getUserId().toString();
     }
 

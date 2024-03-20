@@ -19,15 +19,15 @@ public class UserService {
     private final UserRepository userRepository;
 //    todo. private final S3Service s3Service; s3 이미지 처리
 
-    public ProfileDto getProfile(String email) {
-        User user = userRepository.findByEmail(email)
+    public ProfileDto getProfile(String userId) {
+        User user = userRepository.findByUserId(Long.valueOf(userId))
                 .orElseThrow(() -> new GlobalException(ErrorHttpStatus.USER_NOT_FOUND));
 
         return new ProfileDto(user.getProfileImg(), user.getNickname());
     }
 
-    public void updateProfile(String email, ProfileDto profileDto) {
-        User user = userRepository.findByEmail(email)
+    public void updateProfile(String userId, ProfileDto profileDto) {
+        User user = userRepository.findByUserId(Long.valueOf(userId))
                 .orElseThrow(() -> new GlobalException(ErrorHttpStatus.USER_NOT_FOUND));
 
         // todo. s3에서 프로필 이미지 삭제

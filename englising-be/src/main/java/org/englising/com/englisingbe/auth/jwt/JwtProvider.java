@@ -42,24 +42,16 @@ public class JwtProvider {
     @Value("{jwt.refresh.header}")
     private String refreshHeader;
 
-//    private final String header = "Authorization";
-
     private final UserRepository userRepository;
     private final CustomUserDetailService customUserDetailService;
 
     // secretKey 초기화
     // secretKey는 토큰 생성하거나 토큰 파싱할 때 사용되는 정보로 보안에 유의
-    // git에 secretkey 올라가지 않도록 application-dev.yml 파일에 secret값 분리
 //    @PostConstruct
 //    protected void init() {
 //        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 //    }
 
-    /**
-     * JWT의 헤더에 들어오는 값 : 'Authorization(Key) = Bearer {토큰}'
-     * JWT의 Subject로 userId 사용
-     * 
-     * */
 
     // 권한 정보 획득 (Spring Security 인증과정에서 권한 확인을 위한 기능)
     //jwt 토큰에서 인증 정보 조회
@@ -87,7 +79,7 @@ public class JwtProvider {
                     .build()
                     .parseClaimsJws(token)
                     .getBody()
-                    .getSubject();
+                    .get("userId").toString();
             return Optional.of(Long.parseLong(userId));
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
@@ -143,7 +135,6 @@ public class JwtProvider {
 
         claims.put("userId", userId);
         claims.put(AUTHORITIES_KEY, authorities);
-//        claims.put("token_type", "refresh_token"); // refreshToken 타입 저장
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -151,20 +142,20 @@ public class JwtProvider {
                 .compact();
     }
 
-    /**
+    /** todo. 삭제
      * 헤더에서 순수 Token 추출
      */
-    public Optional<String> extractAccessTokenFromHeader(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(accessHeader))
-                .filter(token -> token.startsWith("Bearer "))
-                .map(token -> token.replace("Bearer ", ""));
-    }
-
-    public Optional<String> extractRefreshTokenFromHeader(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(refreshHeader))
-                .filter(token -> token.startsWith("Bearer "))
-                .map(token -> token.replace("Bearer ", ""));
-    }
+//    public Optional<String> extractAccessTokenFromHeader(HttpServletRequest request) {
+//        return Optional.ofNullable(request.getHeader(accessHeader))
+//                .filter(token -> token.startsWith("Bearer "))
+//                .map(token -> token.replace("Bearer ", ""));
+//    }
+//
+//    public Optional<String> extractRefreshTokenFromHeader(HttpServletRequest request) {
+//        return Optional.ofNullable(request.getHeader(refreshHeader))
+//                .filter(token -> token.startsWith("Bearer "))
+//                .map(token -> token.replace("Bearer ", ""));
+//    }
 
     // 토큰 유효성 검사 + 만료일자 확인
     public boolean isTokenValid(String token) {
@@ -187,38 +178,22 @@ public class JwtProvider {
         return false;
     }
 
-    // AccessToken인지 RefreshToken인지 구분하여 반환하는 메서드
-//    public JwtType getTokenTypeFromHeader(String token) {
-//        if(isTokenValid(token)) {
-//            Jws<Claims> claims = Jwts.parserBuilder()
-//                    .setSigningKey(secretKey)
-//                    .build()
-//                    .parseClaimsJws(token);
-//            if(claims.getBody().get("token_type").equals("refresh_token")) {
-//                return JwtType.REFRESH_TOKEN;
-//            } else {
-//                return JwtType.ACCESS_TOKEN;
-//            }
-//        }
-//        return JwtType.INVALID_TOKEN;
-//    };
-
-    // AccessToken + RefreshToken 헤더에 넣기
-    public void setAccessAndRefreshToken (HttpServletResponse response, String accessToken, String refreshToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        response.setHeader(accessHeader, accessToken);
-        response.setHeader(refreshHeader, refreshToken);
-        log.info("Access Token, Refresh Token 헤더 설정 완료", accessToken, refreshToken);
-    }
-
-    // AccessToken 헤더에 넣기
-    public void setAccessToken(HttpServletResponse response, String accessToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        response.setHeader(accessHeader, accessToken);
-        log.info("AccessToken 헤더 설정 완료 ", accessToken);
-    }
+    // AccessToken + RefreshToken 헤더에 넣기 todo. 삭제
+//    public void setAccessAndRefreshToken (HttpServletResponse response, String accessToken, String refreshToken) {
+//        response.setStatus(HttpServletResponse.SC_OK);
+//
+//        response.setHeader(accessHeader, accessToken);
+//        response.setHeader(refreshHeader, refreshToken);
+//        log.info("Access Token, Refresh Token 헤더 설정 완료", accessToken, refreshToken);
+//    }
+//
+//    // AccessToken 헤더에 넣기
+//    public void setAccessToken(HttpServletResponse response, String accessToken) {
+//        response.setStatus(HttpServletResponse.SC_OK);
+//
+//        response.setHeader(accessHeader, accessToken);
+//        log.info("AccessToken 헤더 설정 완료 ", accessToken);
+//    }
 
 //      RefreshToken DB 저장 (업데이트) -> todo. Redis로 수정
 //    public void updateRefreshToken(String email, String refreshToken) {

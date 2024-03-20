@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.englising.com.englisingbe.auth.AllowedUrls;
+import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
+import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.user.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,15 +44,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) 
             throws ServletException, IOException {
-        // 로그인 요청은 필터 진행 안하고 넘어감
-//        boolean skipFilter = Arrays.stream(NO_CHECK_URL).anyMatch(url -> request.getRequestURI().equals(url));
-//        if (skipFilter) {
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
 
         AntPathMatcher pathMatcher = new AntPathMatcher();
-        boolean skipFilter = Arrays.stream(AllowedUrls.NO_CHECK_URL).anyMatch(url -> pathMatcher.match(url, request.getRequestURI()));
+        boolean skipFilter = Arrays.stream(AllowedUrls.NO_CHECK_URL)
+                .anyMatch(url -> pathMatcher.match(url, request.getRequestURI()));
 
         if (skipFilter) {
             filterChain.doFilter(request, response);
@@ -66,10 +63,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 //유효한 토큰이면 해당 토큰으로 Authentication 가져와서 SecurityContext에 저장
                 Authentication authentication = jwtProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                System.out.println("인증 성공");
             } else { // accessToken이 유효하지 않은 경우
-                System.out.println("accessToken이 유효하지 않습니다. ");
-                System.out.println("refreshToken 꺼내서 확인 후 유효성 확인 시작. ");
+//                System.out.println("accessToken이 유효하지 않습니다. ");
+//                System.out.println("refreshToken 꺼내서 확인 후 유효성 확인 시작. ");
 
                 String refreshToken = cookieUtil.getRefreshTokenFromCookie(request);
                 if(refreshToken != null && jwtProvider.isTokenValid(refreshToken)) { // refreshToken 유효한 경우
@@ -83,12 +79,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     response.addCookie(accessCookie);
                     response.addCookie(refreshCookie);
-                    response.sendRedirect("http://localhost:8080/"); //todo. 프론트측 특정 url ex:localhost:3030 넣기 (로그인 후 리다이렉트될)
-
                     return;
                 } else { // refreshToken 유효하지 않은 경우
-                    // todo. 에러 리턴
-                    return;
+                    throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_REFRESH_TOKEN);
+                    // return;
                 }
             }
         } catch (Exception e) {
