@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
+import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -43,7 +45,11 @@ public class CookieUtil {
         for(Cookie cookie : cookies) {
             if(cookie.getName().equals("Authorization")) {
                 accessToken = cookie.getValue();
+                break;
             }
+        }
+        if(accessToken == null) {
+            throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_TOKEN);
         }
         return accessToken;
     }
