@@ -14,8 +14,8 @@ import org.englising.com.englisingbe.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @Transactional
@@ -66,12 +66,21 @@ public class UserService {
      * */
     public String makeRandomNickname() {
         //일단 임시로
-        String uuid = UUID.randomUUID().toString();
-        String nickname = uuid + "닉네임";
+//        String uuid = UUID.randomUUID().toString();
+//        String nickname = uuid + "닉네임";
 
-//        List<String> adjective = Arrays.asList("귀여운", "행복한", "즐거운", "배고픈", "노란", "동그란", "푸른", "수줍은"
-//        , "그리운", "배부른", "부자", "깨발랄한", "웃고있는", "해맑은", "슬픈", "반가운", "무서운", "", "귀여운");
+        List<String> adjective = Arrays.asList("귀여운", "행복한", "즐거운", "배고픈", "노란", "동그란", "푸른", "수줍은"
+        , "그리운", "배부른", "부자", "깨발랄한", "웃고있는", "해맑은", "슬픈", "반가운", "무서운", "귀여운");
+        int adjectiveIdx = (int) (Math.random() * adjective.size());
+        String adj = adjective.get(adjectiveIdx);
 
+        List<String> animals = Arrays.asList("강아지", "고양이", "오리", "닭", "사슴", "햄스터", "판다", "곰");
+        int animalsIdx = (int) (Math.random() * animals.size());
+        String ani = animals.get(animalsIdx);
+
+        String nickname = adj + ani;
+
+        //todo. 숫자 추가?
         return nickname;
     }
 
@@ -79,18 +88,21 @@ public class UserService {
         long imgCnt = imageRepository.count();
         long imageId = (long) (Math.random() * imgCnt);
 
-        if(imageId == 0) imageId += 1;
+        if(imageId == 0) imageId = 1;
 
-        return imageRepository.findById(imageId).toString();
+
+        return imageRepository.findById(imageId)
+                .get().getProfileImageUrl();
     }
 
     public String makeRandomColor() {
         long colorCnt = profileColorRepository.count();
         long colorId = (long) (Math.random() * colorCnt);
 
-        if(colorId == 0) colorId += 1;
+        if(colorId == 0) colorId = 1;
 
-        return profileColorRepository.findById(colorId).toString();
+        return profileColorRepository.findById(colorId)
+                .get().getProfileColor();
     }
 
 
