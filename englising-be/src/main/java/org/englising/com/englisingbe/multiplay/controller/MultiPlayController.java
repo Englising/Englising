@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MultiPlayController {
     private final MultiPlayServiceImpl multiPlayService;
 
-    @GetMapping("/rooms")
+    @GetMapping("/list")
     @Operation(
         summary = "멀티플레이 대기방 리스트 조회",
         description = "genre 파라미터로 멀티플레이 방 장르를 보내주세요. 페이지네이션이 적용되어 있습니다"
@@ -51,7 +51,7 @@ public class MultiPlayController {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
     })
 
-    public ResponseEntity getMultiPlayLists(@RequestParam String genre, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "6") Integer size){
+    public ResponseEntity getMultiPlayList(@RequestParam(required = false) String genre, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "6") Integer size){
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
@@ -63,7 +63,7 @@ public class MultiPlayController {
             );
     }
 
-    @PostMapping
+    @PostMapping("/create")
     @Operation(
         summary = "멀티플레이 방 만들기",
         description = "멀티플레이 방 생성 시 필요한 방 이름, 총 인원, 장르를 가져옵니다"
@@ -81,19 +81,19 @@ public class MultiPlayController {
     })
 
     public ResponseEntity createMultiPlay(@RequestBody MultiPlayRequestDto requestDto) {
-        MultiPlay createdMultiPlay = multiPlayService.createMultiPlay(requestDto);
+        MultiPlay createMultiPlay = multiPlayService.createMultiPlay(requestDto);
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
                 DefaultResponseDto.<MultiPlay>builder()
                     .status(ResponseMessage.MULTIPLAY_CREATE_SUCCESS.getCode())
                     .message(ResponseMessage.MULTIPLAY_CREATE_SUCCESS.getMessage())
-                    .data(createdMultiPlay)
+                    .data(createMultiPlay)
                     .build()
             );
     }
 
-    @GetMapping("/room/{multiplayId}")
+    @GetMapping("/{multiplayId}")
     @Operation(
         summary = "멀티플레이 방 참여",
         description = "멀티플레이 방 아이디로 해당 방을 조회 후 참여합니다."

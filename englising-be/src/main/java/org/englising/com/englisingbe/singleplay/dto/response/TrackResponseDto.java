@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.englising.com.englisingbe.artist.entity.Artist;
-import org.englising.com.englisingbe.track.dto.TrackAlbumArtistDto;
+import org.englising.com.englisingbe.music.dto.TrackAlbumArtistDto;
 
 import java.util.List;
 import java.util.stream.Collectors;

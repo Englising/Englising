@@ -37,13 +37,13 @@ public class AuthController {
         Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
         response.addCookie(accessCookie);
         response.addCookie(refreshCookie);
-        // todo. 에러 처리 추가
 
         // ResponseEntity에 헤더와 본문 설정
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new DefaultResponseDto<>(200, "토큰 발급이 완료되었습니다.", jwtResponseDto));
     }
+
 
     @GetMapping("/login")
     @Operation(
