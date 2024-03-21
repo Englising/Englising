@@ -66,12 +66,11 @@ const SinglePage = () => {
     });
 
     const [progressInfo, setProgressInfo] = useState<ProgressInfo>({
-        totalWord: 0,
+        totalWord: singleData.data.total_word_cnt, // 나중에 axios로 받아올 것
         rightWord: 0,
         hintNum: 3,
     });
 
-    const totalWord= singleData.data.total_word_cnt;
 
     const onSetInfo = (currIdx: number, blank: boolean, start: number, end: number): void => {
         setPlayInfo({
@@ -128,7 +127,7 @@ const SinglePage = () => {
             <div className="flex flex-col  bg-black h-svh w-screen bg-opacity-80">
                 <div className="flex h-[90%]">
                     <div className="w-1/3">
-                        <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo}/> 
+                        <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} /> 
                     </div>
                     <div className="w-2/3 flex items-center justify-center">
                         <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>

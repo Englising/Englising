@@ -142,12 +142,11 @@ const Lyrics = ({onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData}
     };
 
     const onUse = (word: string) => { //힌트 사용 
+        onSetProgressInfo("hintNum", hintNum - 1);
         setHintNum(hintNum - 1);
         setShowModal(!showModal);
-        onSetProgressInfo("hintNum", hintNum);
         //정답시 맞은 단어 개수 변경
         speak(word);
-
     }
 
     const onCancel = () => { //힌트 취소 -> 힌트 모두 소진시 onCancel만 쓸거임
