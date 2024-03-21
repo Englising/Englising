@@ -12,5 +12,6 @@ public class MultiPlayListResponseDto {
     private String roomName;
     private Integer currentUser;
     private Integer maxUser;
-    private String multiImg;
+    private String multiPlayImgUrl;
+    private String genre;
 }
