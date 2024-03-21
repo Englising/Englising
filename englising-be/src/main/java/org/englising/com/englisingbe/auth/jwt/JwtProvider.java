@@ -1,27 +1,22 @@
-package org.englising.com.englisingbe.jwt;
+package org.englising.com.englisingbe.auth.jwt;
 
 import io.jsonwebtoken.*;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.xml.bind.DatatypeConverter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.englising.com.englisingbe.user.dto.CustomUserDetails;
+import org.englising.com.englisingbe.auth.dto.CustomUserDetails;
+import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
+import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.user.repository.UserRepository;
-import org.englising.com.englisingbe.user.service.CustomUserDetailService;
+import org.englising.com.englisingbe.auth.service.CustomUserDetailService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -76,12 +71,12 @@ public class JwtProvider {
                         .getBody();
 
         if(claims.get(AUTHORITIES_KEY) == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_TOKEN);
         }
 
         // UserDetails 객체 만들고 Authentication 반환
-        CustomUserDetails customUserDetails = (CustomUserDetails) customUserDetailService.loadUserByUsername(claims.getSubject());
-        return new UsernamePasswordAuthenticationToken(customUserDetails, "", customUserDetails.getAuthorities());
+        CustomUserDetails customUserDetails =  (CustomUserDetails) customUserDetailService.loadUserByUsername(claims.get("userId").toString());
+        return new UsernamePasswordAuthenticationToken(customUserDetails, customUserDetails.getPassword(), customUserDetails.getAuthorities());
     }
 
     // 토큰에서 userId 추출 (토큰 파싱)
@@ -125,7 +120,7 @@ public class JwtProvider {
                 .setExpiration(new Date(now.getTime() + accessTokenExpiration));
 
         claims.put("userId", userId); // userId 넣어주기
-        claims.put("AUTHORITIES_KEY", authorities); // ROLE_USER 권한
+        claims.put(AUTHORITIES_KEY, authorities); // ROLE_USER 권한
 
         return Jwts.builder()
                 .setClaims(claims) //정보 저장
@@ -144,10 +139,10 @@ public class JwtProvider {
         Claims claims = Jwts.claims()
                 .setSubject(authentication.getName())
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + accessTokenExpiration));
+                .setExpiration(new Date(now.getTime() + refreshTokenExpiration));
 
         claims.put("userId", userId);
-        claims.put("AUTHORITIES_KEY", authorities);
+        claims.put(AUTHORITIES_KEY, authorities);
 //        claims.put("token_type", "refresh_token"); // refreshToken 타입 저장
 
         return Jwts.builder()
