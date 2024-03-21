@@ -6,13 +6,16 @@ import {
 } from 'react-router-dom'
 import SelectMultiPage from './pages/SelectMultiPage'
 import IndexPage from './pages/IndexPage'
-import SelectSinglePage from './pages/SelectSinglePage'
+import SelectSingle1Page from './pages/SelectSingle1Page.tsx'
+import SelectSingle2Page from './pages/SelectSingle2Page.tsx'
+import SelectSingle3Page from './pages/SelectSingle3Page.tsx'
 import SettingMultiPage from './pages/SettingMultiPage'
 import WaitingRoomPage from './pages/WaitingRoomPage'
 import SinglePlay from './pages/SinglePage'
 import Multiplay from './pages/MultiplayPage'
 import WordListPage from './pages/WordListPage'
 import SidebarLayout from './pages/SidebarLayout'
+
 
 function App() {
 
@@ -26,8 +29,16 @@ function App() {
       element: <SidebarLayout />,
       children: [
         {
-          path:"selectSingle",
-          element: <SelectSinglePage /> 
+          path:"selectSingle1",
+          element: <SelectSingle1Page />,
+        },
+        {
+          path:"selectSingle2",
+          element: <SelectSingle2Page />,
+        },
+        {
+          path:"selectSingle3",
+          element: <SelectSingle3Page />,
         },
         {
           path:"selectMulti",
