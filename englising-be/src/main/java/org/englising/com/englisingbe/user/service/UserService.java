@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
 import org.englising.com.englisingbe.global.exception.GlobalException;
+import org.englising.com.englisingbe.user.dto.NicknameResponseDto;
 import org.englising.com.englisingbe.user.dto.ProfileDto;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.repository.UserRepository;
@@ -34,5 +35,11 @@ public class UserService {
         //  후 새로운 이미지 등록
 
         user.updateUser(profileDto.getNickname(), profileDto.getProfileImg());
+    }
+
+    public NicknameResponseDto checkNickname(String nickname) {
+        boolean isExist = userRepository.existsByNickname(nickname);
+
+        return new NicknameResponseDto(isExist);
     }
 }

@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
 import org.englising.com.englisingbe.auth.dto.CustomUserDetails;
+import org.englising.com.englisingbe.user.dto.NicknameRequestDto;
+import org.englising.com.englisingbe.user.dto.NicknameResponseDto;
 import org.englising.com.englisingbe.user.dto.ProfileDto;
 import org.englising.com.englisingbe.user.dto.UserResponseMessage;
 import org.englising.com.englisingbe.user.service.UserService;
@@ -41,6 +43,7 @@ public class UserController {
     )
     public ResponseEntity<DefaultResponseDto<?>> updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                             @RequestBody ProfileDto profileDto) {
+
         userService.updateProfile(userDetails.getUsername(), profileDto);
 
         return ResponseEntity
@@ -49,4 +52,23 @@ public class UserController {
                         UserResponseMessage.USER_UPDATEPROFILE_MESSAGE.getMessage(),
                         null));
     }
+
+    @PostMapping("/nickname")
+    @Operation(
+            summary = "닉네임 중복 확인",
+            description = "닉네임 중복 가능성을 확인합니다"
+    )
+    public ResponseEntity<DefaultResponseDto<?>> checkNickname(@RequestBody NicknameRequestDto nicknameRequestDto) {
+        NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new DefaultResponseDto<>(UserResponseMessage.USER_CHECKNICKNAME_MESSAGE.getCode(),
+                        UserResponseMessage.USER_CHECKNICKNAME_MESSAGE.getMessage(),
+                        nicknameResponseDto));
+    }
+
+
+
+
 }

@@ -14,7 +14,7 @@ import java.util.Objects;
 
 // Spring Security는 유저 인증과정에서 UserDetails 참조하여 간단한 인증 진행 가능
 // DB의 위에서 선언한 사용자의 정보를 토대로 인증 진행하도록 설정
-// User에 바로 UserDetials 상속해도 되지만 동작 엔티티 관련 여러 단점 존재 (공부)
+// User에 바로 UserDetials 상속해도 되지만 동작 엔티티 관련 여러 단점 존재
 
 @Getter
 public class CustomUserDetails implements UserDetails {
@@ -46,7 +46,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     /**
-     * email로 가져오기
+     * userId로 가져오기
      * */
     @Override
     public String getUsername() {
@@ -58,11 +58,6 @@ public class CustomUserDetails implements UserDetails {
         return user.getUserId().toString();
     }
 
-    // 둘 중에 고민
-//    @Override
-//    public Long getUsername() {
-//        return  user.getEmail();
-//    }
 
     @Override
     public boolean isAccountNonExpired() {
