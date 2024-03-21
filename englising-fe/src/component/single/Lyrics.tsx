@@ -183,27 +183,23 @@ const Lyrics = ({onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData}
                             //data-isSolve: 0=미해결, 1=오답, 2=정답
                             return (
                                 isBlank ? 
-                                    (idx == i ?
-                                        (<span 
+                                    (<span 
                                         key={j} 
                                         className={"mx-2 bg-white rounded-lg text-white"}
                                         ref={(el) => blanksRef.current[blankIdx] = el}
                                         data-sentence ={i}
                                         data-solve="0"
-                                        onClick={(e) => handleHintClick(e, word)}
-                                        > 
+                                            onClick={(e) => {
+                                                if (idx == i) {
+                                                    const solve = e.currentTarget.getAttribute('data-solve');
+                                                    if (solve != "2") {
+                                                        handleHintClick(e, word)
+                                                    }
+                                                }
+                                            }}
+                                    > 
                                         {word}
-                                        </span>) :
-                                        (<span 
-                                        key={j} 
-                                        className={"mx-2 bg-white rounded-lg text-white"}
-                                        ref={(el) => blanksRef.current[blankIdx] = el}
-                                        data-sentence ={i}
-                                        data-solve="0"
-                                        > 
-                                        {word}
-                                        </span>))
-                                 
+                                    </span>)
                                 : (<span key={j}> {word} </span>)
                             );
                         })}
