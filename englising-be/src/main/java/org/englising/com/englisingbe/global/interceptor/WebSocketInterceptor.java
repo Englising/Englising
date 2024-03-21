@@ -1,5 +1,7 @@
 package org.englising.com.englisingbe.global.interceptor;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -8,6 +10,8 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import java.util.List;
 import java.util.Map;
 
+@Configuration
+@RequiredArgsConstructor
 public class WebSocketInterceptor implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
