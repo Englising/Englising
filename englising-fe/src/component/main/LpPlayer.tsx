@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import lpPlayer from '../../assets/lp.png';
+import { Link } from 'react-router-dom';
+
 
 interface LpPlayerProps {
     title?: string;
@@ -8,6 +10,31 @@ interface LpPlayerProps {
 }
 
 const LpPlayer: React.FC<LpPlayerProps> = ({ title, img, artists }) => {
+    const [bgColor1, setBgColor1] = useState('#ced4da');
+    const [bgColor2, setBgColor2] = useState('#ced4da');
+    const [bgColor3, setBgColor3] = useState('#ced4da');
+
+    const [level, setLevel] = useState<number>(0);
+
+    const selectLevel1 = () => {
+        setLevel(1);
+        setBgColor1('#00ffff');
+        setBgColor2('#ced4da');
+        setBgColor3('#ced4da');
+    };
+    const selectLevel2 = () => {
+        setLevel(1);
+        setBgColor2('#00ffff');
+        setBgColor1('#ced4da');
+        setBgColor3('#ced4da');
+    };
+    const selectLevel3 = () => {
+        setLevel(1);
+        setBgColor3('#00ffff');
+        setBgColor2('#ced4da');
+        setBgColor1('#ced4da');
+    };
+    
     const circleStyle: React.CSSProperties = {
         backgroundImage: img ? `url(${img})` : 'none', 
         backgroundColor: img ? '' : 'rgba(192, 192, 192, 0.5)',// 이미지가 있으면 배경으로 설정, 없으면 none으로 설정
@@ -44,23 +71,26 @@ const LpPlayer: React.FC<LpPlayerProps> = ({ title, img, artists }) => {
                             <div className="bg-primary-200 rounded-full h-1/2 w-2/12 z-40 text-center pt-2 "></div>
                         </div>
                     )}
+                    {/* 레벨 선택 */}
                     {title && artists && (
                         <div>
                             <div className='text-white absolute bottom-20 left-6 text-xl font-bold'>LEVEL</div>
                             <div className='w-4/6 h-1/6 flex flex-row z-40 absolute bottom-4 left-6 items-center space-x-3'>
-                                <div className="bg-primary-200 rounded-full h-1/2 w-2/12 z-40 text-center pt-2 font-bold">1
+                                {/*1*/}
+                                <div onClick={selectLevel1} style={{background: bgColor1}} className="bg-primary-200 rounded-full h-1/2 w-2/12 z-40 text-center pt-2 font-bold">1
                                     <div className="text-black text-xs font-bold pt-3">easy</div>
                                 </div>
-                                <div className="bg-primary-200 rounded-full h-1/2 w-2/12 z-40 text-center pt-2 font-bold">2</div>
-                                <div className="bg-primary-200 rounded-full h-1/2 w-2/12 z-40 text-center pt-2 font-bold">3
+                                {/*2*/}
+                                <div onClick={selectLevel2}  style={{background: bgColor2}}className="bg-primary-200 rounded-full h-1/2 w-2/12 z-40 text-center pt-2 font-bold">2</div>
+                                {/*3*/}
+                                <div onClick={selectLevel3} style={{background: bgColor3}} className="bg-primary-200 rounded-full h-1/2 w-2/12 z-40 text-center pt-2 font-bold">3
                                     <div className="text-black text-xs font-bold pt-3">hard</div>
                                 </div>
                             </div>
                             <button className='bg-secondary-500 text-black absolute bottom-10 right-7 rounded-lg py-1.5 px-2 drop-shadow-md font-bold'>
-                            Game Start
+                                <Link to ="/singlePlay"> Game Start</Link>
                             </button>
                         </div>
-                        
                     )}
                     
                 </div>
