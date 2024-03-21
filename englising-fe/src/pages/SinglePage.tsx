@@ -3,7 +3,7 @@ import Lyrics from "../component/single/Lyrics";
 import MusicPlayer from "../component/single/MusicPlayer";
 import FooterVar from "../component/single/FooterVar";
 import { singleData } from "../component/single/example"
-
+// 싱글데이터를 가져올 수 있는 api를 설계
 
 export interface PlayInfo {
     idx: number,
@@ -16,6 +16,12 @@ export interface PlayInfo {
 export interface AnswerInfo {
     answer: string,
     toggleSubmit: number
+}
+
+export interface ProgressInfo {
+    totalWord: number,
+    rightWord: number,
+    hintNum: number
 }
 
 export interface Lyric {
@@ -59,6 +65,13 @@ const SinglePage = () => {
         toggleSubmit: 0
     });
 
+    const [progressInfo, setProgressInfo] = useState<ProgressInfo>({
+        totalWord: singleData.data.total_word_cnt, // 나중에 axios로 받아올 것
+        rightWord: 0,
+        hintNum: 3,
+    });
+
+
     const onSetInfo = (currIdx: number, blank: boolean, start: number, end: number): void => {
         setPlayInfo({
             idx: currIdx,
@@ -80,6 +93,20 @@ const SinglePage = () => {
         })
     }
 
+    const onSetProgressInfo = (type: string, data: number = 1): void => {
+        if (type == "rightWord") {
+            setProgressInfo({
+                ...progressInfo,
+                rightWord: progressInfo.rightWord + data
+            });
+        } else if (type == "hintNum") {
+            setProgressInfo({
+                ...progressInfo,
+                hintNum: data
+            });
+        }
+    }
+
     const onSetAnswer = (answer: string): void => {
         setAnswerInfo({
             answer: answer,
@@ -87,22 +114,28 @@ const SinglePage = () => {
         });
     }
 
-    //동적으로 url 구성
-    const ur1 = 'src/assets/2002.jpg';
+    const onSkip = async ():Promise<void> => {
+        const lyric = singleData.data.lyrics[playInfo.idx+1];
+        onSetInfo(playInfo.idx+1, lyric.isBlank, lyric.startTime, lyric.endTime);
+    }
+
+    //동적으로 url 구성, className에 들어가야함
+    const item1 =  'src/assets/2002.PNG'
+    const url = `bg-[url('src/assets/bam.PNG')] bg-cover bg-center h-svh w-screen p-0 m-0`;
 
     return (
-        <div className={`bg-[url('src/assets/2002.jpg')] bg-cover bg-center h-screen w-screen p-0 m-0`}>            
-            <div className="flex flex-col  bg-black h-screen w-screen bg-opacity-70">
-                <div className="flex h-5/6">
-                    <div className="w-1/4">
-                        <MusicPlayer onSetInfoIdx = {onSetInfoIdx} playInfo = {playInfo} /> 
+        <div className={url}>            
+            <div className="flex flex-col  bg-black h-svh w-screen bg-opacity-80">
+                <div className="flex h-[90%]">
+                    <div className="w-1/3">
+                        <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} /> 
                     </div>
-                    <div className="w-3/4">
-                        <Lyrics onSetInfo = {onSetInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
+                    <div className="w-2/3 flex items-center justify-center">
+                        <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
                     </div>
                 </div>
-                <div className="h-1/6 bg-black flex justify-center">
-                    <FooterVar onSetAnswer = {onSetAnswer}/>
+                <div className="h-[10%] bg-black flex justify-center">
+                    <FooterVar onSetAnswer = {onSetAnswer} onSkip = {onSkip}/>
                 </div>
                 </div>
         </div>

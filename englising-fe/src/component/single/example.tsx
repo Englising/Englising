@@ -99,7 +99,7 @@ export const singleData = {
                     isBlank: false,
                     startTime: 98.4,
                     endTime: 100,
-                    lyric: ["내가", "먹고", "싶었던", "건,", "달디단,", "밤양갱,", "밤양갱이야"]
+                    lyric: ["내가", "먹고", "싶었던", "건", "달디단", "밤양갱", "밤양갱이야"]
                 },
             ],
             words : [
@@ -139,7 +139,7 @@ export const singleData = {
                     isRight: false
                 },
             ],
-            total_word_cnt : 20,
+            total_word_cnt : 5,
             right_word_cnt : 2
 		}
 };

@@ -1,5 +1,4 @@
 import React from 'react';
-import Sidebar from '../component/main/Sidebar.tsx';
 import Multiroom from '../component/main/MultiRoom.tsx';
 import imgRoom1 from '../assets/imgRoom1.jpg';
 import imgRoom2 from '../assets/imgRoom2.jpg';
@@ -63,9 +62,6 @@ const SelectMultiPage: React.FC = () => {
 
     return (
         <div className="bg-black h-screen w-screen m-0 p-0 flex">
-            {/* sideBar */}
-            <Sidebar/>
-
             <div className='flex flex-col pt-10 pl-8'>
 
                 <div className='pt-8 flex flex-row'>
@@ -83,8 +79,8 @@ const SelectMultiPage: React.FC = () => {
                             <button className='text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50'>ROCK</button>
                             <button className='text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50'>DANCE</button>
                         </div>
-                        <div className="relative flex flex-col overflow-y-auto">
-                            <div className='text-white grid grid-cols-4 gap-9 justify-items-start'>
+                        <div className="relative flex flex-col">
+                            <div className='text-white grid grid-cols-4 gap-9 justify-items-start overflow-y-auto'>
                                 {room.map((item)=> (
                                     <Multiroom room_name={item.room_name} room_id={item.room_id} max_user={item.max_user} current_user={item.current_user} multi_img={item.multi_img}/>
                                 ))}
