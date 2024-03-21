@@ -1,6 +1,8 @@
 import React, { useState, ChangeEvent } from 'react';
 import imgRoom6 from '../assets/imgRoom6.jpg';
 import Multiroom from '../component/main/MultiRoom.tsx';
+import RandomButton from '../component/main/RandomButton.tsx';
+import axios from 'axios';
 
 const SettingMulti = () => {
     // 방 정보 상태를 관리하기 위한 useState 훅 사용
@@ -8,6 +10,7 @@ const SettingMulti = () => {
         roomName: "방 이름", // 방 이름
         maxUser: 1, // 최대 사용자 수
         currentUser: 1, // 현재 사용자 수
+        password: 1111,
     });
 
     // 방 이름 변경 시 호출되는 함수
@@ -19,6 +22,21 @@ const SettingMulti = () => {
     const handleMaxUserChange = (event: ChangeEvent<HTMLInputElement>) => {
         setRoomInfo({ ...roomInfo, maxUser: parseInt(event.target.value) });
     };
+
+    const finishSetting = async () => {
+        if(roomInfo.roomName===""){
+            alert("방 이름을 입력해주세요!");
+        } 
+        else{
+            axios.post("https://j10a106.p.ssafy.io/api/multiplay",{
+                roomName: roomInfo.roomName, // 방 이름
+                maxUser: roomInfo.maxUser, // 최대 사용자 수
+                currentUser: roomInfo.currentUser, // 현재 사용자 수
+                password: roomInfo.password,
+            })
+            //request로 multiplayId 받아서 waitroom/multiplayId로 보내주기
+        }
+    }
 
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 flex">
@@ -82,15 +100,18 @@ const SettingMulti = () => {
                             type="text"
                             name="room_password"
                             className='w-64 h-10 pl-3 bg-secondary-100 rounded-lg placeholder:text-primary-700 '
-                            placeholder='비밀번호를 입력하시오'
+                            placeholder='비밀번호를 입력하시오 (4자릿수 숫자)'
+                            value={roomInfo.password}
                         />
-                        <div className='pl-28 pt-10'>
+                        {/* 방 설정완료 */}
+                        <div className='pl-28 pt-10' onClick={finishSetting}>
                             <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'>방 설정 완료</button>
                         </div>
                     </div>
                     {/* 방 미리보기 */}
-                    <div className='h-48 pt-52 pl-24 flex flex-col items-center'>
+                    <div className='h-48 pt-52 pl-24 flex flex-col items-center relative'>
                         <Multiroom room_name={roomInfo.roomName} room_id={1} max_user={roomInfo.maxUser} current_user={roomInfo.currentUser} multi_img={imgRoom6} />
+                        <div className='absolute top-[218px] right-[160px]'><RandomButton/></div>
                         <h1 className='text-secondary-500 pt-6 font-semibold'>방 미리보기</h1>
                     </div>
                     
