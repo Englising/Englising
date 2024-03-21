@@ -1,10 +1,19 @@
 import React from 'react';
 import Logo from '../assets/logo.png'
 import KakaoLogin from '../assets/kakao_login_large_narrow.png'
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const IndexPage = () => {
+    const navigate = useNavigate();
     const handleKakaoLogin = () => {
         window.location.href = "https://j10a106.p.ssafy.io/oauth2/authorization/kakao"
+    }
+
+    const guestLogin = async() => {
+        axios.post("https://j10a106.p.ssafy.io/api/auth/guest")
+        console.log("로그인 성공")
+        navigate("/englising/selectSingle1");
     }
 
     return (
@@ -16,7 +25,10 @@ const IndexPage = () => {
                 </div>
                 
             </div>
-            
+            <div className='pt-16 h-36 w-24 bg-white text-black'
+                onClick={guestLogin}>
+                게스트로그인
+            </div>
         </div>
     );
 };
