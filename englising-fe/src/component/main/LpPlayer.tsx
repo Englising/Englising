@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import lpPlayer from '../../assets/lp.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 
 interface LpPlayerProps {
+    trackId? : number;
     title?: string;
     img?: string;
     artists?: string;
 }
 
-const LpPlayer: React.FC<LpPlayerProps> = ({ title, img, artists }) => {
+const LpPlayer: React.FC<LpPlayerProps> = ({ title, img, artists, trackId }) => {
+const navigate = useNavigate();
+
     const [bgColor1, setBgColor1] = useState('#ced4da');
     const [bgColor2, setBgColor2] = useState('#ced4da');
     const [bgColor3, setBgColor3] = useState('#ced4da');
 
-    const [level, setLevel] = useState<number>(0);
+    const [level, setLevel] = useState<number>(1);
 
     const selectLevel1 = () => {
         setLevel(1);
@@ -22,14 +26,21 @@ const LpPlayer: React.FC<LpPlayerProps> = ({ title, img, artists }) => {
         setBgColor2('#ced4da');
         setBgColor3('#ced4da');
     };
+
+    useEffect(() => {
+        // 초기화 로직을 useEffect 내부에 넣어 한 번만 실행되도록 함
+        selectLevel1();
+    }, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행되도록 함
+
+
     const selectLevel2 = () => {
-        setLevel(1);
+        setLevel(2);
         setBgColor2('#00ffff');
         setBgColor1('#ced4da');
         setBgColor3('#ced4da');
     };
     const selectLevel3 = () => {
-        setLevel(1);
+        setLevel(3);
         setBgColor3('#00ffff');
         setBgColor2('#ced4da');
         setBgColor1('#ced4da');
@@ -41,6 +52,15 @@ const LpPlayer: React.FC<LpPlayerProps> = ({ title, img, artists }) => {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         opacity: img ? 0.5 : 1,
+    };
+
+    const startSingleplay  = async () => {
+        axios.post("https://j10a106.p.ssafy.io/api/singleplay", {
+            trackId: trackId,
+            level: level,
+        })
+        navigate("/singlePlay");
+        console.log("게임시작성공");
     };
 
     return (
@@ -87,7 +107,8 @@ const LpPlayer: React.FC<LpPlayerProps> = ({ title, img, artists }) => {
                                     <div className="text-black text-xs font-bold pt-3">hard</div>
                                 </div>
                             </div>
-                            <button className='bg-secondary-500 text-black absolute bottom-10 right-7 rounded-lg py-1.5 px-2 drop-shadow-md font-bold'>
+                            <button className='bg-secondary-500 text-black absolute bottom-10 right-7 rounded-lg py-1.5 px-2 drop-shadow-md font-bold'
+                                    onClick={startSingleplay}>
                                 <Link to ="/singlePlay"> Game Start</Link>
                             </button>
                         </div>
