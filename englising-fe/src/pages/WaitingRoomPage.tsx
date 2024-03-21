@@ -1,6 +1,8 @@
 import React from 'react';
 import imgUser from '../assets/user.png'
 import ChatArea from '../component/chat/ChatArea';
+import { Link } from 'react-router-dom';
+
 
 
 const WaitingRoomPage = () => {
@@ -47,14 +49,15 @@ const WaitingRoomPage = () => {
                         </div>
                     </div>
 
-                <div className='pt-12 pl-28 w-2/5'>
-                    <ChatArea/>
-                </div>
-               
+                    <div className='pt-12 pl-28 w-2/5'>
+                        <ChatArea/>
+                    </div>
                 </div>
 
                 <div className='flex justify-center pt-16'>
-                    <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'>방 설정 완료</button>
+                    <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'>
+                        <Link to ="/multiPlay/:multiId">방 설정 완료</Link>
+                    </button>
                 </div>
                 
             </div>

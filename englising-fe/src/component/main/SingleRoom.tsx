@@ -55,10 +55,10 @@ const Singleroom: React.FC<SingleroomProps> = ({album_title, title, artists, img
             <div className='flex flex-row'>
                 <div className='pt-2 pl-2'>
                     <div className='text-xs font-bold text-secondary-500'>{album_title} </div>
-                    <div className='font-bold text-xl pt-1'> {title} </div>
+                    <div className='font-bold text-xl pt-1 truncate text-ellipsis'> {title} </div>
                     <div className='text-sm pb-2'> {artists}</div>
                 </div>
-                <div className='flex flex-row absolute right-2 bottom-4'> {renderStars(score)} </div>
+                <div className='flex flex-row absolute right-2 bottom-24'> {renderStars(score)} </div>
             </div>
         </div>
     );
