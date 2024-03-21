@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { PlayInfo, SingleData, Lyric, Word, AnswerInfo } from "../../pages/SinglePage.tsx";
+import { PlayInfo, SingleData, Lyric, Word, AnswerInfo, ProgressInfo } from "../../pages/SinglePage.tsx";
 import HintModal from "./HintModal.tsx";
 
 interface Props {
-    onSetInfo(currIdx: number,  blank: boolean, start: number, end: number): void,
+    onSetInfo(currIdx: number, blank: boolean, start: number, end: number): void,
+    onSetProgressInfo(type: string, data?: number): void,
     playInfo: PlayInfo,
     singleData: SingleData,
     answerInfo: AnswerInfo,
 }
 
-const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
+const Lyrics = ({onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData}:Props) => {
     const {idx} = playInfo;
     const {answer, toggleSubmit} = answerInfo;
     const [lyrics, setLyrics] = useState<Lyric[]>([]);
@@ -20,7 +21,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
     const [hintWord, setHintWord] = useState<string>("");
     const [hintNum, setHintNum] = useState<number>(3);
     
-    // aixos 호출로 데이터 받기 ///////////////////
+    // aixos 호출로 데이터 받기 -> Single Page에게 위임///////////////////
     useEffect(() => {
         const lyricsData:Lyric[] = singleData.data.lyrics;
         const blankData:Word[] = singleData.data.words;
@@ -29,8 +30,7 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
     },[])
     /////////////////////////////////////////////
 
-    // FootVar에서 답안이 입력되었을 때
-
+    // FootVar에서 답안이 입력되었을 때, 실행되는 hook
     useEffect(() => {
         if(answer === "") return; 
         
@@ -68,9 +68,13 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
         const solution = targetBlank?.textContent;
 
         if(answer == solution){
-            if(targetBlank){
+            if (targetBlank) {
+                // 정답시 스타일변경
                 targetBlank.dataset.solve = "2";
-                targetBlank.className="text-green-800"
+                targetBlank.className = "text-green-800"
+                
+                //정답시 맞은 단어 개수 변경
+                onSetProgressInfo("rightWord",);
             }
 
             // 문장에 정답을 모두 맞췄을때, SinglePage Data 자체를 바꿔줌 (여긴 더이상 빈칸이 없어!)
@@ -78,7 +82,8 @@ const Lyrics = ({onSetInfo, answerInfo, playInfo, singleData}:Props) => {
                 lyrics[idx].isBlank = !lyrics[idx].isBlank;
             }
         }else {
-            if(targetBlank){
+            if (targetBlank) {
+                // 오답시 스타일변경
                 targetBlank.dataset.solve = "1";
                 targetBlank.className="text-red-800"
             }

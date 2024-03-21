@@ -3,7 +3,7 @@ import Lyrics from "../component/single/Lyrics";
 import MusicPlayer from "../component/single/MusicPlayer";
 import FooterVar from "../component/single/FooterVar";
 import { singleData } from "../component/single/example"
-
+// 싱글데이터를 가져올 수 있는 api를 설계
 
 export interface PlayInfo {
     idx: number,
@@ -16,6 +16,12 @@ export interface PlayInfo {
 export interface AnswerInfo {
     answer: string,
     toggleSubmit: number
+}
+
+export interface ProgressInfo {
+    totalWord: number,
+    rightWord: number,
+    hintNum: number
 }
 
 export interface Lyric {
@@ -59,6 +65,14 @@ const SinglePage = () => {
         toggleSubmit: 0
     });
 
+    const [progressInfo, setProgressInfo] = useState<ProgressInfo>({
+        totalWord: 0,
+        rightWord: 0,
+        hintNum: 3,
+    });
+
+    const totalWord= singleData.data.total_word_cnt;
+
     const onSetInfo = (currIdx: number, blank: boolean, start: number, end: number): void => {
         setPlayInfo({
             idx: currIdx,
@@ -78,6 +92,20 @@ const SinglePage = () => {
             endTime: lyric.endTime,
             toggleNext: playInfo.toggleNext // 계속 재생상태
         })
+    }
+
+    const onSetProgressInfo = (type: string, data: number = 1): void => {
+        if (type == "rightWord") {
+            setProgressInfo({
+                ...progressInfo,
+                rightWord: progressInfo.rightWord + data
+            });
+        } else if (type == "hintNum") {
+            setProgressInfo({
+                ...progressInfo,
+                hintNum: data
+            });            
+        }
     }
 
     const onSetAnswer = (answer: string): void => {
@@ -100,10 +128,10 @@ const SinglePage = () => {
             <div className="flex flex-col  bg-black h-svh w-screen bg-opacity-80">
                 <div className="flex h-[90%]">
                     <div className="w-1/3">
-                        <MusicPlayer onSetInfoIdx = {onSetInfoIdx} playInfo = {playInfo} /> 
+                        <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo}/> 
                     </div>
                     <div className="w-2/3 flex items-center justify-center">
-                        <Lyrics onSetInfo = {onSetInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
+                        <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
                     </div>
                 </div>
                 <div className="h-[10%] bg-black flex justify-center">
