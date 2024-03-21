@@ -1,15 +1,14 @@
-package org.englising.com.englisingbe.lyric.entity;
+package org.englising.com.englisingbe.music.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.englising.com.englisingbe.music.entity.Track;
+import org.englising.com.englisingbe.word.entity.Word;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
@@ -17,28 +16,29 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "lyric")
-public class Lyric {
+@Table(name = "track_word")
+public class TrackWord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lyric_id")
-    private Long albumId;
+    @Column(name = "track_word_id")
+    private Long trackWordId;
 
     @ManyToOne
     @JoinColumn(name = "track_id", referencedColumnName = "track_id")
     private Track track;
 
-    @Column(name = "start_time", precision = 10, scale = 3)
-    private BigDecimal startTime;
+    @ManyToOne
+    @JoinColumn(name = "word_id", referencedColumnName = "word_id")
+    private Word word;
 
-    @Column(name = "end_time", precision = 10, scale = 3)
-    private BigDecimal endTime;
+    @Column(name = "sentence_num")
+    private Integer sentenceNum;
 
-    @Column(name = "en_text", length = 512)
-    private String enText;
+    @Column(name = "sentence_seq")
+    private String sentenceSeq;
 
-    @Column(name = "kr_text", length = 512)
-    private String krText;
+    @Column(name = "importance")
+    private Float importance;
 
     @CreationTimestamp
     @Column(name = "created_at")
