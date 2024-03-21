@@ -34,9 +34,9 @@ public class AuthService {
 
     public JwtResponseDto guest() throws Exception{
          User user = User.builder()
-                    .email(makeRandomEmail()) // todo. uuid 사용 ex)오늘 날짜 + uuid + @email.com
-                    .nickname(userService.makeRandomNickname()) //todo. 수정
-                    .profileImg(userService.makeRandomProfileImgUrl()) //todo. 수정
+                    .email(makeRandomEmail())
+                    .nickname(userService.makeRandomNickname())
+                    .profileImg(userService.makeRandomProfileImgUrl())
                     .color(userService.makeRandomColor())
                     .type("GUEST") // default로 GUEST 되어있으면 빼기
                     .build();
