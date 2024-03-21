@@ -119,11 +119,12 @@ const SinglePage = () => {
         onSetInfo(playInfo.idx+1, lyric.isBlank, lyric.startTime, lyric.endTime);
     }
 
-    //동적으로 url 구성
-    const ur1 = 'src/assets/2002.jpg';
+    //동적으로 url 구성, className에 들어가야함
+    const item1 =  'src/assets/2002.PNG'
+    const url = `bg-[url('src/assets/bam.PNG')] bg-cover bg-center h-svh w-screen p-0 m-0`;
 
     return (
-        <div className={`bg-[url('src/assets/bam.PNG')] bg-cover bg-center h-svh w-screen p-0 m-0`}>            
+        <div className={url}>            
             <div className="flex flex-col  bg-black h-svh w-screen bg-opacity-80">
                 <div className="flex h-[90%]">
                     <div className="w-1/3">

@@ -2,6 +2,7 @@ import ReactPlayer from "react-player";
 import { useEffect, useRef, useState } from "react";
 import { PlayInfo, ProgressInfo } from "../../pages/SinglePage.tsx";
 import { OnProgressProps } from "react-player/base";
+import DonutChart from "./DonutChart.tsx";
 
 interface Props {
     onSetInfoIdx(currIdx: number):void,
@@ -13,9 +14,13 @@ interface Props {
 //임시 데이터: 음원의 id를 보내주면, 문장마다 시작하는 시간 리스트를 받아오는 코드로 대체
 const timeData = [7.5, 12.0, 15.9, 20.0, 24.3, 28.3, 32.4, 36.4, 41.4, 49.7, 56.4, 60.6, 65.0, 68.8, 90.3, 98.4];
 const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
+    // 현재 재생중인 가사 정보
     let { idx, isBlank, startTime, toggleNext } = playInfo
+    
+    // 문제 진행도, 힌트
     let { totalWord, rightWord, hintNum } = progressInfo
-    // 유튜브 아이디를 주는 axios
+
+    // 유튜브 아이디를 주는 axios 넣기//
     const url = "https://www.youtube.com/watch?v=EVJjmMW7eII";
     const [playing, setPlaying] = useState<boolean>(true);
     const [muted, setMuted] = useState<boolean>(true);
@@ -66,10 +71,8 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
                 />   
             </div>
             <div>
-                <div className="w-60 h-20 text-2xl my-10 flex items-center justify-center bg-white text-center">
-                    <div>
-                        정답개수: {rightWord}/{totalWord}
-                    </div>
+                <div className="w-120 h-120 my-10  bg-white text-center">
+                        <DonutChart total={totalWord} target={rightWord} msg="정답"/>
                 </div>
                 <div className="w-60 h-20 text-2xl flex items-center justify-center bg-white text-center">
                     <div>
