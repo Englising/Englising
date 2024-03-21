@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.englising.com.englisingbe.auth.AllowedUrls;
+import org.englising.com.englisingbe.auth.SecurityAllowedUrls;
 import org.englising.com.englisingbe.user.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //        }
 
         AntPathMatcher pathMatcher = new AntPathMatcher();
-        boolean skipFilter = Arrays.stream(AllowedUrls.NO_CHECK_URL).anyMatch(url -> pathMatcher.match(url, request.getRequestURI()));
+        boolean skipFilter = Arrays.stream(SecurityAllowedUrls.NO_CHECK_URL).anyMatch(url -> pathMatcher.match(url, request.getRequestURI()));
 
         if (skipFilter) {
             filterChain.doFilter(request, response);

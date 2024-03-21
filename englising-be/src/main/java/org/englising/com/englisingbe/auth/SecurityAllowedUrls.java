@@ -1,6 +1,6 @@
 package org.englising.com.englisingbe.auth;
 
-public class AllowedUrls {
+public class SecurityAllowedUrls {
     public static final String[] NO_CHECK_URL = {
             /* swagger v2 */
             "/v2/api-docs",
