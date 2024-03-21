@@ -1,17 +1,19 @@
 package org.englising.com.englisingbe.multiplay.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.englising.com.englisingbe.global.util.Genre;
 
 @Data
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class MultiPlayListResponseDto {
-    private Long multiplayId;
+    private Long multiPlayId;
     private String roomName;
     private Integer currentUser;
     private Integer maxUser;
     private String multiPlayImgUrl;
-    private String genre;
+    private Genre genre;
 }

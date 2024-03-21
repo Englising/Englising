@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import org.englising.com.englisingbe.global.util.Genre;
 import org.englising.com.englisingbe.global.util.MultiPlayStatus;
-import org.englising.com.englisingbe.user.entity.User;
 
 import java.util.List;
 
@@ -23,9 +22,9 @@ public class MultiPlayGame {
     private String multiplayImgUrl;
 
     private List<MultiPlaySentence> sentences;
+    private int selectedHint;
 
-    private List<User> users;
+    private List<MultiPlayUser> users;
     private int round;
     private MultiPlayStatus status;
-    private int selectedHint;
 }
