@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.englising.com.englisingbe.auth.AllowedUrls;
+import org.englising.com.englisingbe.auth.SecurityAllowedUrls;
 import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
 import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.user.repository.UserRepository;
@@ -46,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         AntPathMatcher pathMatcher = new AntPathMatcher();
-        boolean skipFilter = Arrays.stream(AllowedUrls.NO_CHECK_URL)
+        boolean skipFilter = Arrays.stream(SecurityAllowedUrls.NO_CHECK_URL)
                 .anyMatch(url -> pathMatcher.match(url, request.getRequestURI()));
 
         if (skipFilter) {
@@ -64,9 +64,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Authentication authentication = jwtProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else { // accessToken이 유효하지 않은 경우
-//                System.out.println("accessToken이 유효하지 않습니다. ");
-//                System.out.println("refreshToken 꺼내서 확인 후 유효성 확인 시작. ");
-
                 String refreshToken = cookieUtil.getRefreshTokenFromCookie(request);
                 if(refreshToken != null && jwtProvider.isTokenValid(refreshToken)) { // refreshToken 유효한 경우
                     // refreshToken이 유효하면 둘다 재발급하고 쿠키추가
