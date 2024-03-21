@@ -1,44 +1,32 @@
-package org.englising.com.englisingbe.lyric.entity;
+package org.englising.com.englisingbe.music.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.englising.com.englisingbe.music.entity.Track;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "lyric")
-public class Lyric {
+@Table(name = "artist_track")
+public class ArtistTrack {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lyric_id")
-    private Long albumId;
+    @Column(name = "artist_track_id")
+    private Long artistTrackId;
+
+    @ManyToOne
+    @JoinColumn(name = "artist_id", referencedColumnName = "artist_id")
+    private Artist artist;
 
     @ManyToOne
     @JoinColumn(name = "track_id", referencedColumnName = "track_id")
     private Track track;
-
-    @Column(name = "start_time", precision = 10, scale = 3)
-    private BigDecimal startTime;
-
-    @Column(name = "end_time", precision = 10, scale = 3)
-    private BigDecimal endTime;
-
-    @Column(name = "en_text", length = 512)
-    private String enText;
-
-    @Column(name = "kr_text", length = 512)
-    private String krText;
 
     @CreationTimestamp
     @Column(name = "created_at")
