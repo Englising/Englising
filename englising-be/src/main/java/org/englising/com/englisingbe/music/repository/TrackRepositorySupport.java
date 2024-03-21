@@ -3,11 +3,11 @@ package org.englising.com.englisingbe.music.repository;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.englising.com.englisingbe.album.entity.QAlbum;
-import org.englising.com.englisingbe.artist.entity.QArtist;
 import org.englising.com.englisingbe.music.dto.TrackAlbumArtistDto;
-import org.englising.com.englisingbe.track.entity.QArtistTrack;
-import org.englising.com.englisingbe.track.entity.QTrack;
+import org.englising.com.englisingbe.music.entity.QAlbum;
+import org.englising.com.englisingbe.music.entity.QArtist;
+import org.englising.com.englisingbe.music.entity.QArtistTrack;
+import org.englising.com.englisingbe.music.entity.QTrack;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

@@ -5,7 +5,7 @@ import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.englising.com.englisingbe.global.util.PagingUtil;
-import org.englising.com.englisingbe.track.entity.QTrackLike;
+import org.englising.com.englisingbe.like.entity.QTrackLike;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
