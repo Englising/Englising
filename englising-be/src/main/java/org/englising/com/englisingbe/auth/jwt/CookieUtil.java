@@ -41,7 +41,6 @@ public class CookieUtil {
 
         Cookie[] cookies = request.getCookies();
         for(Cookie cookie : cookies) {
-            System.out.println(cookie.getName());
             if(cookie.getName().equals("Authorization")) {
                 accessToken = cookie.getValue();
             }
@@ -54,7 +53,6 @@ public class CookieUtil {
 
         Cookie[] cookies = request.getCookies();
         for(Cookie cookie : cookies) {
-            System.out.println(cookie.getName());
             if(cookie.getName().equals("Authorization-refresh")) {
                 refreshToken = cookie.getValue();
             }

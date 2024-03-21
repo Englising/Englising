@@ -12,16 +12,18 @@ import java.util.Map;
 @Getter
 public class CustomOAuth2User extends DefaultOAuth2User {
 
-    private String email;
-    private String nickname;
-    private String profile_img;
+    private final String email;
+    private final String nickname;
+    private final String profile_img;
+    private final String color;
 
     public CustomOAuth2User(Collection<? extends GrantedAuthority> authorities,
                             Map<String, Object> attributes, String nameAttributeKey,
-                            String email, String nickname, String profile_img) {
+                            String email, String nickname, String profile_img, String color) {
         super(authorities, attributes, nameAttributeKey);
         this.email = email;
         this.nickname = nickname;
         this.profile_img = profile_img;
+        this.color = color;
     }
 }
