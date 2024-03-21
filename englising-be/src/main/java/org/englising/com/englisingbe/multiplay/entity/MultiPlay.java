@@ -32,9 +32,6 @@ public class MultiPlay {
     @Column(name = "max_user")
     private Integer maxUser;
 
-    @Column(name = "current_user")
-    private Integer currentUser;
-
     @Column(name = "genre")
     private String genre;
 
@@ -44,8 +41,8 @@ public class MultiPlay {
     @Column(name = "room_pw")
     private Integer roomPw;
 
-    @Column(name = "multi_img")
-    private String multiImg;
+    @Column(name = "multiplay_img_url")
+    private String multiPlayImgUrl;
 
     @CreationTimestamp
     @Column(name = "created_at")
