@@ -79,7 +79,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                         oAuthAttributes.getNameAttributeKey(),
                         findUser.getEmail(),
                         findUser.getNickname(),
-                        findUser.getProfileImg()
+                        findUser.getProfileImg(),
+                        findUser.getColor()
         );
     }
 }

@@ -11,6 +11,6 @@ import lombok.Data;
 public class ProfileDto {
     @JsonProperty("profile_img")
     String profileImg;
+    String color;
     String nickname;
-
 }

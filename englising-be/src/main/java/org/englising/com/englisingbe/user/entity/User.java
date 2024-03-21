@@ -33,6 +33,9 @@ public class User {
     @Column(name = "profile_img")
     private String profileImg;
 
+    @Column(name = "color")
+    private String color;
+
     @Column(name = "type")
     private String type;
 
@@ -44,8 +47,9 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public void updateUser(String nickname, String profileImg) {
+    public void updateUser(String nickname, String color, String profileImg) {
         this.nickname = nickname;
+        this.color = color;
         this.profileImg = profileImg;
     }
 
