@@ -16,11 +16,7 @@ const FooterVar = ({onSetAnswer, onSkip}:Props) => {
         onSetAnswer(answer);
         setAnswer("");
     }
-
-    const handleSkipClick = () => {
-
-    }
-
+    
     const handlePressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if(e.key == 'Enter'){
             onSetAnswer(answer);
