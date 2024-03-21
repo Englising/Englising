@@ -104,7 +104,7 @@ const SinglePage = () => {
             setProgressInfo({
                 ...progressInfo,
                 hintNum: data
-            });            
+            });
         }
     }
 
