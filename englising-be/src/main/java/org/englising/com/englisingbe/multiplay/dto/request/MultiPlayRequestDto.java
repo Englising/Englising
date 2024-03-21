@@ -13,5 +13,5 @@ public class MultiPlayRequestDto {
     public int maxUser;
     public boolean isSecret;
     public int roomPw;
-    public String multiImg;
+    public String multiPlayImgUrl;
 }

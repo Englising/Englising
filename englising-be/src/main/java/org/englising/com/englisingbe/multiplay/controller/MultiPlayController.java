@@ -51,7 +51,7 @@ public class MultiPlayController {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "성공"),
     })
 
-    public ResponseEntity getMultiPlayLists(@RequestParam String genre, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "6") Integer size){
+    public ResponseEntity getMultiPlayList(@RequestParam(required = false) String genre, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "6") Integer size){
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(

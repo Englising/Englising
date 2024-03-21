@@ -3,23 +3,27 @@ package org.englising.com.englisingbe.multiplay.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javax.management.Query;
 import org.englising.com.englisingbe.multiplay.dto.request.MultiPlayRequestDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayListResponseDto;
 import org.englising.com.englisingbe.multiplay.entity.MultiPlay;
+import org.englising.com.englisingbe.multiplay.repository.MultiPlayImgRepository;
 import org.englising.com.englisingbe.multiplay.repository.MultiPlayRepository;
-import org.englising.com.englisingbe.track.dto.TrackAlbumArtistDto;
-import org.englising.com.englisingbe.track.entity.Track;
+import org.englising.com.englisingbe.music.entity.Track;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MultiPlayServiceImpl implements MultiPlayService {
     private final MultiPlayRepository multiPlayRepository;
+    private final MultiPlayImgRepository multiPlayImgRepository;
 
     @Autowired
-    public MultiPlayServiceImpl(MultiPlayRepository multiPlayRepository) {
+    public MultiPlayServiceImpl(MultiPlayRepository multiPlayRepository, MultiPlayImgRepository multiPlayImgRepository) {
         this.multiPlayRepository = multiPlayRepository;
+        this.multiPlayImgRepository = multiPlayImgRepository;
     }
 
     @Override
@@ -35,7 +39,10 @@ public class MultiPlayServiceImpl implements MultiPlayService {
         long randomTrackId = random.nextInt(1000); // 예를 들어 1000 이내의 랜덤한 값 생성
         Track track = new Track();
         multiPlay.setTrackId(Track.builder().trackId(randomTrackId).build());
-//        multiPlay.setMultiImg("default_image.jpg"); // 기본 이미지 설정 등
+        // 랜덤한 multiPlayImgUrl 생성
+        String randomImageUrl = multiPlayImgRepository.getRandomImageUrl();
+        multiPlay.setMultiPlayImgUrl(randomImageUrl);
+
         return multiPlayRepository.save(multiPlay);
     }
 
@@ -45,17 +52,16 @@ public class MultiPlayServiceImpl implements MultiPlayService {
     }
 
     @Override
-    public List<MultiPlayListResponseDto> getMultiPlayList(String genre, Integer page,
-        Integer size) {
+    public List<MultiPlayListResponseDto> getMultiPlayList(String genre, Integer page, Integer size) {
         List<MultiPlay> multiPlays = multiPlayRepository.findByGenre(genre, PageRequest.of(page, size));
         List<MultiPlayListResponseDto> multiPlayListResponseDto = new ArrayList<>();
         for (MultiPlay multiPlay : multiPlays) {
             MultiPlayListResponseDto dto = new MultiPlayListResponseDto();
             dto.setMultiplayId(multiPlay.getMultiplayId());
             dto.setRoomName(multiPlay.getRoomName());
-//            dto.setCurrentUser(multiPlay.getCurrentUser());
             dto.setMaxUser(multiPlay.getMaxUser());
-//            dto.setMultiImg(multiPlay.getMultiImg());
+            dto.setMultiPlayImgUrl(multiPlay.getMultiPlayImgUrl());
+            dto.setGenre(multiPlay.getGenre());
             multiPlayListResponseDto.add(dto);
         }
         return multiPlayListResponseDto;
