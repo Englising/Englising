@@ -102,7 +102,7 @@ const SinglePage = () => {
                     <div className="w-1/3">
                         <MusicPlayer onSetInfoIdx = {onSetInfoIdx} playInfo = {playInfo} /> 
                     </div>
-                    <div className="w-2/3">
+                    <div className="w-2/3 flex items-center justify-center">
                         <Lyrics onSetInfo = {onSetInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
                     </div>
                 </div>

@@ -5,7 +5,8 @@ import { OnProgressProps } from "react-player/base";
 
 interface Props {
     onSetInfoIdx(currIdx: number):void,
-    playInfo: PlayInfo
+    playInfo: PlayInfo,
+    
 }
 
 //임시 데이터: 음원의 id를 보내주면, 문장마다 시작하는 시간 리스트를 받아오는 코드로 대체
@@ -41,6 +42,8 @@ const MusicPlayer = ({onSetInfoIdx, playInfo}:Props ) => {
         setPlaying(true);
         player.current?.seekTo(startTime);
     },[toggleNext])
+
+    // 힌트창이 켜졌을때 노래 일시중지
 
     return(
         <div className="flex flex-col items-center">
