@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.englising.com.englisingbe.track.entity.Track;
+import org.englising.com.englisingbe.music.entity.Track;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -29,11 +29,11 @@ public class MultiPlay {
     @JoinColumn(name = "track_id", referencedColumnName = "track_id")
     private Track trackId;
 
-    @Column(name = "total_people")
+    @Column(name = "max_user")
     private Integer maxUser;
 
-//    @Column(name = "current_user")
-//    private Integer currentUser;
+    @Column(name = "current_user")
+    private Integer currentUser;
 
     @Column(name = "genre")
     private String genre;
@@ -44,8 +44,8 @@ public class MultiPlay {
     @Column(name = "room_pw")
     private Integer roomPw;
 
-//    @Column(name = "multi_img")
-//    private String multiImg;
+    @Column(name = "multi_img")
+    private String multiImg;
 
     @CreationTimestamp
     @Column(name = "created_at")
