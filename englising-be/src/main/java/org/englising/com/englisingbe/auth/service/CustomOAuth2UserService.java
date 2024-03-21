@@ -61,7 +61,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuthAttributes oAuthAttributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
 
-        // email로 가입된 회원인지 조회 (kakaoResponse에서 가져와야 하나? - 고민)
+        // email로 가입된 회원인지 조회
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         String email = String.valueOf(kakaoAccount.get("email"));
         User findUser = userRepository.findByEmail(email).orElse(null);

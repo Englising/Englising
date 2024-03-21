@@ -43,17 +43,14 @@ public class AuthService {
                 (CustomUserDetails) customUserDetailService.loadUserByUsername(user.getUserId().toString());
 
         // 1. Authentication 생성
-        System.out.println("Authentication 생성 시작");
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(customUserDetails, customUserDetails.getPassword(),
                         customUserDetails.getAuthorities());
 
         // 2. Authentication 검증
-        System.out.println("Authentication 검증 시작");
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 3. 인증 정보 기반으로 JWT 생성
-        System.out.println("jwt 생성 시작");
         JwtResponseDto jwtResponseDto = jwtProvider.createTokens(authentication, user.getUserId());
 
         return jwtResponseDto;
