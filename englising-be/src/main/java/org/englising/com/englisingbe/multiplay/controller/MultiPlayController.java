@@ -9,9 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
 import org.englising.com.englisingbe.global.util.ResponseMessage;
 import org.englising.com.englisingbe.multiplay.dto.request.MultiPlayRequestDto;
+import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayDetailResponseDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayListResponseDto;
 import org.englising.com.englisingbe.multiplay.entity.MultiPlay;
 import org.englising.com.englisingbe.multiplay.service.MultiPlayServiceImpl;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/multiplay")
@@ -112,11 +115,12 @@ public class MultiPlayController {
     })
 
     public ResponseEntity getMultiPlayById(@PathVariable Long multiplayId) {
-        MultiPlay multiPlay = multiPlayService.getMultiPlayById(multiplayId);
+        MultiPlayDetailResponseDto multiPlay = multiPlayService.getMultiPlayById(multiplayId);
+        log.info("multiPlay : {}", multiPlay);
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
-                DefaultResponseDto.<MultiPlay>builder()
+                DefaultResponseDto.<MultiPlayDetailResponseDto>builder()
                     .status(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getCode())
                     .message(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getMessage())
                     .data(multiPlay)

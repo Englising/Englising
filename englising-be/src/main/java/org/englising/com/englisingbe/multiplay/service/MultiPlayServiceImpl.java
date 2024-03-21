@@ -3,16 +3,15 @@ package org.englising.com.englisingbe.multiplay.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import javax.management.Query;
 import lombok.extern.slf4j.Slf4j;
 import org.englising.com.englisingbe.multiplay.dto.request.MultiPlayRequestDto;
+import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayDetailResponseDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayListResponseDto;
 import org.englising.com.englisingbe.multiplay.entity.MultiPlay;
 import org.englising.com.englisingbe.multiplay.repository.MultiPlayImgRepository;
 import org.englising.com.englisingbe.multiplay.repository.MultiPlayRepository;
 import org.englising.com.englisingbe.music.entity.Track;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -49,8 +48,19 @@ public class MultiPlayServiceImpl implements MultiPlayService {
     }
 
     @Override
-    public MultiPlay getMultiPlayById(Long multiPlayId) {
-        return multiPlayRepository.findByMultiplayId(multiPlayId);
+    public MultiPlayDetailResponseDto getMultiPlayById(Long multiPlayId) {
+        MultiPlay multiPlay = multiPlayRepository.findByMultiplayId(multiPlayId);
+
+        MultiPlayDetailResponseDto responseDto = new MultiPlayDetailResponseDto();
+        responseDto.setMultiplayId(multiPlay.getMultiplayId());
+        responseDto.setRoomName(multiPlay.getRoomName());
+        responseDto.setTrackId(multiPlay.getTrackId().getTrackId());
+        responseDto.setGenre(multiPlay.getGenre());
+        responseDto.setMaxUser(multiPlay.getMaxUser());
+        responseDto.setMultiPlayImgUrl(multiPlay.getMultiPlayImgUrl());
+        responseDto.setIsSecret(multiPlay.getIsSecret());
+
+        return responseDto;
     }
 
     @Override
