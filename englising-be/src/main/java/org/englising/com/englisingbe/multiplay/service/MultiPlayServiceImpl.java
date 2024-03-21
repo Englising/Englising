@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.management.Query;
+import lombok.extern.slf4j.Slf4j;
 import org.englising.com.englisingbe.multiplay.dto.request.MultiPlayRequestDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayListResponseDto;
 import org.englising.com.englisingbe.multiplay.entity.MultiPlay;
@@ -15,6 +16,7 @@ import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class MultiPlayServiceImpl implements MultiPlayService {
     private final MultiPlayRepository multiPlayRepository;
@@ -53,7 +55,12 @@ public class MultiPlayServiceImpl implements MultiPlayService {
 
     @Override
     public List<MultiPlayListResponseDto> getMultiPlayList(String genre, Integer page, Integer size) {
-        List<MultiPlay> multiPlays = multiPlayRepository.findByGenre(genre, PageRequest.of(page, size));
+        List<MultiPlay> multiPlays;
+        if(genre == null) {
+            multiPlays = multiPlayRepository.findAll();
+        } else {
+            multiPlays = multiPlayRepository.findByGenre(genre, PageRequest.of(page, size));
+        }
         List<MultiPlayListResponseDto> multiPlayListResponseDto = new ArrayList<>();
         for (MultiPlay multiPlay : multiPlays) {
             MultiPlayListResponseDto dto = new MultiPlayListResponseDto();
