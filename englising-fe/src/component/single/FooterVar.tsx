@@ -38,7 +38,7 @@ const FooterVar = ({onSetAnswer, onSkip}:Props) => {
     return (
         <div className="w-full h-full flex items-center justify-evenly ">
             <div className="w-1/3 flex pl-10 box-border text-white">
-                <div className="mx-10" onClick={handleDictionaryClick}>
+                <div className="w-20" onClick={handleDictionaryClick}>
                     사전
                 </div>
                 <div className="mx-10" onClick={handleVocabularyClick}>
