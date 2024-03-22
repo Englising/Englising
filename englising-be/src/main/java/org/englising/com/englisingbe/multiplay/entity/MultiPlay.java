@@ -55,7 +55,7 @@ public class MultiPlay {
     private Timestamp updatedAt;
 
 
-    public static MultiPlay getMultiPlayFromMultiPlayRequestDto(MultiPlayRequestDto requestDto, Track track, String multiPlayImgUrl) {
+    public static MultiPlay getMultiPlayFromMultiPlayRequestDto(MultiPlayRequestDto requestDto, Track track) {
         return MultiPlay.builder()
                 .roomName(requestDto.getRoomName())
                 .track(track)
@@ -63,7 +63,7 @@ public class MultiPlay {
                 .genre(requestDto.genre)
                 .isSecret(requestDto.isSecret)
                 .roomPw(requestDto.roomPw)
-                .multiPlayImgUrl(multiPlayImgUrl)
+                .multiPlayImgUrl(requestDto.getMultiPlayImgUrl())
                 .build();
     }
 }

@@ -16,7 +16,7 @@ public class MultiPlayDetailResponseDto {
     private String roomName;
     private String multiPlayImgUrl;
     private Genre genre;
-    public Long trackId;
+    public Long managerUserId;
     private List<MultiPlayUser> currentUser;
     private Integer maxUser;
     private boolean isSecret;

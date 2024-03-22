@@ -30,12 +30,11 @@ public class MultiPlayServiceImpl {
     private final RedisServiceImpl redisService;
     private final UserService userService;
 
-    //TODO 반환 타입 결정 필요 (프론트와 상의)
-    public MultiPlay createMultiPlay(MultiPlayRequestDto requestDto) {
+    public Long createMultiPlay(MultiPlayRequestDto requestDto, Long userId) {
         MultiPlay multiPlay = multiPlayRepository
-                .save(MultiPlay.getMultiPlayFromMultiPlayRequestDto(requestDto, trackService.getRandomTrack(), createRandomImg()));
-        redisService.saveMultiPlayGame(getMultiPlayGameFromMultiPlay(multiPlay));
-        return multiPlay;
+                .save(MultiPlay.getMultiPlayFromMultiPlayRequestDto(requestDto, trackService.getRandomTrack()));
+        redisService.saveMultiPlayGame(getMultiPlayGameFromMultiPlay(multiPlay, userId));
+        return multiPlay.getMultiplayId();
     }
 
     //TODO Redis 조회로 변경
@@ -50,33 +49,12 @@ public class MultiPlayServiceImpl {
                 .roomName(multiPlayGame.getRoomName())
                 .multiPlayImgUrl(multiPlayGame.getMultiplayImgUrl())
                 .genre(multiPlayGame.getGenre())
-                .trackId(multiPlayGame.getTrackId())
+                .managerUserId(multiPlayGame.getManagerUserId())
                 .currentUser(multiPlayGame.getUsers())
                 .maxUser(multiPlayGame.getMaxUser())
                 .isSecret(multiPlayGame.isSecret())
                 .build();
     }
-
-    //TODO 변경 함
-//    public List<MultiPlayListResponseDto> getMultiPlayList(Genre genre, Integer page, Integer size) {
-//        List<MultiPlay> multiPlays;
-//        if(genre == null) {
-//            multiPlays = multiPlayRepository.findAll();
-//        } else {
-//            multiPlays = multiPlayRepository.findByGenre(genre, PageRequest.of(page, size));
-//        }
-//        List<MultiPlayListResponseDto> multiPlayListResponseDto = new ArrayList<>();
-//        for (MultiPlay multiPlay : multiPlays) {
-//            MultiPlayListResponseDto dto = new MultiPlayListResponseDto();
-//            dto.setMultiplayId(multiPlay.getMultiplayId());
-//            dto.setRoomName(multiPlay.getRoomName());
-//            dto.setMaxUser(multiPlay.getMaxUser());
-//            dto.setMultiPlayImgUrl(multiPlay.getMultiPlayImgUrl());
-//            dto.setGenre(multiPlay.getGenre());
-//            multiPlayListResponseDto.add(dto);
-//        }
-//        return multiPlayListResponseDto;
-//    }
 
     public List<MultiPlayListResponseDto> getMultiPlayWaitingList(Genre genre, Integer page, Integer size){
         List<MultiPlayGame> waitingGameList = redisService.getWaitingMultiPlayGames(genre, page, size);
@@ -97,11 +75,11 @@ public class MultiPlayServiceImpl {
         return multiPlayRepository.findByMultiplayId(multiplayId).getIsSecret();
     }
 
-    private String createRandomImg(){
+    public String createRandomImg(){
         return multiPlayImgRepository.getRandomImageUrl();
     }
 
-    private MultiPlayGame getMultiPlayGameFromMultiPlay(MultiPlay multiPlay){
+    private MultiPlayGame getMultiPlayGameFromMultiPlay(MultiPlay multiPlay, Long userId){
         return MultiPlayGame.builder()
                 .multiPlayId(multiPlay.getMultiplayId())
                 .trackId(multiPlay.getTrack().getTrackId())
@@ -112,6 +90,7 @@ public class MultiPlayServiceImpl {
                 .roomPw(multiPlay.getRoomPw())
                 .multiplayImgUrl(multiPlay.getMultiPlayImgUrl())
                 .sentences(multiPlaySetterService.getMultiPlaySentenceListFromTrack(multiPlay.getTrack().getTrackId()))
+                .managerUserId(userId)
                 .users(new ArrayList<>())
                 .round(1)
                 .status(MultiPlayStatus.WAITING)

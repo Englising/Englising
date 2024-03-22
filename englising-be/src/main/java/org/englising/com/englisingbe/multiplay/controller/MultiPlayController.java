@@ -35,21 +35,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/multiplay")
 public class MultiPlayController {
     private final MultiPlayServiceImpl multiPlayService;
-    private SimpMessagingTemplate messagingTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    //TODO delete
+    //TODO delete---------------------------------------------
     private final MultiPlaySetterService multiPlaySetterService;
     @GetMapping("/test")
     public ResponseEntity testingLyric(){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(multiPlaySetterService.getMultiPlaySentenceListFromTrack(158L));
-    }
+    }//---------------------------------------------------------
 
     @GetMapping("/rooms")
     @Operation(
         summary = "멀티플레이 대기방 리스트 조회",
-        description = "genre 파라미터로 멀티플레이 방 장르를 보내주세요. 페이지네이션이 적용되어 있습니다"
+        description = "genre 파라미터로 멀티플레이 방 장르를 보내주세요. 페이지네이션은 아직입니다."
     )
     @Parameters({
         @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
@@ -87,16 +87,14 @@ public class MultiPlayController {
             mediaType = "application/json"
         )
     )
-    //TODO 맨 처음 방 만들 때 이미지 설정 어떻게 할건지? (get 요청 1번?)
     public ResponseEntity createMultiPlay(@RequestBody MultiPlayRequestDto requestDto) {
-        MultiPlay createMultiPlay = multiPlayService.createMultiPlay(requestDto);
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
-                DefaultResponseDto.<MultiPlay>builder()
+                DefaultResponseDto.<Long>builder()
                     .status(ResponseMessage.MULTIPLAY_CREATE_SUCCESS.getCode())
                     .message(ResponseMessage.MULTIPLAY_CREATE_SUCCESS.getMessage())
-                    .data(createMultiPlay)
+                    .data(multiPlayService.createMultiPlay(requestDto, 1L))
                     .build()
             );
     }
@@ -108,23 +106,22 @@ public class MultiPlayController {
     )
     @Parameters({
         @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
-        @Parameter(name = "mulitplay_id", description = "멀티플레이 방 아이디"),
     })
     @ApiResponse(responseCode = "200", description = "Successful operation",
         content = @Content(
             mediaType = "application/json"
         )
     )
-    //TODO 사용자 입장 알림 (websocket)
-    public ResponseEntity getMultiPlayById(@PathVariable Long multiPlayId) {
-        messagingTemplate.convertAndSend("/sub/enter/" + multiPlayId, "entering");
+    public ResponseEntity getMultiPlayById(@PathVariable Long multiplayId) {
+        //TODO 사용자 입장 알림 (websocket)
+        messagingTemplate.convertAndSend("/sub/enter/" + multiplayId, "entering");
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
                 DefaultResponseDto.<MultiPlayDetailResponseDto>builder()
                     .status(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getCode())
                     .message(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getMessage())
-                    .data(multiPlayService.getMultiPlayById(multiPlayId, 1L))
+                    .data(multiPlayService.getMultiPlayById(multiplayId, 1L))
                     .build()
             );
     }
@@ -136,7 +133,6 @@ public class MultiPlayController {
     )
     @Parameters({
         @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
-        @Parameter(name = "multiplayId", description = "멀티플레이 아이디", in = ParameterIn.QUERY),
     })
     public ResponseEntity getMultiPlayResult(@PathVariable Long multiplayId) {
         Boolean result = multiPlayService.getMultiPlayResult(multiplayId);
@@ -148,6 +144,26 @@ public class MultiPlayController {
                     .message(ResponseMessage.MULTIPLAY_RESULT_SUCCESS.getMessage())
                     .data(result)
                     .build()
+            );
+    }
+
+    @GetMapping("/image")
+    @Operation(
+            summary = "멀티플레이 방 생성 이미지 생성",
+            description = "랜덤한 멀티플레이 방 이미지를 반환합니다."
+    )
+    @Parameters({
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
+    })
+    public ResponseEntity getRandomImage(){
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(
+                    DefaultResponseDto.<String>builder()
+                            .status(HttpStatus.OK.value())
+                            .message("")
+                            .data(multiPlayService.createRandomImg())
+                            .build()
             );
     }
 }
