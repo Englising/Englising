@@ -59,7 +59,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 response.sendRedirect("http://localhost:8080/"); //todo. 프론트측 특정 url ex:localhost:3030 넣기 (로그인 후 리다이렉트될)
             }
         } catch (Exception e) {
-            throw e; //추후 수정
+            throw e;
         }
     }
 }
