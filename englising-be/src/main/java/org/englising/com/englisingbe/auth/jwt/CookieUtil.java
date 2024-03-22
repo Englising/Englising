@@ -20,6 +20,7 @@ public class CookieUtil {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(3600);
         cookie.setPath("/");
+        cookie.setSecure(false);
         cookie.setHttpOnly(true);
 
         return cookie;
@@ -30,6 +31,7 @@ public class CookieUtil {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(1209600);
         cookie.setPath("/");
+        cookie.setSecure(false);
         cookie.setHttpOnly(true);
 
         return cookie;
