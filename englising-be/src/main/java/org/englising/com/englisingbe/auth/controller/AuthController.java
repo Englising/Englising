@@ -29,12 +29,15 @@ public class AuthController {
             summary = "게스트 로그인",
             description = "게스트로 로그인합니다"
     )
-    public ResponseEntity<DefaultResponseDto<?>> guest(HttpServletResponse response) throws Exception {
+    public ResponseEntity<DefaultResponseDto<?>> guest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JwtResponseDto jwtResponseDto = authService.guest();
 
-        Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
-        Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
+        // 현재 요청이 HTTPS인지 확인하여 Secure 속성 설정 todo. 추후 수정
+        boolean secure = request.isSecure();
+
+        Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken(), secure);
+        Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken(), secure);
         response.addCookie(accessCookie);
         response.addCookie(refreshCookie);
 
