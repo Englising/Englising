@@ -16,5 +16,5 @@ public class MultiPlaySentence {
     private int sentenceIndex;
     private BigDecimal startTime;
     private BigDecimal endTime;
-    private List<MultiPlayWord> alphabets;
+    private List<MultiPlayWord> words;
 }

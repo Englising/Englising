@@ -11,7 +11,8 @@ public enum ErrorHttpStatus {
     USER_ALREADY_EXISTS(404, "이미 참여중인 유저입니다."),
     USER_NOT_FOUND(403, "회원을 찾을 수 없습니다."),
     USER_NICKNAME_DUPLICATED(403, "중복된 닉네임이 존재합니다."),
-    COOKIE_NOT_FOUNDED(403, "Cookie가 존재하지 않습니다.");
+    COOKIE_NOT_FOUND(403, "Cookie가 존재하지 않습니다."),
+    WORD_NOT_FOUND(403, "해당 단어가 존재하지 않습니다.");
 
     private final int code;
     private final String message;

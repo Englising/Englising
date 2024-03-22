@@ -18,15 +18,20 @@ public class TrackServiceImpl {
     private final TrackRepository trackRepository;
     private final TrackRepositorySupport trackRepositorySupport;
 
-    public List<TrackAlbumArtistDto> getTracksByTrackIds(List<Long> trackIds) {
+    public List<TrackAlbumArtistDto> getTrackAlbumArtistsByTrackIds(List<Long> trackIds) {
         return trackIds.stream()
                 .map(trackId -> trackRepositorySupport.findTrackWithAlbumAndArtistsByTrackId(trackId)
                         .orElseThrow(() -> new GlobalException(ErrorHttpStatus.NO_MATCHING_TRACK)))
                 .collect(Collectors.toList());
     }
 
-    public TrackAlbumArtistDto getTrackByTrackId(Long trackId) {
+    public TrackAlbumArtistDto getTrackAlbumArtistByTrackId(Long trackId) {
         return trackRepositorySupport.findTrackWithAlbumAndArtistsByTrackId(trackId)
+                .orElseThrow(() -> new GlobalException(ErrorHttpStatus.NO_MATCHING_TRACK));
+    }
+
+    public Track getTrackByTrackId(Long trackId){
+        return trackRepository.findById(trackId)
                 .orElseThrow(() -> new GlobalException(ErrorHttpStatus.NO_MATCHING_TRACK));
     }
 
