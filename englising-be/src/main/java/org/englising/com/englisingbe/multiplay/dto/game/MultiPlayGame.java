@@ -8,6 +8,7 @@ import org.englising.com.englisingbe.global.util.Genre;
 import org.englising.com.englisingbe.global.util.MultiPlayStatus;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -24,6 +25,7 @@ public class MultiPlayGame {
     private String multiplayImgUrl;
 
     private List<MultiPlaySentence> sentences;
+    private Map<Integer, String> answerAlphabets;
     private int selectedHint;
 
     private Long managerUserId;

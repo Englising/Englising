@@ -8,10 +8,7 @@ import org.englising.com.englisingbe.music.service.LyricServiceImpl;
 import org.springframework.stereotype.Service;
 import org.englising.com.englisingbe.multiplay.dto.game.MultiPlayWord;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static org.englising.com.englisingbe.global.util.StringUtils.symbols;
@@ -22,11 +19,32 @@ public class MultiPlaySetterService {
     private final LyricServiceImpl lyricService;
     private final int symbolIndex = -1;
     private final int lyricTotal = 3;
+    private int index = 1;
+
+    public Map<Integer, String> getAnswerInputMapFromMultiPlaySentenceList(List<MultiPlaySentence> sentences, boolean answer){
+        Map<Integer, String> answerMap = new HashMap<>();
+        for (MultiPlaySentence sentence: sentences){
+            for(MultiPlayWord word: sentence.getWords()){
+                for(MultiPlayAlphabet alphabet: word.getAlphabets()){
+                    if(alphabet.getAlphabetIndex() != -1){
+                        if(answer){
+                            answerMap.put(alphabet.getAlphabetIndex(), alphabet.getAlphabet());
+                        }
+                        else {
+                            answerMap.put(alphabet.getAlphabetIndex(), " ");
+                        }
+                    }
+                }
+            }
+        }
+        return answerMap;
+    }
 
     public List<MultiPlaySentence> getMultiPlaySentenceListFromTrack(Long trackId){
         List<Lyric> lyrics = lyricService.getAllLyricsByTrackId(trackId);
         int startIndex = getRandomIndex(lyrics);
         List<Lyric> selectedLyrics = lyrics.subList(startIndex, startIndex+lyricTotal);
+        index = 1;
         return getMultiPlaySentenceFromLyric(selectedLyrics);
     }
 
@@ -41,7 +59,7 @@ public class MultiPlaySetterService {
                         .sentenceIndex(index)
                         .startTime(lyrics.get(index).getStartTime())
                         .endTime(lyrics.get(index).getEndTime())
-                        .alphabets(getMultiPlayWordFromSentence(lyrics.get(index).getEnText())).build()
+                        .words(getMultiPlayWordFromSentence(lyrics.get(index).getEnText())).build()
                 )
                 .toList();
     }
@@ -51,7 +69,7 @@ public class MultiPlaySetterService {
         return IntStream.range(0, words.size())
                 .mapToObj(index -> MultiPlayWord.builder()
                         .wordIndex(index)
-                        .word(getMultiPlayAlphabetListFromString(words.get(index)))
+                        .alphabets(getMultiPlayAlphabetListFromString(words.get(index)))
                         .build())
                 .toList();
     }
@@ -59,18 +77,17 @@ public class MultiPlaySetterService {
     private List<MultiPlayAlphabet> getMultiPlayAlphabetListFromString(String word){
         List<String> alphabets = Arrays.asList(word.split(""));
         List<MultiPlayAlphabet> result = new ArrayList<>();
-        int index = 1;
         for(String alphabet: alphabets){
             if(symbols.contains(alphabet)){
                 result.add(MultiPlayAlphabet.builder()
-                        .index(symbolIndex)
-                        .word(alphabet)
+                        .alphabetIndex(symbolIndex)
+                        .alphabet(alphabet)
                         .build());
             }
             else {
                 result.add(MultiPlayAlphabet.builder()
-                        .index(index)
-                        .word(alphabet)
+                        .alphabetIndex(index)
+                        .alphabet(alphabet.toLowerCase())
                         .build());
                 index++;
             }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,13 +20,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RedisServiceImpl {
     private final RedisTemplate<String, Object> redisTemplate;
+    private final String gamePrefix = "multiplaygame:";
 
+    private final String answerPrefix = "multiplayanswer:";
     public void saveMultiPlayGame(MultiPlayGame game) {
-        redisTemplate.opsForValue().set("multiplaygame:" + game.getMultiPlayId(), game);
+        redisTemplate.opsForValue().set(gamePrefix + game.getMultiPlayId(), game);
+    }
+
+    public void saveAnswerMap(Long multiPlayId, Map<Integer, String> answerMap){
+        redisTemplate.opsForValue().set(answerPrefix + multiPlayId, answerMap);
     }
 
     public Optional<MultiPlayGame> findMultiPlayGame(Long multiPlayId) {
-        Object result = redisTemplate.opsForValue().get("multiplaygame:" + multiPlayId);
+        Object result = redisTemplate.opsForValue().get(gamePrefix + multiPlayId);
         if (result instanceof MultiPlayGame) {
             return Optional.of((MultiPlayGame) result);
         }
@@ -34,7 +41,7 @@ public class RedisServiceImpl {
 
     public List<MultiPlayGame> getWaitingMultiPlayGames(Genre genre, Integer page, Integer size) {
         List<Object> games = redisTemplate.opsForValue().multiGet(
-                redisTemplate.keys("multiplaygame:*")
+                redisTemplate.keys(gamePrefix+"*")
         );
         return games.stream()
                 .filter(MultiPlayGame.class::isInstance)
@@ -44,14 +51,32 @@ public class RedisServiceImpl {
     }
 
     public void addNewUserToMultiPlayGame(Long multiPlayId, MultiPlayUser user) {
-        MultiPlayGame game = findMultiPlayGame(multiPlayId)
-                .orElseThrow(() -> new GlobalException(ErrorHttpStatus.NO_MATCHING_MULTIPLAYGAME));
+        MultiPlayGame game = getMultiPlayGameById(multiPlayId);
         List<MultiPlayUser> users = game.getUsers();
         if (users == null) {
             users = new ArrayList<>();
             game.setUsers(users);
         }
+        boolean userExists = users.stream()
+                .anyMatch(existingUser -> existingUser.getUserId().equals(user.getUserId()));
+
+        if (userExists) {
+            throw new GlobalException(ErrorHttpStatus.USER_ALREADY_EXISTS);
+        }
         users.add(user);
         saveMultiPlayGame(game);
+    }
+
+    public MultiPlayGame updateRoundStatus(Long multiPlayId, int round, MultiPlayStatus status){
+        MultiPlayGame game = getMultiPlayGameById(multiPlayId);
+        game.setRound(round);
+        game.setStatus(status);
+        saveMultiPlayGame(game);
+        return game;
+    }
+
+    public MultiPlayGame getMultiPlayGameById(Long multiPlayId){
+        return findMultiPlayGame(multiPlayId)
+                .orElseThrow(() -> new GlobalException(ErrorHttpStatus.NO_MATCHING_MULTIPLAYGAME));
     }
 }

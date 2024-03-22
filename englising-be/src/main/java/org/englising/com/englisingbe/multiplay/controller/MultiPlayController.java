@@ -12,12 +12,15 @@ import lombok.RequiredArgsConstructor;
 import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
 import org.englising.com.englisingbe.global.util.Genre;
 import org.englising.com.englisingbe.global.util.ResponseMessage;
+import org.englising.com.englisingbe.multiplay.dto.game.MultiPlayUser;
 import org.englising.com.englisingbe.multiplay.dto.request.MultiPlayRequestDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayDetailResponseDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayListResponseDto;
 import org.englising.com.englisingbe.multiplay.entity.MultiPlay;
 import org.englising.com.englisingbe.multiplay.service.MultiPlayServiceImpl;
 import org.englising.com.englisingbe.multiplay.service.MultiPlaySetterService;
+import org.englising.com.englisingbe.user.entity.User;
+import org.englising.com.englisingbe.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -113,8 +116,6 @@ public class MultiPlayController {
         )
     )
     public ResponseEntity getMultiPlayById(@PathVariable Long multiplayId) {
-        //TODO 사용자 입장 알림 (websocket)
-        messagingTemplate.convertAndSend("/sub/enter/" + multiplayId, "entering");
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
@@ -126,10 +127,28 @@ public class MultiPlayController {
             );
     }
 
+    @GetMapping("/{multiplayId}/game")
+    @Operation(
+            summary = "멀티플레이 시작 요청",
+            description = "멀티플레이 게임 진행 시작을 요청합니다."
+    )
+    @Parameters({
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
+    })
+    public ResponseEntity startMultiPlayGame(@PathVariable Long multiplayId) {
+        multiPlayService.startGame(multiplayId, 1L);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(DefaultResponseDto.<String>builder()
+                        .status(HttpStatus.OK.value())
+                        .message("게임을 성공적으로 시작했습니다.")
+                        .build());
+    }
+
     @GetMapping("/{multiplayId}/result")
     @Operation(
         summary = "멀티플레이 종료 및 결과",
-        description = "멀티플레이 성공 여부를 반환합니다."
+        description = "멀티플레이 게임 최종 결과를 반환합니다."
     )
     @Parameters({
         @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),

@@ -1,4 +1,4 @@
-package org.englising.com.englisingbe.multiplay.dto.game;
+package org.englising.com.englisingbe.multiplay.dto.socket;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MultiPlayAlphabet {
-    private Integer alphabetIndex;
-    private String alphabet;
+public class TimerDto {
+    private String message;
+    private long leftTime;
 }

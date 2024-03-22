@@ -8,7 +8,10 @@ import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
 import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.global.util.Genre;
 import org.englising.com.englisingbe.global.util.MultiPlayStatus;
+import org.englising.com.englisingbe.global.util.WebSocketUrls;
 import org.englising.com.englisingbe.multiplay.dto.game.MultiPlayGame;
+import org.englising.com.englisingbe.multiplay.dto.game.MultiPlaySentence;
+import org.englising.com.englisingbe.multiplay.dto.game.MultiPlayUser;
 import org.englising.com.englisingbe.multiplay.dto.request.MultiPlayRequestDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayDetailResponseDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayListResponseDto;
@@ -18,6 +21,7 @@ import org.englising.com.englisingbe.multiplay.repository.MultiPlayRepository;
 import org.englising.com.englisingbe.music.service.TrackServiceImpl;
 import org.englising.com.englisingbe.redis.service.RedisServiceImpl;
 import org.englising.com.englisingbe.user.service.UserService;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,31 +33,17 @@ public class MultiPlayServiceImpl {
     private final MultiPlaySetterService multiPlaySetterService;
     private final RedisServiceImpl redisService;
     private final UserService userService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public Long createMultiPlay(MultiPlayRequestDto requestDto, Long userId) {
         MultiPlay multiPlay = multiPlayRepository
-                .save(MultiPlay.getMultiPlayFromMultiPlayRequestDto(requestDto, trackService.getRandomTrack()));
-        redisService.saveMultiPlayGame(getMultiPlayGameFromMultiPlay(multiPlay, userId));
+                .save(MultiPlay.getMultiPlayFromMultiPlayRequestDto(requestDto, trackService.getTrackByTrackId(158L)));
+        MultiPlayGame game = getMultiPlayGameFromMultiPlay(multiPlay, userId);
+        // Redis에 Game 저장
+        redisService.saveMultiPlayGame(game);
+        // Redis에 AnswerMap 저장
+        redisService.saveAnswerMap(multiPlay.getMultiplayId(), multiPlaySetterService.getAnswerInputMapFromMultiPlaySentenceList(game.getSentences(), false));
         return multiPlay.getMultiplayId();
-    }
-
-    //TODO Redis 조회로 변경
-    // Redis에 사용자 입장 처리
-    public MultiPlayDetailResponseDto getMultiPlayById(Long multiPlayId, Long userId) {
-        //TODO UserService findByUserId 추가 필요
-//        redisService.addNewUserToMultiPlayGame(multiPlayId, );
-        MultiPlayGame multiPlayGame = redisService.findMultiPlayGame(multiPlayId)
-                .orElseThrow(() -> new GlobalException(ErrorHttpStatus.NO_MATCHING_MULTIPLAYGAME));
-        return MultiPlayDetailResponseDto.builder()
-                .multiPlayId(multiPlayGame.getMultiPlayId())
-                .roomName(multiPlayGame.getRoomName())
-                .multiPlayImgUrl(multiPlayGame.getMultiplayImgUrl())
-                .genre(multiPlayGame.getGenre())
-                .managerUserId(multiPlayGame.getManagerUserId())
-                .currentUser(multiPlayGame.getUsers())
-                .maxUser(multiPlayGame.getMaxUser())
-                .isSecret(multiPlayGame.isSecret())
-                .build();
     }
 
     public List<MultiPlayListResponseDto> getMultiPlayWaitingList(Genre genre, Integer page, Integer size){
@@ -71,6 +61,32 @@ public class MultiPlayServiceImpl {
                 }).toList();
     }
 
+    public MultiPlayDetailResponseDto getMultiPlayById(Long multiPlayId, Long userId) {
+        MultiPlayUser user = MultiPlayUser.getMultiPlayUserFromUser(userService.getUserById(userId));
+        redisService.addNewUserToMultiPlayGame(multiPlayId, user);
+        messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(), user);
+        MultiPlayGame multiPlayGame = redisService.getMultiPlayGameById(multiPlayId);
+        return MultiPlayDetailResponseDto.builder()
+                .multiPlayId(multiPlayGame.getMultiPlayId())
+                .roomName(multiPlayGame.getRoomName())
+                .multiPlayImgUrl(multiPlayGame.getMultiplayImgUrl())
+                .genre(multiPlayGame.getGenre())
+                .managerUserId(multiPlayGame.getManagerUserId())
+                .currentUser(multiPlayGame.getUsers())
+                .maxUser(multiPlayGame.getMaxUser())
+                .isSecret(multiPlayGame.isSecret())
+                .build();
+    }
+
+    public void startGame(Long multiplayId, Long userId){
+        MultiPlayGame multiPlayGame = redisService.getMultiPlayGameById(multiplayId);
+        if(!multiPlayGame.getManagerUserId().equals(userId)){
+            throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_TOKEN);
+        }
+        MultiPlayWorker worker = new MultiPlayWorker(multiplayId, messagingTemplate, redisService);
+        worker.sendRoundStartAlert();
+    }
+
     public Boolean getMultiPlayResult(Long multiplayId) {
         return multiPlayRepository.findByMultiplayId(multiplayId).getIsSecret();
     }
@@ -80,6 +96,7 @@ public class MultiPlayServiceImpl {
     }
 
     private MultiPlayGame getMultiPlayGameFromMultiPlay(MultiPlay multiPlay, Long userId){
+        List<MultiPlaySentence> sentences = multiPlaySetterService.getMultiPlaySentenceListFromTrack(multiPlay.getTrack().getTrackId());
         return MultiPlayGame.builder()
                 .multiPlayId(multiPlay.getMultiplayId())
                 .trackId(multiPlay.getTrack().getTrackId())
@@ -89,7 +106,9 @@ public class MultiPlayServiceImpl {
                 .isSecret(multiPlay.getIsSecret())
                 .roomPw(multiPlay.getRoomPw())
                 .multiplayImgUrl(multiPlay.getMultiPlayImgUrl())
-                .sentences(multiPlaySetterService.getMultiPlaySentenceListFromTrack(multiPlay.getTrack().getTrackId()))
+                .sentences(sentences)
+                .answerAlphabets(multiPlaySetterService.getAnswerInputMapFromMultiPlaySentenceList(sentences, true))
+                .selectedHint(0) //TODO 힌트 랜덤 선택
                 .managerUserId(userId)
                 .users(new ArrayList<>())
                 .round(1)
