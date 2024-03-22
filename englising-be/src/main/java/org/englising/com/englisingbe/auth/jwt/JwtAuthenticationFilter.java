@@ -79,7 +79,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 //response body
                 PrintWriter writer = response.getWriter();
-                writer.print("refreshToken invalid -> refreshToken reissue.");
+                writer.print("refreshToken invalid -> refreshToken reissued.");
 
                 //response status code
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
