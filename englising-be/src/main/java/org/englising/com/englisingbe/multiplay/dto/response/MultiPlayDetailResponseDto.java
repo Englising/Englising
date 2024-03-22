@@ -1,20 +1,23 @@
 package org.englising.com.englisingbe.multiplay.dto.response;
 
-
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.englising.com.englisingbe.global.util.Genre;
+import org.englising.com.englisingbe.multiplay.dto.game.MultiPlayUser;
+
+import java.util.List;
 
 @Data
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class MultiPlayDetailResponseDto {
-    public Long trackId;
-    public Long multiplayId;
-    public String roomName;
-    public Integer maxUser;
-    public String genre;
-    public Boolean isSecret;
-    public Integer roomPw;
-    public String multiPlayImgUrl;
+    private Long multiPlayId;
+    private String roomName;
+    private String multiPlayImgUrl;
+    private Genre genre;
+    public Long managerUserId;
+    private List<MultiPlayUser> currentUser;
+    private Integer maxUser;
+    private boolean isSecret;
 }

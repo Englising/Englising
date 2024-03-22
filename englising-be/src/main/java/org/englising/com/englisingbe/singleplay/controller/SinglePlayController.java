@@ -49,7 +49,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = TrackResponseDto.class)
             )
     )
-    public ResponseEntity getPlaylists(@RequestParam PlayListType type, @RequestParam Integer page, @RequestParam Integer size){
+    public ResponseEntity getPlaylists(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam PlayListType type, @RequestParam Integer page, @RequestParam Integer size){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(

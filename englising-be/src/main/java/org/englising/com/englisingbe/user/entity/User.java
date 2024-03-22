@@ -33,7 +33,7 @@ public class User {
     @Column(name = "profile_img")
     private String profileImg;
 
-    @Column(name = "color")
+    @Column(name = "profile_color")
     private String color;
 
     @Column(name = "type")

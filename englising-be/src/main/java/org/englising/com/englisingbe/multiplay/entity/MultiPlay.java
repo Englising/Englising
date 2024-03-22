@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.englising.com.englisingbe.global.util.Genre;
+import org.englising.com.englisingbe.multiplay.dto.request.MultiPlayRequestDto;
 import org.englising.com.englisingbe.music.entity.Track;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,13 +29,13 @@ public class MultiPlay {
 
     @ManyToOne
     @JoinColumn(name = "track_id", referencedColumnName = "track_id")
-    private Track trackId;
+    private Track track;
 
     @Column(name = "max_user")
     private Integer maxUser;
 
     @Column(name = "genre")
-    private String genre;
+    private Genre genre;
 
     @Column(name = "is_secret")
     private Boolean isSecret;
@@ -52,4 +54,16 @@ public class MultiPlay {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
+
+    public static MultiPlay getMultiPlayFromMultiPlayRequestDto(MultiPlayRequestDto requestDto, Track track) {
+        return MultiPlay.builder()
+                .roomName(requestDto.getRoomName())
+                .track(track)
+                .maxUser(requestDto.maxUser)
+                .genre(requestDto.genre)
+                .isSecret(requestDto.isSecret)
+                .roomPw(requestDto.roomPw)
+                .multiPlayImgUrl(requestDto.getMultiPlayImgUrl())
+                .build();
+    }
 }
