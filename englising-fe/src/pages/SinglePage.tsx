@@ -122,18 +122,18 @@ const SinglePage = () => {
     //동적으로 url 구성, className에 들어가야함
     const url = `bg-[url('src/assets/bam.PNG')] bg-cover bg-center h-screen w-screen p-0 m-0`;
 
-    return (
+return (
         <div className={url}>            
-            <div className="flex flex-col  bg-black h-svh w-screen bg-opacity-80">
-                <div className="flex h-[90%]">
-                    <div className="w-1/3 h-full">
+            <div className="h-svh w-screen flex flex-col bg-black bg-opacity-80 items-center">
+                <div className="h-[90%] w-9/12 flex">
+                    <div className="w-2/5 h-full items-center">
                         <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} /> 
                     </div>
-                    <div className="w-2/3 flex items-center justify-center">
+                    <div className="w-3/5 flex items-center justify-center">
                         <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
                     </div>
                 </div>
-                <div className="h-[10%] bg-black flex justify-center">
+                <div className="w-full h-[10%] bg-black flex justify-center">
                     <FooterVar onSetAnswer = {onSetAnswer} onSkip = {onSkip}/>
                 </div>
                 </div>
