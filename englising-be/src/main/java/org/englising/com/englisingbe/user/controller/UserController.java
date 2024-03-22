@@ -24,7 +24,8 @@ public class UserController {
             description = "회원 프로필을 조회합니다"
     )
     public ResponseEntity<DefaultResponseDto<?>> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        ProfileDto profileDto = userService.getProfile(userDetails.getUsername());
+//        ProfileDto profileDto = userService.getProfile(userDetails.getUsername());
+        ProfileDto profileDto = userService.getProfile("1"); //todo. 추후 위로 수정
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -41,7 +42,8 @@ public class UserController {
     public ResponseEntity<DefaultResponseDto<?>> updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                             @RequestBody ProfileDto profileDto) {
 
-        userService.updateProfile(userDetails.getUsername(), profileDto);
+//        userService.updateProfile(userDetails.getUsername(), profileDto);
+        userService.updateProfile("1", profileDto);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -65,13 +67,6 @@ public class UserController {
                         UserResponseMessage.USER_GETRANDOM_MESSAGE.getMessage(),
                         randomImgDto));
     }
-
-
-
-
-
-
-
 
 
     @PostMapping("/nickname")
