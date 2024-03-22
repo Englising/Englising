@@ -60,7 +60,7 @@ public class SinglePlayServiceImpl {
 
     private PlayListDto getLikedTracks(Integer page, Integer size, Long userId){
         Page<TrackLike> trackLikes = trackLikeService.getLikedTrackResponseDtoByUserId(userId, page, size);
-        List<TrackAlbumArtistDto> tracks = trackService.getTracksByTrackIds(trackLikes.getContent()
+        List<TrackAlbumArtistDto> tracks = trackService.getTrackAlbumArtistsByTrackIds(trackLikes.getContent()
                 .stream()
                 .map( trackLike -> {
                             return trackLike.getTrack().getTrackId();
@@ -72,7 +72,7 @@ public class SinglePlayServiceImpl {
     private PlayListDto getRecentTracks(Integer page, Integer size, Long userId){
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<SinglePlay> singlePlays = singlePlayRepository.getSinglePlayByUserUserId(userId, pageable);
-        List<TrackAlbumArtistDto> tracks = trackService.getTracksByTrackIds(singlePlays
+        List<TrackAlbumArtistDto> tracks = trackService.getTrackAlbumArtistsByTrackIds(singlePlays
                 .stream()
                 .map(singlePlay -> {
                     return singlePlay.getTrack().getTrackId();
