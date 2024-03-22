@@ -34,6 +34,7 @@ public class MultiPlayServiceImpl {
     private final RedisServiceImpl redisService;
     private final UserService userService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final AnswerQueueService answerQueueService;
 
     public Long createMultiPlay(MultiPlayRequestDto requestDto, Long userId) {
         MultiPlay multiPlay = multiPlayRepository
@@ -43,6 +44,9 @@ public class MultiPlayServiceImpl {
         redisService.saveMultiPlayGame(game);
         // Redis에 AnswerMap 저장
         redisService.saveAnswerMap(multiPlay.getMultiplayId(), multiPlaySetterService.getAnswerInputMapFromMultiPlaySentenceList(game.getSentences(), false));
+        //TODO AnswerQueue 생성, 시작 (MultiplayStart로 이동하기)
+        answerQueueService.createQueue(multiPlay.getMultiplayId());
+        answerQueueService.processQueue(multiPlay.getMultiplayId());
         return multiPlay.getMultiplayId();
     }
 
@@ -63,8 +67,11 @@ public class MultiPlayServiceImpl {
 
     public MultiPlayDetailResponseDto getMultiPlayById(Long multiPlayId, Long userId) {
         MultiPlayUser user = MultiPlayUser.getMultiPlayUserFromUser(userService.getUserById(userId));
+        // Redis에 게임 사용자 업데이트
         redisService.addNewUserToMultiPlayGame(multiPlayId, user);
+        // 다른 참여자들에게 입장 알림
         messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(), user);
+        // MultiPlay 게임 방 정보 반환
         MultiPlayGame multiPlayGame = redisService.getMultiPlayGameById(multiPlayId);
         return MultiPlayDetailResponseDto.builder()
                 .multiPlayId(multiPlayGame.getMultiPlayId())
@@ -80,6 +87,7 @@ public class MultiPlayServiceImpl {
 
     public void startGame(Long multiplayId, Long userId){
         MultiPlayGame multiPlayGame = redisService.getMultiPlayGameById(multiplayId);
+        // 요청한 유저가 방장인지 확인
         if(!multiPlayGame.getManagerUserId().equals(userId)){
             throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_TOKEN);
         }

@@ -8,5 +8,6 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class AnswerDto {
-    private Long userId;
+    private int alphabetId;
+    private String alphabet;
 }

@@ -31,7 +31,7 @@ public class MultiPlaySetterService {
                             answerMap.put(alphabet.getAlphabetIndex(), alphabet.getAlphabet());
                         }
                         else {
-                            answerMap.put(alphabet.getAlphabetIndex(), " ");
+                            answerMap.put(alphabet.getAlphabetIndex(), "-");
                         }
                     }
                 }

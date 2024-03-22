@@ -103,7 +103,7 @@ public class MultiPlayWorker {
         messagingTemplate.convertAndSend(roundDestination,
                 RoundDto.<String>builder()
                         .round(multiPlayGame.getRound())
-                        .status(MultiPlayStatus.MUSICSTART)
+                        .status(MultiPlayStatus.INPUTSTART)
                         .data("팀 답안 입력 시작")
                         .build());
         // 3초 단위로 타이머 알림 시작
@@ -147,9 +147,9 @@ public class MultiPlayWorker {
     }
 
     public void sendRandomHint(){
-        System.out.println("sendRandomHint");
         //TODO
         // 3초 뒤 힌트 결과 공개 || 노래 재생 알림
+        System.out.println("sendRandomHint");
         if(true){
             scheduleNextTask(this::sendHintResult, bufferTime);
         }
@@ -159,6 +159,8 @@ public class MultiPlayWorker {
     }
 
     public void sendHintResult(){
+        //TODO
+        // 힌트 결과 전송
         System.out.println("sendHintResult");
         // 3초 뒤 입력 시작 알림
         scheduleNextTask(this::sendInputStartAlert, bufferTime);
@@ -195,7 +197,6 @@ public class MultiPlayWorker {
     private void shutdownScheduler() {
         if (scheduler instanceof ThreadPoolTaskScheduler) {
             ((ThreadPoolTaskScheduler) scheduler).shutdown();
-            System.out.println("스케줄러가 종료되었습니다.");
         }
     }
 
