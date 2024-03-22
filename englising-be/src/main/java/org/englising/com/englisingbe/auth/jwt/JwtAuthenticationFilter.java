@@ -72,11 +72,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     Long userId = jwtProvider.getUserId(refreshToken).orElse(null);
                     JwtResponseDto jwtResponseDto = jwtProvider.createTokens(jwtProvider.getAuthentication(refreshToken), userId);
 
-                    // 현재 요청이 HTTPS인지 확인하여 Secure 속성 설정
-                    boolean secure = request.isSecure();
-
-                    Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken(), secure);
-                    Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken(), secure);
+                    Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
+                    Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
 
                     response.addCookie(accessCookie);
                     response.addCookie(refreshCookie);
