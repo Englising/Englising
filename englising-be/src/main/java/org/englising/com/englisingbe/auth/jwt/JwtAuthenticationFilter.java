@@ -65,25 +65,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // response status code
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
-            } else if (jwtProvider.isTokenValid(refreshToken)) {
-                // refreshToken이 유효하면 둘다 재발급하고 쿠키추가
-                Long userId = jwtProvider.getUserId(refreshToken).orElse(null);
-                JwtResponseDto jwtResponseDto =
-                        jwtProvider.createTokens(jwtProvider.getAuthentication(refreshToken), userId);
 
-                Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
-                Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
+            } else {
+                // refresh token이 유효한 경우
+                try {
+                    Long userId = jwtProvider.getUserId(refreshToken).orElse(null);
+                    JwtResponseDto jwtResponseDto = jwtProvider.createTokens(jwtProvider.getAuthentication(refreshToken), userId);
 
-                response.addCookie(accessCookie);
-                response.addCookie(refreshCookie);
+                    Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
+                    Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
 
-                //response body
-                PrintWriter writer = response.getWriter();
-                writer.print("refreshToken invalid -> refreshToken reissued.");
+                    response.addCookie(accessCookie);
+                    response.addCookie(refreshCookie);
 
-                //response status code
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
+                    //response body
+                    PrintWriter writer = response.getWriter();
+                    writer.print("refreshToken invalid -> refreshToken reissued.");
+
+                    //response status code
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+
+                } catch (Exception e) {
+
+                    PrintWriter writer = response.getWriter();
+                    writer.print("Error while refreshing token: {}" + e.getMessage());
+
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
             }
         }
 

@@ -15,8 +15,10 @@ import org.englising.com.englisingbe.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -81,9 +83,10 @@ public class UserService {
         int animalsIdx = (int) (Math.random() * animals.size());
         String ani = animals.get(animalsIdx);
 
-        String nickname = adj + ani;
+        String uuid = UUID.randomUUID().toString();
 
-        //todo. 숫자 추가?
+        String nickname = adj + ani + uuid;
+
         return nickname;
     }
 
