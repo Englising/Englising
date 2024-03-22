@@ -42,15 +42,22 @@ public class CookieUtil {
         String accessToken = null;
 
         Cookie[] cookies = request.getCookies();
-        for(Cookie cookie : cookies) {
-            if(cookie.getName().equals("Authorization")) {
-                accessToken = cookie.getValue();
-                break;
+//        if(cookies == null) {
+//            throw new GlobalException(ErrorHttpStatus.COOKIE_NOT_FOUNDED);
+//        }
+
+        if(cookies != null) {
+            for(Cookie cookie : cookies) {
+                if(cookie.getName().equals("Authorization")) {
+                    accessToken = cookie.getValue();
+                    break;
+                }
             }
         }
-        if(accessToken == null) {
-            throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_TOKEN);
-        }
+
+//        if(accessToken == null) {
+//            throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_TOKEN);
+//        }
         return accessToken;
     }
 
@@ -58,11 +65,22 @@ public class CookieUtil {
         String refreshToken = null;
 
         Cookie[] cookies = request.getCookies();
-        for(Cookie cookie : cookies) {
-            if(cookie.getName().equals("Authorization-refresh")) {
-                refreshToken = cookie.getValue();
+//        if(cookies == null) {
+//            throw new GlobalException(ErrorHttpStatus.COOKIE_NOT_FOUNDED);
+//        }
+
+        if(cookies != null) {
+            for(Cookie cookie : cookies) {
+                if(cookie.getName().equals("Authorization-refresh")) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
             }
         }
+
+//        if(refreshToken == null) {
+//            throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_TOKEN);
+//        }
         return refreshToken;
     }
 

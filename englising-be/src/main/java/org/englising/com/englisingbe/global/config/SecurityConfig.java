@@ -7,6 +7,7 @@ import org.englising.com.englisingbe.auth.jwt.JwtAuthenticationFilter;
 import org.englising.com.englisingbe.auth.jwt.JwtExceptionFilter;
 import org.englising.com.englisingbe.auth.handler.OAuth2LoginFailureHandler;
 import org.englising.com.englisingbe.auth.handler.OAuth2LoginSuccessHandler;
+import org.englising.com.englisingbe.auth.jwt.JwtProvider;
 import org.englising.com.englisingbe.auth.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -34,6 +36,7 @@ public class SecurityConfig {
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
+    private final JwtProvider jwtProvider;
 
     // HTTPSecurity Configuration -------------------------
     @Bean
@@ -59,8 +62,16 @@ public class SecurityConfig {
                         .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패시
                         .successHandler(oAuth2LoginSuccessHandler)); //소셜 로그인 성공시
 
+//        http
+                // exception handling 할 때 우리가 만든 클래스를 추가
+//                .exceptionHandling(exception ->
+//                        exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+//                                .accessDeniedHandler(jwtAccessDeniedHandler));
+
+
+//        http.addFilterAfter(jwtAuthenticationFilter, OAuth2LoginAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
+//        http.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
         return http.build();
     }
 

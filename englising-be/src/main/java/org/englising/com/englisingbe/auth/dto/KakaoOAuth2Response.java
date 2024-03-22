@@ -21,8 +21,6 @@ public class KakaoOAuth2Response extends OAuth2Response{
         if(kakaoAccount == null) {
             return null;
         }
-        //여기서 null인건가?
-
 
         return String.valueOf(kakaoAccount.get("email"));
     }
