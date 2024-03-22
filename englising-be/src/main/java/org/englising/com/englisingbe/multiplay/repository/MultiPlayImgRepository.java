@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface MultiPlayImgRepository extends JpaRepository<MultiPlayImg, Long> {
-    @Query(value = "SELECT multiplay_img_url FROM multiplay_img ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    @Query(value = "select multiplay_img_url from multiplay_img order by RAND() limit 1", nativeQuery = true)
     String getRandomImageUrl();
 }

@@ -1,4 +1,4 @@
-package org.englising.com.englisingbe.lyric.entity;
+package org.englising.com.englisingbe.music.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
