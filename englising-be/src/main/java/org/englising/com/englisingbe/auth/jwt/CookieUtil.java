@@ -16,22 +16,24 @@ import org.springframework.stereotype.Component;
 public class CookieUtil {
 
     // accessToken 쿠키 생성
-    public Cookie createAccessCookie(String key, String value) {
+    public Cookie createAccessCookie(String key, String value, boolean secure) {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(3600);
         cookie.setPath("/");
-        cookie.setSecure(false);
+//        cookie.setSecure(false);
+        cookie.setSecure(secure);
         cookie.setHttpOnly(true);
 
         return cookie;
     }
 
     // refreshToken 쿠키 생성
-    public Cookie createRefreshCookie(String key, String value) {
+    public Cookie createRefreshCookie(String key, String value, boolean secure) {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(1209600);
         cookie.setPath("/");
-        cookie.setSecure(false);
+//        cookie.setSecure(false);
+        cookie.setSecure(secure);
         cookie.setHttpOnly(true);
 
         return cookie;
