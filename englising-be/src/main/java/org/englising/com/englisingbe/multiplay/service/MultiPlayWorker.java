@@ -1,6 +1,6 @@
 package org.englising.com.englisingbe.multiplay.service;
 
-import org.englising.com.englisingbe.multiplay.dto.gameresponse.MultiPlayGameDefaultResponse;
+import org.englising.com.englisingbe.multiplay.dto.game.MultiPlayGame;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -22,33 +22,28 @@ public class MultiPlayWorker {
     // 노래 시간 종료 뒤 입력 시작 알림 -> sendInputStartAlert
     // 입력 시간 종료 뒤 입력 종료 알림 -> sendInputEndAlert
     // 3초 뒤 답안 공개 -> roundResultAlert
-
-
-    public static void main(String[] args) {
-        MultiPlayWorker multiPlayWorker = new MultiPlayWorker();
-    }
     private TaskScheduler scheduler;
     private SimpMessagingTemplate messagingTemplate;
-    private MultiPlayGameDefaultResponse multiPlayGameInfo;
+    private MultiPlayGame multiPlayGame;
     private int bufferTime = 3000;
     private int inputTime = 10000;
     private int timer = 3000;
-    private int round = 1;
     private int trackPlayTime;
+
     public MultiPlayWorker(){
         this.scheduler = new ThreadPoolTaskScheduler();
-//        this.messagingTemplate = messagingTemplate;
+        this.messagingTemplate = messagingTemplate;
         ((ThreadPoolTaskScheduler) scheduler).initialize();
         sendMusicStartAlert();
     }
 
     private void sendRoundStartAlert() {
         // 3라운드 분기
-        if(round == 3){
-            System.out.println("sendRoundStartAlert hint send"+round);
+        if(multiPlayGame.getRound() == 3){
+            System.out.println("sendRoundStartAlert hint send"+multiPlayGame.getRound());
         }
         else {
-            System.out.println("sendRoundStartAlert"+round);
+            System.out.println("sendRoundStartAlert"+multiPlayGame.getRound());
             // 라운드 시작 알림 3초 뒤로 예약
             scheduleNextTask(this::sendMusicStartAlert, bufferTime);
         }
@@ -80,8 +75,8 @@ public class MultiPlayWorker {
         // 정답이다 아니다만 보낸다
         System.out.println("roundResultAlert");
         // 1,2 라운드의 경우, 3초 뒤 라운드 시작 알림 전송
-        if(round < 3){
-            round++;
+        if(multiPlayGame.getRound() < 3){
+            multiPlayGame.setRound(multiPlayGame.getRound()+1);
             scheduleNextTask(this::sendRoundStartAlert, bufferTime);
         }
         else {
