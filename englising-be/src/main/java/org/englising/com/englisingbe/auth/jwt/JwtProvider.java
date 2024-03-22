@@ -142,41 +142,35 @@ public class JwtProvider {
                 .compact();
     }
 
-    /** todo. 삭제
-     * 헤더에서 순수 Token 추출
-     */
-//    public Optional<String> extractAccessTokenFromHeader(HttpServletRequest request) {
-//        return Optional.ofNullable(request.getHeader(accessHeader))
-//                .filter(token -> token.startsWith("Bearer "))
-//                .map(token -> token.replace("Bearer ", ""));
-//    }
-//
-//    public Optional<String> extractRefreshTokenFromHeader(HttpServletRequest request) {
-//        return Optional.ofNullable(request.getHeader(refreshHeader))
-//                .filter(token -> token.startsWith("Bearer "))
-//                .map(token -> token.replace("Bearer ", ""));
-//    }
+    public boolean isTokenValid(String token) {
+        Jws<Claims> claims =
+                Jwts.parserBuilder()
+                        .setSigningKey(secretKey)
+                        .build()
+                        .parseClaimsJws(token);
+        return !claims.getBody().getExpiration().before(new Date());
+    }
 
     // 토큰 유효성 검사 + 만료일자 확인
-    public boolean isTokenValid(String token) {
-        try{
-            Jws<Claims> claims =
-                    Jwts.parserBuilder()
-                            .setSigningKey(secretKey)
-                            .build()
-                            .parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT Token", e);
-        } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
-        } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT Token", e);
-        } catch (IllegalArgumentException e) {
-            log.info("JWT claims string is empty.", e);
-        }
-        return false;
-    }
+//    public boolean isTokenValid(String token) {
+//        try{
+//            Jws<Claims> claims =
+//                    Jwts.parserBuilder()
+//                            .setSigningKey(secretKey)
+//                            .build()
+//                            .parseClaimsJws(token);
+//            return !claims.getBody().getExpiration().before(new Date());
+//        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+//            log.info("Invalid JWT Token", e);
+//        } catch (ExpiredJwtException e) {
+//            log.info("Expired JWT Token", e);
+//        } catch (UnsupportedJwtException e) {
+//            log.info("Unsupported JWT Token", e);
+//        } catch (IllegalArgumentException e) {
+//            log.info("JWT claims string is empty.", e);
+//        }
+//        return false;
+//    }
 
     // AccessToken + RefreshToken 헤더에 넣기 todo. 삭제
 //    public void setAccessAndRefreshToken (HttpServletResponse response, String accessToken, String refreshToken) {
@@ -193,6 +187,21 @@ public class JwtProvider {
 //
 //        response.setHeader(accessHeader, accessToken);
 //        log.info("AccessToken 헤더 설정 완료 ", accessToken);
+//    }
+
+    /** todo. 삭제
+     * 헤더에서 순수 Token 추출
+     */
+//    public Optional<String> extractAccessTokenFromHeader(HttpServletRequest request) {
+//        return Optional.ofNullable(request.getHeader(accessHeader))
+//                .filter(token -> token.startsWith("Bearer "))
+//                .map(token -> token.replace("Bearer ", ""));
+//    }
+//
+//    public Optional<String> extractRefreshTokenFromHeader(HttpServletRequest request) {
+//        return Optional.ofNullable(request.getHeader(refreshHeader))
+//                .filter(token -> token.startsWith("Bearer "))
+//                .map(token -> token.replace("Bearer ", ""));
 //    }
 
 //      RefreshToken DB 저장 (업데이트) -> todo. Redis로 수정

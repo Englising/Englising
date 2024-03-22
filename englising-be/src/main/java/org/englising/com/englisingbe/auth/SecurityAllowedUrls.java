@@ -13,6 +13,11 @@ public class SecurityAllowedUrls {
             /* swagger v3 */
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/auth/**"
+            "/auth/**",
+//            "/**",
+            "/ws-stomp/**",
+            "/auth/**",
+//            "/oauth/**",
+//            "/oauth2/**"
     };
 }
