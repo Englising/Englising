@@ -2,7 +2,6 @@ import ReactPlayer from "react-player";
 import { useEffect, useRef, useState } from "react";
 import { PlayInfo, ProgressInfo } from "../../pages/SinglePage.tsx";
 import { OnProgressProps } from "react-player/base";
-import DonutChart from "./DonutChart.tsx";
 
 interface Props {
     onSetInfoIdx(currIdx: number):void,
@@ -53,12 +52,12 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
     // 힌트창이 켜졌을때 노래 일시중지
 
     return(
-        <div className="flex flex-col items-center">
-            <div>비비 밤양갱</div>
-            <div>
+        <div className="w-full h-full flex flex-col items-center">
+            <div className="w-full h-1/2 flex flex-col items-center justify-center">
+                <div className="text-xl text-center">비비 밤양갱</div>
                 <ReactPlayer
-                    width={'600px'}
-                    height={'400px'}
+                    width={'75%'}
+                    height={'75%'}
                     ref={player}
                     url= {url}
                     playing = {playing} 
@@ -70,11 +69,10 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
                     onEnded={handleEnded}
                 />   
             </div>
-            <div>
-                <div className="w-120 h-120 my-10  bg-white text-center">
-                        <DonutChart total={totalWord} target={rightWord} msg="정답"/>
+            <div className="w-full h-1/2 flex flex-col items-center justify-center">
+                <div className="w-1/2 h-1/2 my-10  bg-white text-center">
                 </div>
-                <div className="w-60 h-20 text-2xl flex items-center justify-center bg-white text-center">
+                <div className="w-1/2 h-1/3 text-2xl flex items-center justify-center bg-white text-center">
                     <div>
                         힌트개수: {hintNum}/{3}
                     </div>
