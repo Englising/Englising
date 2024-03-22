@@ -163,8 +163,8 @@ const Lyrics = ({onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData}
                     <div 
                     key={i} 
                     className={idx == i ? 
-                        `w-[80%] min-h-40 flex justify-center items-center text-4xl bg-black/50 rounded-xl text-white` : 
-                        `w-[80%] min-h-36 flex justify-center items-center text-3xl text-primary-300`} 
+                        `w-[90%] min-h-[15%] text-[1.4em] flex justify-center items-center bg-black/50 rounded-xl text-white` : 
+                        `w-[90%] min-h-[15%] text-[1em] flex justify-center items-center text-primary-300`} 
                     ref={(el) => lyricsRef.current[i] = el} 
                     onClick={() => 
                     handleLyricsClick(i, lyric.isBlank, lyric.startTime, lyric.endTime)}>

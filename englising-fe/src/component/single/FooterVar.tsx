@@ -49,28 +49,27 @@ const FooterVar = ({onSetAnswer, onSkip}:Props) => {
                 </div>
             </div>
 
-            <div className="w-2/3 flex justify-center">
-            <div className="mr-12 p-1 rounded-lg bg-gradient-to-r from-[white] via-[#00ffff] to-[#3F4685] ">
-            <input 
-            className="h-16  w-[30rem] pl-5 rounded-lg bg-black text-white text-2xl"
-            placeholder="빈칸에 들어갈 단어를 작성해주세요."
-            value={answer}
-            onChange={(event) => {handleAnswerChange(event)}}
-            onKeyDown={(event) => {handlePressEnter(event)}}
-            >
-            </input>
-            </div>
-        
-            <div 
-            className="h-16 w-28 mr-4 text-center rounded-lg bg-secondary-300 text-black text-xl font-bold cursor-pointer hover:opacity-50 flex flex-col"
-            onClick={handleAnswerSubmit}> 
-            <div className="m-auto text-2xl ">입력</div>
-            </div>
-            <div 
-            className="h-16 w-28 text-center rounded-lg bg-secondary-300 text-black text-xl font-bold cursor-pointer hover:opacity-50 flex flex-col"
-            onClick={onSkip}> 
-            <div className="m-auto text-2xl ">SKIP</div>
-            </div>
+            <div className="w-2/3 flex justify-center items-center">
+                <div className="h-[3em] mr-[3em] flex items-center p-1 rounded-lg bg-gradient-to-r from-[white] via-[#00ffff] to-[#3F4685] ">
+                    <input 
+                        className="h-[2.5em] w-[20em] text-[1em] pl-[1.25em] rounded-lg bg-black text-white"
+                        placeholder="빈칸에 들어갈 단어를 작성해주세요."
+                        value={answer}
+                        onChange={(event) => {handleAnswerChange(event)}}
+                        onKeyDown={(event) => {handlePressEnter(event)}}
+                    >
+                    </input>
+                </div>
+                <div 
+                className="h-[2.5em] w-[5em] mr-[1em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"
+                onClick={handleAnswerSubmit}> 
+                    <div className="m-auto text-[1em]">입력</div>
+                </div>
+                <div 
+                    className="h-[2.5em] w-[5em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"
+                    onClick={onSkip}> 
+                    <div className="m-auto text-[1em]">SKIP</div>
+                </div>
             </div> 
         </div>
     )
