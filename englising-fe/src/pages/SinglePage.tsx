@@ -120,14 +120,13 @@ const SinglePage = () => {
     }
 
     //동적으로 url 구성, className에 들어가야함
-    const item1 =  'src/assets/2002.PNG'
-    const url = `bg-[url('src/assets/bam.PNG')] bg-cover bg-center h-svh w-screen p-0 m-0`;
+    const url = `bg-[url('src/assets/bam.PNG')] bg-cover bg-center h-screen w-screen p-0 m-0`;
 
     return (
         <div className={url}>            
             <div className="flex flex-col  bg-black h-svh w-screen bg-opacity-80">
                 <div className="flex h-[90%]">
-                    <div className="w-1/3">
+                    <div className="w-1/3 h-full">
                         <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} /> 
                     </div>
                     <div className="w-2/3 flex items-center justify-center">
