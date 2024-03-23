@@ -1,16 +1,34 @@
-import React, { useState, ChangeEvent } from 'react';
-import imgRoom6 from '../assets/imgRoom6.jpg';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import Multiroom from '../component/main/MultiRoom.tsx';
 import RandomButton from '../component/main/RandomButton.tsx';
 import axios from 'axios';
 
 const SettingMulti = () => {
-    // 방 정보 상태를 관리하기 위한 useState 훅 사용
+    const [roomImg, setRoomImg] = useState<string>("");
+    
+    //일단 이 페이지 들어오면 roomImg api로 요청해서 바꿈
+    useEffect(() => {
+        axios.get("https://j10a106.p.ssafy.io/api/multiplay/image")
+            .then((Response) => {
+                setRoomImg(Response.data.data);
+                console.log(roomImg)
+            })
+    }, []);
+
+    const changeRoomImg = async() => {
+        axios.get("https://j10a106.p.ssafy.io/api/multiplay/image")
+            .then((Response) => {
+                setRoomImg(Response.data.data);
+                console.log(roomImg)
+            })
+    };
+
     const [roomInfo, setRoomInfo] = useState({
         roomName: "방 이름", // 방 이름
         maxUser: 1, // 최대 사용자 수
         currentUser: 1, // 현재 사용자 수
         password: 1111,
+        roomImg: roomImg,
     });
 
     // 방 이름 변경 시 호출되는 함수
@@ -33,6 +51,7 @@ const SettingMulti = () => {
                 maxUser: roomInfo.maxUser, // 최대 사용자 수
                 currentUser: roomInfo.currentUser, // 현재 사용자 수
                 password: roomInfo.password,
+                roomImg: roomImg,
             })
             //request로 multiplayId 받아서 waitroom/multiplayId로 보내주기
         }
@@ -110,8 +129,8 @@ const SettingMulti = () => {
                     </div>
                     {/* 방 미리보기 */}
                     <div className='h-48 pt-52 pl-24 flex flex-col items-center relative'>
-                        <Multiroom room_name={roomInfo.roomName} room_id={1} max_user={roomInfo.maxUser} current_user={roomInfo.currentUser} multi_img={imgRoom6} />
-                        <div className='absolute top-[218px] right-[160px]'><RandomButton/></div>
+                        <Multiroom room_name={roomInfo.roomName} room_id={1} max_user={roomInfo.maxUser} current_user={roomInfo.currentUser} multi_img={roomImg} />
+                        <div className='absolute top-[218px] right-[160px]' onClick={changeRoomImg}><RandomButton/></div>
                         <h1 className='text-secondary-500 pt-6 font-semibold'>방 미리보기</h1>
                     </div>
                     
