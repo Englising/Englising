@@ -10,6 +10,9 @@ chromedriver_path = "../chromedriver"
 
 class NaverDictionaryScraper:
     def __init__(self):
+        self.driver = None
+
+    def start_driver(self):
         self.service = Service(executable_path=chromedriver_path)
         self.driver = webdriver.Chrome(service=self.service)
 
@@ -24,8 +27,6 @@ class NaverDictionaryScraper:
         wordDto.ko_text_2 = meanings[1] if len(meanings) > 1 else ''
         wordDto.ko_text_3 = meanings[2] if len(meanings) > 2 else ''
         wordDto.example = self.fetch_examples()
-
-        self.driver.quit()
         return wordDto
 
     def fetch_examples(self) -> str:
@@ -38,3 +39,7 @@ class NaverDictionaryScraper:
         meanings = [element.text.strip() for element in meanings_elements]
         return meanings
 
+    def stop_driver(self):
+        if self.driver:
+            self.driver.quit()
+            self.driver = None

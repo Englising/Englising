@@ -11,6 +11,7 @@ class TrackWord(Base):
     lyric_id = Column(Integer, ForeignKey('lyric.lyric_id'), nullable=False)
     word_id = Column(Integer, ForeignKey('word.word_id'), nullable=False)
     word_index = Column(Integer, nullable=False)
+    origin_word = Column(String, nullable=False)
     importance = Column(Float, nullable=True)
     created_at = Column(TIMESTAMP, default=func.now())
     updated_at = Column(TIMESTAMP, onupdate=func.now())

@@ -13,5 +13,3 @@ def create_word(word: Word, session):
 
 def find_word_by_en_text(en_text:str, session):
     return session.query(Word).filter(Word.en_text == en_text).first()
-
-
