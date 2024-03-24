@@ -25,8 +25,14 @@ public class Word {
     @Column(name = "en_text")
     private String enText;
 
-    @Column(name = "ko_text")
-    private String koText;
+    @Column(name = "ko_text_1")
+    private String koText1;
+
+    @Column(name = "ko_text_2")
+    private String koText2;
+
+    @Column(name = "ko_text_3")
+    private String koText3;
 
     @Column(name = "example")
     private Integer example;

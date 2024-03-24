@@ -46,7 +46,8 @@ public class SinglePlayServiceImpl {
     public void createSinglePlay(){
         // TODO
         // SinglePlay Repository에 Create
-        //
+        // sigleplay-word에 추가
+
 
     }
 
