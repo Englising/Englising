@@ -79,7 +79,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
             if (targetBlank) {
                 // 정답시 스타일변경
                 targetBlank.dataset.solve = "2";
-                targetBlank.className = "text-green-800"
+                targetBlank.className = "text-[#6DD66D] font-bold"
                 
                 //정답시 맞은 단어 개수 변경
                 onSetProgressInfo("rightWord",);
@@ -93,7 +93,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
             if (targetBlank) {
                 // 오답시 스타일변경
                 targetBlank.dataset.solve = "1";
-                targetBlank.className="text-red-800"
+                targetBlank.className="mx-2 bg-[#FF4646] rounded-lg text-white bg-opacity-60 text-opacity-0"
             }
         }
         // 마지막 빈칸을 등록했을때 or 마지막 오답이 수정되었을때 넘어감
@@ -104,7 +104,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
         //targetBlank?.classList.remove('backdrop-blur', 'border', 'border-secondary-500');
     },[toggleSubmit])
     
-    // 현재 입력이 될 빈칸을 표시해주는 hook
+    // 현재 답안이 입력 될 빈칸을 표시해주는 hook
     useEffect(() => {
         console.log("실행")
         // 빈칸의 dom을 가져오기
@@ -126,12 +126,13 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
 
         // 현재 문장에 답이 입력될 빈칸에 효과주기.
         const wordIdx = targetBlank?.dataset.word;
-        targetBlank?.classList.add('border-2', 'border-secondary-400','shadow-lg', 'shadow-secondary-200');
-        
+        targetBlank?.classList.add('border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
+        targetBlank?.classList.replace('bg-opacity-60', 'bg-opacity-20');
         blanksRef.current.map(el => {
             const idx = el?.dataset.word;
             if (wordIdx != idx) {
-                el?.classList.remove('border-2', 'border-secondary-400', 'shadow-lg', 'shadow-secondary-200');
+                el?.classList.remove('border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
+                el?.classList.replace('bg-opacity-20', 'bg-opacity-60');
             }
         });
 
@@ -228,7 +229,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
                                 isBlank ? 
                                     (<span 
                                         key={j} 
-                                        className={"mx-2 bg-white rounded-lg text-white"}
+                                        className={"mx-2 bg-white rounded-lg text-white bg-opacity-60 text-opacity-0"}
                                         ref={(el) => blanksRef.current[blankIdx] = el}
                                         data-sentence={i}
                                         data-word={blankIdx}
