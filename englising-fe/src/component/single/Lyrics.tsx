@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { PlayInfo, SingleData, Lyric, Word, AnswerInfo, ProgressInfo } from "../../pages/SinglePage.tsx";
+import { PlayInfo, SingleData, Lyric, Word, AnswerInfo } from "../../pages/SinglePage.tsx";
 import HintModal from "./HintModal.tsx";
 
 interface Props {
@@ -10,13 +10,22 @@ interface Props {
     answerInfo: AnswerInfo,
 }
 
-const Lyrics = ({onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData}:Props) => {
+const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData }: Props) => {
+    { /* 현재 문장, 제출 답안정보 */ }
     const {idx} = playInfo;
-    const {answer, toggleSubmit} = answerInfo;
+    const { answer, toggleSubmit } = answerInfo;
+    
+    {/* 가사 및 빈칸 Data */}
     const [lyrics, setLyrics] = useState<Lyric[]>([]);
     const [blankWord, setBlankWord] = useState<Word[]>([]);
+
+    {/* HTML 조작 */ }
     const lyricsRef = useRef<(HTMLDivElement | null)[]>([]);
     const blanksRef = useRef<(HTMLSpanElement | null)[]>([]);
+    const [preBlank, setPreBlank] = useState<number>(0);
+    const [currBlank, setCurrBlank] = useState<number>(0);
+
+    {/* 힌트 */ }
     const [showModal, setShowModal] = useState<boolean>(false);
     const [hintWord, setHintWord] = useState<string>("");
     const [hintNum, setHintNum] = useState<number>(3);
@@ -34,8 +43,8 @@ const Lyrics = ({onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData}
     useEffect(() => {
         if(answer === "") return; 
         
-        // 같은 문장내에 빈칸의 개수 // 
-        // 오답이랑 빈칸 나눠서 해야할 듯
+        // 현재 재생중인 문장에서, 빈칸과 오답 개수를 각각 카운팅
+        // 빈칸이 우선으로 정답이 채워지게 만들기 위함
         let blankNum = 0; 
         let incorrectNum = 0;
         blanksRef.current.forEach(el => {
@@ -51,7 +60,6 @@ const Lyrics = ({onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData}
         let targetBlank = blanksRef.current.find(el => {
             const sentenceIdx = el?.dataset.sentence;
             const isSolve = el?.dataset.solve;
-            console.log("isSolve,", isSolve);
             return sentenceIdx == `${idx}` && isSolve == `0`; 
         }) ?? null;
 
@@ -63,7 +71,7 @@ const Lyrics = ({onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData}
                 return sentenceIdx == `${idx}` && isSolve == '1'; 
             }) ?? null;
         }
-
+        
         // 빈칸에 들어갈 정답 가져오기
         const solution = targetBlank?.textContent;
 
@@ -71,7 +79,7 @@ const Lyrics = ({onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData}
             if (targetBlank) {
                 // 정답시 스타일변경
                 targetBlank.dataset.solve = "2";
-                targetBlank.className = "text-green-800"
+                targetBlank.className = "text-[#6DD66D] font-bold"
                 
                 //정답시 맞은 단어 개수 변경
                 onSetProgressInfo("rightWord",);
@@ -85,17 +93,53 @@ const Lyrics = ({onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData}
             if (targetBlank) {
                 // 오답시 스타일변경
                 targetBlank.dataset.solve = "1";
-                targetBlank.className="text-red-800"
+                targetBlank.className="mx-2 bg-[#FF4646] rounded-lg text-white bg-opacity-60 text-opacity-0"
             }
         }
         // 마지막 빈칸을 등록했을때 or 마지막 오답이 수정되었을때 넘어감
         if(blankNum == 1 || incorrectNum <= 1 && blankNum == 0){ 
             handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime);
         }
-       
+        
+        //targetBlank?.classList.remove('backdrop-blur', 'border', 'border-secondary-500');
     },[toggleSubmit])
+    
+    // 현재 답안이 입력 될 빈칸을 표시해주는 hook
+    useEffect(() => {
+        console.log("실행")
+        // 빈칸의 dom을 가져오기
+        let targetBlank = blanksRef.current.find(el => {
+            const sentenceIdx = el?.dataset.sentence;
+            const isSolve = el?.dataset.solve;
+            return sentenceIdx == `${idx}` && isSolve == `0`; 
+        }) ?? null;
+
+        // 빈칸을 먼저 찾고 없으면 그때 오답인거 가져오기
+        if(targetBlank == null) {
+            targetBlank = blanksRef.current.find(el => {
+                const sentenceIdx = el?.dataset.sentence;
+                const isSolve = el?.dataset.solve;
+                return sentenceIdx == `${idx}` && isSolve == '1'; 
+            }) ?? null;
+        }
+
+
+        // 현재 문장에 답이 입력될 빈칸에 효과주기.
+        const wordIdx = targetBlank?.dataset.word;
+        targetBlank?.classList.add('border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
+        targetBlank?.classList.replace('bg-opacity-60', 'bg-opacity-20');
+        blanksRef.current.map(el => {
+            const idx = el?.dataset.word;
+            if (wordIdx != idx) {
+                el?.classList.remove('border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
+                el?.classList.replace('bg-opacity-20', 'bg-opacity-60');
+            }
+        });
+
+    },[idx, answer])
 
     useEffect(() => {
+        // 모든 가사 이동이 생길때 
         lyricsRef.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, [idx])
     
@@ -185,9 +229,10 @@ const Lyrics = ({onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData}
                                 isBlank ? 
                                     (<span 
                                         key={j} 
-                                        className={"mx-2 bg-white rounded-lg text-white"}
+                                        className={"mx-2 bg-white rounded-lg text-white bg-opacity-60 text-opacity-0"}
                                         ref={(el) => blanksRef.current[blankIdx] = el}
-                                        data-sentence ={i}
+                                        data-sentence={i}
+                                        data-word={blankIdx}
                                         data-solve="0"
                                             onClick={(e) => {
                                                 if (idx == i) {

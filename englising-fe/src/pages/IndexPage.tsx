@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const IndexPage = () => {
     const navigate = useNavigate();
     const handleKakaoLogin = () => {
-        window.location.href = "https://j10a106.p.ssafy.io/oauth2/authorization/kakao"
+        window.location.href = "https://j10a106.p.ssafy.io/api/oauth2/authorization/kakao"
     }
 
     const guestLogin = async() => {
