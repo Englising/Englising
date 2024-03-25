@@ -1,7 +1,7 @@
 FROM docker
 COPY --from=docker/buildx-bin:latest /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 
-FROM openjdk:17-jdk
+FROM openjdk:17-slim
 EXPOSE 443
 
 # Redis CLI 설치를 위한 명령어를 추가합니다.
