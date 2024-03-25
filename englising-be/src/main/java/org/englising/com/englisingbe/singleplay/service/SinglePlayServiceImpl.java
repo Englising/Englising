@@ -6,6 +6,7 @@ import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
 import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.global.util.PlayListType;
 import org.englising.com.englisingbe.music.entity.Lyric;
+import org.englising.com.englisingbe.music.entity.Track;
 import org.englising.com.englisingbe.music.service.LyricServiceImpl;
 import org.englising.com.englisingbe.singleplay.dto.RightWordCntDto;
 import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
@@ -132,10 +133,24 @@ public class SinglePlayServiceImpl {
                 .build();
     }
 
+
+    public PlayListDto getSearchTracks(String keyword, Integer page, Integer size, Long userId){
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "spotifyPopularity"));
+        Page<Track> trackIds = trackService.getSearchTrackIds(keyword, pageable);
+        List<TrackAlbumArtistDto> tracks = trackService.getTrackAlbumArtistsByTrackIds(trackIds.getContent()
+                .stream()
+                .map( track -> {
+                            return track.getTrackId();
+                        }
+                ).collect(Collectors.toList()));
+        return getPlayListDtoFromPageAndList(getTrackResponseDtoFromTrackAlbumArtist(userId, tracks),trackIds);
+    }
+
     private SinglePlayHint getSinglePlayHintById(Integer singlePlayHintId){
         return singlePlayHintRepository.findSinglePlayHintBySingleplayLevelId(singlePlayHintId)
                 .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MATCHING_HINT));
     }
+
 
     private PlayListDto getLikedTracks(Integer page, Integer size, Long userId){
         Page<TrackLike> trackLikes = trackLikeService.getLikedTrackResponseDtoByUserId(userId, page, size);
