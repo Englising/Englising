@@ -78,18 +78,28 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             User createdUser = oAuthAttributes.toEntity(oAuthAttributes.getOAuth2Response(), userService);
             userRepository.save(createdUser);
             log.info("CustomOAuth2UserService ------ 회원 아닌 경우 db 저장" + createdUser);
+
+            return new CustomOAuth2User(
+                    Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+                    attributes,
+                    oAuthAttributes.getNameAttributeKey(),
+                    createdUser.getEmail(),
+                    createdUser.getNickname(),
+                    createdUser.getProfileImg(),
+                    createdUser.getColor()
+            );
+        } else {
+            // DefaulitOAuth2User 구현한 CustomOAuth2User 객체 생성해서 반환
+            return new CustomOAuth2User(
+                    Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), // 우리 서비는 권한 따로 없기 때문에 모두 USER
+                    attributes,
+                    oAuthAttributes.getNameAttributeKey(),
+                    findUser.getEmail(),
+                    findUser.getNickname(),
+                    findUser.getProfileImg(),
+                    findUser.getColor()
+            );
+
         }
-
-        // DefaulitOAuth2User 구현한 CustomOAuth2User 객체 생성해서 반환
-        return new CustomOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), // 우리 서비는 권한 따로 없기 때문에 모두 USER
-                        attributes,
-                        oAuthAttributes.getNameAttributeKey(),
-                        findUser.getEmail(),
-                        findUser.getNickname(),
-                        findUser.getProfileImg(),
-                        findUser.getColor()
-        );
-
     }
 }
