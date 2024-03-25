@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CookieUtil {
 
-    // accessToken 쿠키 생성
+    // accessToken 쿠키 생성 todo. 추후 secure 변경
     public Cookie createAccessCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(3600);

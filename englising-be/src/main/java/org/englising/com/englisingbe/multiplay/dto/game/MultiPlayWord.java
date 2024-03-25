@@ -13,5 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class MultiPlayWord {
     private Integer wordIndex;
-    private List<MultiPlayAlphabet> word;
+    private List<MultiPlayAlphabet> alphabets;
 }

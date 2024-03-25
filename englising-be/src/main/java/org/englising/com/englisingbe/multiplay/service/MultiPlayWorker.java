@@ -1,79 +1,141 @@
 package org.englising.com.englisingbe.multiplay.service;
 
+import org.englising.com.englisingbe.global.util.MultiPlayStatus;
+import org.englising.com.englisingbe.global.util.WebSocketUrls;
 import org.englising.com.englisingbe.multiplay.dto.game.MultiPlayGame;
+import org.englising.com.englisingbe.multiplay.dto.game.MultiPlaySentence;
+import org.englising.com.englisingbe.multiplay.dto.socket.RoundDto;
+import org.englising.com.englisingbe.multiplay.dto.socket.TimerDto;
+import org.englising.com.englisingbe.redis.service.RedisServiceImpl;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class MultiPlayWorker {
-
-    //TODO (Controller)
-    // 1. 게임 시작 요청 (Controller Get)
-    // 방장인지 아닌지 확인하기
-    // worker 생성하기
-    // trackId, leftTime(+3sec), sentences (list(starttime, endtime, {index, word})), youtubeId, type(RoundStart), round
-    // 시작 알림 송신 + 노래 정보 보내주기 + 타이머 시작
-
-    //TODO (Worker)
-    // 1. Worker 생성 시 (1라운드 시작)
-    // 3초 뒤 노래 재생 알림 -> sendMusicStartAlert
-    // 노래 시간 종료 뒤 입력 시작 알림 -> sendInputStartAlert
-    // 입력 시간 종료 뒤 입력 종료 알림 -> sendInputEndAlert
-    // 3초 뒤 답안 공개 -> roundResultAlert
     private TaskScheduler scheduler;
     private SimpMessagingTemplate messagingTemplate;
+    private RedisServiceImpl redisService;
     private MultiPlayGame multiPlayGame;
     private int bufferTime = 3000;
     private int inputTime = 10000;
     private int timer = 3000;
     private int trackPlayTime;
+    private String roundDestination;
+    private String timeDestination;
 
-    public MultiPlayWorker(){
+    public MultiPlayWorker(Long multiPlayId, SimpMessagingTemplate simpMessagingTemplate, RedisServiceImpl redisService){
+        this.multiPlayGame = redisService.getMultiPlayGameById(multiPlayId);
         this.scheduler = new ThreadPoolTaskScheduler();
-        this.messagingTemplate = messagingTemplate;
+        this.messagingTemplate = simpMessagingTemplate;
+        this.redisService = redisService;
+        this.trackPlayTime = getTrackPlayTime();
         ((ThreadPoolTaskScheduler) scheduler).initialize();
-        sendMusicStartAlert();
+        roundDestination = WebSocketUrls.roundUrl +multiPlayGame.getMultiPlayId().toString();
+        timeDestination = WebSocketUrls.timeUrl+multiPlayGame.getMultiPlayId().toString();
     }
 
-    private void sendRoundStartAlert() {
-        // 3라운드 분기
-        if(multiPlayGame.getRound() == 3){
-            System.out.println("sendRoundStartAlert hint send"+multiPlayGame.getRound());
-        }
-        else {
-            System.out.println("sendRoundStartAlert"+multiPlayGame.getRound());
-            // 라운드 시작 알림 3초 뒤로 예약
-            scheduleNextTask(this::sendMusicStartAlert, bufferTime);
+    public void sendRoundStartAlert() {
+        switch (multiPlayGame.getRound()){
+            case 1 :
+                // 라운드 정보 업데이트
+                this.multiPlayGame = redisService.updateRoundStatus(multiPlayGame.getMultiPlayId(), 1, MultiPlayStatus.ROUNDSTART);
+                // 라운드 시작 알림 + 게임 정보 전송
+                messagingTemplate.convertAndSend(roundDestination,
+                        RoundDto.<List<MultiPlaySentence>>builder()
+                                .round(multiPlayGame.getRound())
+                                .status(MultiPlayStatus.ROUNDSTART)
+                                .data(multiPlayGame.getSentences())
+                                .build());
+                // 노래 시작 알림 예약
+                scheduleNextTask(this::sendMusicStartAlert, bufferTime);
+                break;
+            case 2:
+                // 라운드 정보 업데이트
+                this.multiPlayGame = redisService.updateRoundStatus(multiPlayGame.getMultiPlayId(), 2, MultiPlayStatus.ROUNDSTART);
+                // 라운드 시작 알림
+                messagingTemplate.convertAndSend(roundDestination,
+                        RoundDto.<String>builder()
+                                .round(multiPlayGame.getRound())
+                                .status(MultiPlayStatus.ROUNDSTART)
+                                .data("2라운드 시작")
+                                .build());
+                // 노래 시작 알림 예약
+                scheduleNextTask(this::sendMusicStartAlert, bufferTime);
+                break;
+            case 3:
+                // 라운드 정보 업데이트
+                this.multiPlayGame = redisService.updateRoundStatus(multiPlayGame.getMultiPlayId(), 3, MultiPlayStatus.ROUNDSTART);
+                // 라운드 시작 알림
+                messagingTemplate.convertAndSend(roundDestination,
+                        RoundDto.<String>builder()
+                                .round(multiPlayGame.getRound())
+                                .status(MultiPlayStatus.ROUNDSTART)
+                                .data("3라운드 시작")
+                                .build());
+                System.out.println("sendRoundStartAlert hint send"+multiPlayGame.getRound());
+                break;
         }
     }
 
     public void sendMusicStartAlert() {
-        System.out.println("sendMusicStartAlert");
-        // 3초 단위로 타이머 시작
+        // 라운드 정보 업데이트
+        this.multiPlayGame = redisService.updateRoundStatus(multiPlayGame.getMultiPlayId(), multiPlayGame.getRound(), MultiPlayStatus.MUSICSTART);
+        // 음악 시작 알림
+        messagingTemplate.convertAndSend(roundDestination,
+                RoundDto.<String>builder()
+                        .round(multiPlayGame.getRound())
+                        .status(MultiPlayStatus.MUSICSTART)
+                        .data("음악 재생 시작")
+                        .build());
+        // 3초 단위로 타이머 알림 시작
         timerAlert(trackPlayTime);
-        // 노래 재생 후 입력 시작 알림 예약
+        // 입력 시작 알림 예약
         scheduleNextTask(this::sendInputStartAlert, trackPlayTime);
     }
     public void sendInputStartAlert(){
-        System.out.println("sendInputStartAlert");
-        // 3초 단위로 타이머 시작
-        timerAlert(trackPlayTime);
-        // input 시간 후 입력 종료 알림 예약
-        scheduleNextTask(this::sendInputEndAlert, trackPlayTime);
+        // 라운드 정보 업데이트
+        this.multiPlayGame = redisService.updateRoundStatus(multiPlayGame.getMultiPlayId(), multiPlayGame.getRound(), MultiPlayStatus.INPUTSTART);
+        // 입력 시작 알림
+        messagingTemplate.convertAndSend(roundDestination,
+                RoundDto.<String>builder()
+                        .round(multiPlayGame.getRound())
+                        .status(MultiPlayStatus.INPUTSTART)
+                        .data("팀 답안 입력 시작")
+                        .build());
+        // 3초 단위로 타이머 알림 시작
+        timerAlert(inputTime);
+        // 입력 종료 알림 예약
+        scheduleNextTask(this::sendInputEndAlert, inputTime);
     }
 
     public void sendInputEndAlert(){
-        System.out.println("sendInputEndAlert");
+        // 라운드 정보 업데이트
+        this.multiPlayGame = redisService.updateRoundStatus(multiPlayGame.getMultiPlayId(), multiPlayGame.getRound(), MultiPlayStatus.INPUTEND);
+        // 입력 시작 알림
+        messagingTemplate.convertAndSend(roundDestination,
+                RoundDto.<String>builder()
+                        .round(multiPlayGame.getRound())
+                        .status(MultiPlayStatus.INPUTEND)
+                        .data("팀 답안 입력 종료")
+                        .build());
         // 3초 뒤 결과 공개 알림 예약
         scheduleNextTask(this::roundResultAlert, bufferTime);
     }
 
     public void roundResultAlert(){
-        //TODO 정답 확인
+        //TODO 정답 확인 (맞은 경우 종료)
         // 정답이다 아니다만 보낸다
         System.out.println("roundResultAlert");
+        messagingTemplate.convertAndSend(roundDestination,
+                RoundDto.<String>builder()
+                        .round(multiPlayGame.getRound())
+                        .status(MultiPlayStatus.ROUNDEND)
+                        .data(multiPlayGame.getRound()+"라운드 종료")
+                        .build());
         // 1,2 라운드의 경우, 3초 뒤 라운드 시작 알림 전송
         if(multiPlayGame.getRound() < 3){
             multiPlayGame.setRound(multiPlayGame.getRound()+1);
@@ -85,9 +147,9 @@ public class MultiPlayWorker {
     }
 
     public void sendRandomHint(){
-        System.out.println("sendRandomHint");
         //TODO
         // 3초 뒤 힌트 결과 공개 || 노래 재생 알림
+        System.out.println("sendRandomHint");
         if(true){
             scheduleNextTask(this::sendHintResult, bufferTime);
         }
@@ -97,12 +159,13 @@ public class MultiPlayWorker {
     }
 
     public void sendHintResult(){
+        //TODO
+        // 힌트 결과 전송
         System.out.println("sendHintResult");
         // 3초 뒤 입력 시작 알림
         scheduleNextTask(this::sendInputStartAlert, bufferTime);
     }
 
-    // 3초 간격으로 보내는 타이머
     private void timerAlert(long duration) {
         TaskScheduler timerScheduler = new ThreadPoolTaskScheduler();
         ((ThreadPoolTaskScheduler) timerScheduler).initialize();
@@ -114,9 +177,12 @@ public class MultiPlayWorker {
             long currentTime = System.currentTimeMillis();
             if (currentTime <= endTime) {
                 long remainingTime = (endTime - currentTime)/1000;
-                System.out.println("Remaining time: " + remainingTime + " ms");
+                messagingTemplate.convertAndSend(timeDestination,
+                        TimerDto.builder()
+                                .message("남은 시간 타이머")
+                                .leftTime(remainingTime)
+                                .build());
             } else {
-                System.out.println("Task completed.");
                 if(timerScheduler instanceof ThreadPoolTaskScheduler) {
                     ((ThreadPoolTaskScheduler) timerScheduler).shutdown();
                 }
@@ -131,11 +197,12 @@ public class MultiPlayWorker {
     private void shutdownScheduler() {
         if (scheduler instanceof ThreadPoolTaskScheduler) {
             ((ThreadPoolTaskScheduler) scheduler).shutdown();
-            System.out.println("스케줄러가 종료되었습니다.");
         }
     }
 
-    private void sendMessage(String destination, String message){
-        messagingTemplate.convertAndSend(destination, message);
+    private int getTrackPlayTime(){
+        BigDecimal startTime = multiPlayGame.getSentences().get(0).getStartTime();
+        BigDecimal endTime = multiPlayGame.getSentences().get(multiPlayGame.getSentences().size() - 1).getEndTime();
+        return endTime.subtract(startTime).multiply(new BigDecimal("1000")).intValue();
     }
 }
