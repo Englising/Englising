@@ -1,47 +1,53 @@
 import { useEffect, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
+import { useParams } from "react-router";
+import { Client, IMessage } from "@stomp/stompjs";
+import useStomp from "../../hooks/useStomp";
 
 const loginUserId = 1;
 
+type Chat = {
+  userId: number;
+  message: string;
+};
+
 function ChatArea() {
-  const chatEndRef = useRef(null);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const client = useRef<Client>();
+  const { multiId } = useParams();
   const [chatList, setChatList] = useState([
     {
-      chatId: 1,
       userId: 1,
       nickname: "마루",
       profileImage: "https://i.pinimg.com/564x/86/42/7f/86427ff9f865c6e943e2b86497cbf098.jpg",
-      chatMsg: "ㅎㅇ",
+      message: "ㅎㅇ",
     },
     {
-      chatId: 2,
       userId: 2,
       nickname: "망곰",
       profileImage:
         "https://d2u3dcdbebyaiu.cloudfront.net/uploads/atch_img/654/d10c916fa0beb0b2ea3590f8fef4b728_res.jpeg",
-      chatMsg: "하이하이",
+      message: "하이하이",
     },
     {
-      chatId: 3,
       userId: 1,
       nickname: "마루",
       profileImage: "https://i.pinimg.com/564x/86/42/7f/86427ff9f865c6e943e2b86497cbf098.jpg",
-      chatMsg: "??",
+      message: "??",
     },
     {
-      chatId: 4,
       userId: 1,
       nickname: "마루",
       profileImage: "https://i.pinimg.com/564x/86/42/7f/86427ff9f865c6e943e2b86497cbf098.jpg",
-      chatMsg: "머라는지모르겟는데....",
+      message: "머라는지모르겟는데....",
     },
     {
-      chatId: 5,
       userId: 2,
       nickname: "망곰",
       profileImage:
         "https://d2u3dcdbebyaiu.cloudfront.net/uploads/atch_img/654/d10c916fa0beb0b2ea3590f8fef4b728_res.jpeg",
-      chatMsg: "난바보야",
+      message: "난바보야",
     },
     {
       chatId: 6,
@@ -49,35 +55,61 @@ function ChatArea() {
       nickname: "망곰",
       profileImage:
         "https://d2u3dcdbebyaiu.cloudfront.net/uploads/atch_img/654/d10c916fa0beb0b2ea3590f8fef4b728_res.jpeg",
-      chatMsg: "이번 라운드는 쉬겠씁니다",
+      message: "이번 라운드는 쉬겠씁니다",
     },
     {
-      chatId: 7,
       userId: 1,
       nickname: "마루",
       profileImage: "https://i.pinimg.com/564x/86/42/7f/86427ff9f865c6e943e2b86497cbf098.jpg",
-      chatMsg: "안돼",
+      message: "안돼",
     },
     {
-      chatId: 8,
       userId: 1,
       nickname: "마루",
       profileImage: "https://i.pinimg.com/564x/86/42/7f/86427ff9f865c6e943e2b86497cbf098.jpg",
-      chatMsg: "도라와~~",
-    },
-    {
-      chatId: 9,
-      userId: 2,
-      nickname: "망곰",
-      profileImage:
-        "https://d2u3dcdbebyaiu.cloudfront.net/uploads/atch_img/654/d10c916fa0beb0b2ea3590f8fef4b728_res.jpeg",
-      chatMsg: "중간에 레인보우 이건 확실함 진짜 rainbow 무조건이야",
+      message: "도라와~~",
     },
   ]);
 
+  const callback = (body: IMessage) => {
+    const json = JSON.parse(body.body);
+    console.log("subscribe payload", json);
+    setChatList((prev) => [...prev, json]);
+  };
+
+  const [connect, disconnect] = useStomp(client, `/sub/chat/${multiId}`, callback);
+
+  const publish = (chat: Chat) => {
+    if (!client.current?.connected) return;
+
+    console.log("publish", chat);
+    client.current.publish({
+      destination: `/pub/chat/${multiId}`,
+      body: JSON.stringify({
+        userId: loginUserId,
+        message: inputRef.current?.value,
+      }),
+    });
+  };
+
+  const handleChatSubmit = () => {
+    if (!inputRef.current) return;
+    const chat = { userId: loginUserId, message: inputRef.current.value };
+    publish(chat);
+    inputRef.current.value = "";
+  };
+
   useEffect(() => {
-    chatEndRef.current.scrollIntoView();
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView();
+    }
   }, [chatList]);
+
+  useEffect(() => {
+    connect();
+
+    return () => disconnect();
+  }, []);
 
   return (
     <section className="max-h-[425px] flex flex-col p-2 bg-primary-400 rounded-lg">
@@ -103,9 +135,9 @@ function ChatArea() {
 
             return (
               <ChatMessage
-                key={chat.chatId}
+                key={index}
                 user={{ userId: chat.userId, nickname: chat.nickname, profileImage: chat.profileImage }}
-                message={chat.chatMsg}
+                message={chat.message}
                 profileVisible={profileVisible}
                 myMessage={chat.userId === loginUserId}
               />
@@ -114,8 +146,15 @@ function ChatArea() {
         <div ref={chatEndRef}></div>
       </div>
       <div className="bg-white rounded-lg p-2 flex">
-        <input className="grow text-gray-900 focus:outline-none" type="text" placeholder="메시지를 작성해주세요" />
-        <button className="bg-secondary-100 rounded-md  px-2 py-1 text-gray-900 text-sm">전송</button>
+        <input
+          className="grow text-gray-900 focus:outline-none"
+          type="text"
+          placeholder="메시지를 작성해주세요"
+          ref={inputRef}
+        />
+        <button className="bg-secondary-100 rounded-md  px-2 py-1 text-gray-900 text-sm" onClick={handleChatSubmit}>
+          전송
+        </button>
       </div>
     </section>
   );
