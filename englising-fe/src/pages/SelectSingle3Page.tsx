@@ -1,10 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import img2002 from '../assets/2002.jpg';
-// import imgChanges from '../assets/changes.jpg';
-// import imgLover from '../assets/lover.jpg';
-// import imgSugar from '../assets/sugar.jpg';
-// import imgYouth from '../assets/youth.jpg';
-// import imgMe from '../assets/me.jpg';
 import LpPlayer from '../component/main/LpPlayer.tsx';
 import Singleroom from '../component/main/SingleRoom.tsx';
 import axios from 'axios';

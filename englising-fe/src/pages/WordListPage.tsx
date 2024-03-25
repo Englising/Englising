@@ -62,11 +62,15 @@ const WordListPage = () => {
 
                 </div>
                 <div className="grid grid-cols-2 gap-6 overflow-y-auto pr-24">
-                    {wordList && wordList.map((item, index) => (
-                        <div key={index} >
-                            <WordCard eng_text={item.eng_text} kor_text1={item.kor_text1} kor_text2={item.kor_text2} kor_text3={item.kor_text3} example={item.example} is_liked={item.is_liked} />
-                        </div>
-                    ))}
+                    {wordList && wordList.length > 0 ? ( // wordList 배열이 비어있지 않은 경우에만 map 함수 호출
+                        wordList.map((item, index) => (
+                            <div key={index} >
+                                <WordCard eng_text={item.eng_text} kor_text1={item.kor_text1} kor_text2={item.kor_text2} kor_text3={item.kor_text3} example={item.example} is_liked={item.is_liked} />
+                            </div>
+                        ))
+                    ) : (
+                        <div className="text-white w-full">단어 목록이 없습니다.</div>
+                    )}
                 </div>
             </div>
         </div>
