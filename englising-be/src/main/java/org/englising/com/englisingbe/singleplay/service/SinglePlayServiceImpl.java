@@ -7,6 +7,8 @@ import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.global.util.PlayListType;
 import org.englising.com.englisingbe.music.entity.Lyric;
 import org.englising.com.englisingbe.music.service.LyricServiceImpl;
+import org.englising.com.englisingbe.singleplay.dto.RightWordCntDto;
+import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.response.*;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlay;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlayHint;
@@ -86,12 +88,29 @@ public class SinglePlayServiceImpl {
                 .build();
     }
 
-    public void checkWord(){
-
+    public WordCheckResponseDto checkWord(WordCheckRequestDto wordCheckRequestDto){
+        SinglePlayWord singlePlayWord = singlePlayWordService.checkWordAnswer(wordCheckRequestDto);
+        RightWordCntDto rightWordCntDto = singlePlayWordService.getRightAndTotalCnt(wordCheckRequestDto.singleplayId);
+        return WordCheckResponseDto.builder()
+                .word(WordResponseDto.builder()
+                        .singleplayWordId(singlePlayWord.getSinglePlayWordId())
+                        .sentenceIndex(singlePlayWord.getSentenceIndex())
+                        .wordIndex(singlePlayWord.getWordIndex())
+                        .word(singlePlayWord.getOriginWord())
+                        .isRight(singlePlayWord.getIsRight())
+                        .build())
+                .totalWordCnt(rightWordCntDto.getTotalWordCnt())
+                .rightWordCnt(rightWordCntDto.getRightWordCnt())
+                .build();
     }
 
-    public void getLyricStartTimes(){
-
+    public TimeResponseDto getLyricStartTimes(Long trackId){
+        List<Lyric> lyrics = lyricService.getAllLyricsByTrackId(trackId);
+        return TimeResponseDto.builder()
+                .trackId(trackId)
+                .startTime(lyrics.stream()
+                        .map(lyric -> lyric.getStartTime().floatValue()).toList())
+                .build();
     }
 
     private SinglePlayHint getSinglePlayHintById(Integer singlePlayHintId){

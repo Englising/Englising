@@ -75,7 +75,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = StartResponseDto.class)
             )
     )
-    public ResponseEntity startSingleplay(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody SinglePlayRequestDto startDto){
+    public ResponseEntity startSinglePlay(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody SinglePlayRequestDto startDto){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
@@ -101,8 +101,16 @@ public class SinglePlayController {
                     schema = @Schema(implementation = WordCheckResponseDto.class)
             )
     )
-    public ResponseEntity checkSingleplayWord(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody WordCheckRequestDto wordCheckRequestDto){
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity checkSinglePlayWord(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody WordCheckRequestDto wordCheckRequestDto){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        DefaultResponseDto.<WordCheckResponseDto>builder()
+                                .status(HttpStatus.OK.value())
+                                .message("단어 정답을 확인 했습니다.")
+                                .data(singlePlayService.checkWord(wordCheckRequestDto))
+                                .build()
+                );
     }
 
     @PostMapping("/result")
@@ -138,7 +146,15 @@ public class SinglePlayController {
             )
     )
     public ResponseEntity getLyricStartTimes(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long trackId){
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        DefaultResponseDto.<TimeResponseDto>builder()
+                                .status(HttpStatus.OK.value())
+                                .message("노래 가사 시작 시간을 가져왔습니다.")
+                                .data(singlePlayService.getLyricStartTimes(trackId))
+                                .build()
+                );
     }
 }
 
