@@ -7,6 +7,8 @@ import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.global.util.PlayListType;
 import org.englising.com.englisingbe.music.entity.Lyric;
 import org.englising.com.englisingbe.music.service.LyricServiceImpl;
+import org.englising.com.englisingbe.singleplay.dto.RightWordCntDto;
+import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.response.*;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlay;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlayHint;
@@ -86,12 +88,48 @@ public class SinglePlayServiceImpl {
                 .build();
     }
 
-    public void checkWord(){
-
+    public WordCheckResponseDto checkWord(WordCheckRequestDto wordCheckRequestDto){
+        SinglePlayWord singlePlayWord = singlePlayWordService.checkWordAnswer(wordCheckRequestDto);
+        RightWordCntDto rightWordCntDto = singlePlayWordService.getRightAndTotalCnt(wordCheckRequestDto.singleplayId);
+        return WordCheckResponseDto.builder()
+                .word(WordResponseDto.builder()
+                        .singleplayWordId(singlePlayWord.getSinglePlayWordId())
+                        .sentenceIndex(singlePlayWord.getSentenceIndex())
+                        .wordIndex(singlePlayWord.getWordIndex())
+                        .word(singlePlayWord.getOriginWord())
+                        .isRight(singlePlayWord.getIsRight())
+                        .build())
+                .totalWordCnt(rightWordCntDto.getTotalWordCnt())
+                .rightWordCnt(rightWordCntDto.getRightWordCnt())
+                .build();
     }
 
-    public void getLyricStartTimes(){
+    public SinglePlayResponseDto getSinglePlayResult(Long singlePlayId){
+        // SinglePlay Repository에서 조회
+        SinglePlay singlePlay = getSinglePlayById(singlePlayId);
+        // 해당 Track의 Lyrics 가져옴
+        List<Lyric> lyrics = lyricService.getAllLyricsByTrackId(singlePlay.getTrack().getTrackId());
+        // SinglePlay-Word에 저장
+        List<SinglePlayWord> singlePlayWordList = singlePlayWordService.getAllSinglePlayWordsBySinglePlayId(singlePlayId);
+        // Dto 생성
+        return SinglePlayResponseDto.builder()
+                .singlePlayId(singlePlay.getSinglePlayId())
+                .lyrics(getLyricDtoFromLyricList(lyrics, singlePlayWordList))
+                .words(getWordDtoFromSinglePlayWord(singlePlayWordList))
+                .totalWordCnt(singlePlayWordList.size())
+                .rightWordCnt((int) singlePlayWordList.stream()
+                        .filter(SinglePlayWord::getIsRight)
+                        .count())
+                .build();
+    }
 
+    public TimeResponseDto getLyricStartTimes(Long trackId){
+        List<Lyric> lyrics = lyricService.getAllLyricsByTrackId(trackId);
+        return TimeResponseDto.builder()
+                .trackId(trackId)
+                .startTime(lyrics.stream()
+                        .map(lyric -> lyric.getStartTime().floatValue()).toList())
+                .build();
     }
 
     private SinglePlayHint getSinglePlayHintById(Integer singlePlayHintId){
@@ -143,6 +181,11 @@ public class SinglePlayServiceImpl {
                 .playList(data)
                 .pagination(PaginationDto.from(page))
                 .build();
+    }
+
+    private SinglePlay getSinglePlayById(Long singlePlayId){
+        return singlePlayRepository.findById(singlePlayId)
+                .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MACHING_SINGLEPLAY));
     }
 
     private List<LyricDto> getLyricDtoFromLyricList(List<Lyric> lyricList, List<SinglePlayWord> singlePlayWordList) {

@@ -1,7 +1,11 @@
 package org.englising.com.englisingbe.singleplay.service;
 
 import lombok.RequiredArgsConstructor;
+import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
+import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.music.entity.Lyric;
+import org.englising.com.englisingbe.singleplay.dto.RightWordCntDto;
+import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlay;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlayWord;
 import org.englising.com.englisingbe.singleplay.repository.SinglePlayWordRepository;
@@ -27,6 +31,38 @@ public class SinglePlayWordService {
             }
         });
         return saveSinglePlayWords(singlePlayWordList);
+    }
+
+    public SinglePlayWord checkWordAnswer(WordCheckRequestDto wordCheckRequestDto){
+        SinglePlayWord singlePlayWord = getSinglePlayWordById(wordCheckRequestDto.singleplayWordId);
+        if (singlePlayWord.getOriginWord().equals(wordCheckRequestDto.getWord())){
+            singlePlayWord.setIsRight(true);
+        }
+        else {
+            singlePlayWord.setIsRight(false);
+        }
+        return singlePlayWordRepository.save(singlePlayWord);
+    }
+
+    public RightWordCntDto getRightAndTotalCnt(Long singlePlayId){
+        List<SinglePlayWord> wordList = singlePlayWordRepository.getAllBySinglePlaySinglePlayId(singlePlayId)
+                .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MACHING_SINGLEPLAY));
+        return RightWordCntDto.builder()
+                .totalWordCnt(wordList.size())
+                .rightWordCnt((int) wordList.stream()
+                        .filter(SinglePlayWord::getIsRight)
+                        .count())
+                .build();
+    }
+
+    public List<SinglePlayWord> getAllSinglePlayWordsBySinglePlayId(Long singlePlayId){
+        return singlePlayWordRepository.getAllBySinglePlaySinglePlayId(singlePlayId)
+                .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MACHING_SINGLEPLAY));
+    }
+
+    private SinglePlayWord getSinglePlayWordById(Long id){
+        return singlePlayWordRepository.findById(id)
+                .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MATCHING_SINGLEPLAYWORD));
     }
 
     private List<SinglePlayWord> trackWordsToSinglePlayWords(List<TrackWord> selectedWords, List<Lyric> lyrics, SinglePlay singlePlay){
