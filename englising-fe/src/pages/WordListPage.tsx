@@ -1,4 +1,6 @@
 import WordCard from "../component/main/WordCard";
+import React, {useState, useEffect} from 'react';
+import axios from 'axios';
 
 interface Word {
     word_id : number;
@@ -10,74 +12,62 @@ interface Word {
     is_liked : boolean;
 }
 
+interface WordButtonProps {
+    buttonText: string;
+    apiEndpoint: string;
+    onClick: (endpoint: string) => void; // 클릭 이벤트 핸들러
+    selected: boolean; // 선택된 버튼 여부
+}
+
 const WordListPage = () => {
-    const word: Word[] = [{
-        word_id: 1,
-        eng_text : 'word',
-        kor_text1 : '단어~',
-        kor_text2 : '단어!',
-        kor_text3 : '단어?',
-        example : 'Jiwoo memorizes English words.',
-        is_liked : true,
-    },{
-        word_id: 2,
-        eng_text : 'english',
-        kor_text1 : '영어~',
-        kor_text2 : '영어!',
-        kor_text3 : '영어?',
-        example : 'Ayoung is good at English',
-        is_liked : false,
-    },{
-        word_id: 3,
-        eng_text : 'chocolate',
-        kor_text1 : '초콜렛',
-        kor_text2 : '맛있겠다',
-        kor_text3 : '초코!!',
-        example : 'Mingi likes iced chocolate.',
-        is_liked : false,
-    },{
-        word_id: 4,
-        eng_text : 'bread',
-        kor_text1 : '빵',
-        kor_text2 : '맘모스빵',
-        kor_text3 : '소보로빵',
-        example : 'Hyunji loves bread.',
-        is_liked : true,
-    },{
-        word_id: 5,
-        eng_text : 'green',
-        kor_text1 : '초록색',
-        kor_text2 : '초록',
-        kor_text3 : '초록!!!!!',
-        example : 'Haelim looks good in green.',
-        is_liked : false,
-    },{
-        word_id: 6,
-        eng_text : 'singer',
-        kor_text1 : '가수',
-        kor_text2 : '가수가수',
-        kor_text3 : '가수가수',
-        example : 'Eunbi is a singer.',
-        is_liked : true,
-    }
-]
+    const [wordList, setWordList] = useState<Word[]>([]);
+    const [selectedButton, setSelectedButton] = useState<string>(''); // 선택된 버튼 상태
+
+    useEffect(() => {
+        // 페이지가 처음 렌더링될 때 "like" 버튼을 선택된 상태로 설정
+        setSelectedButton("like");
+    }, []); 
+
+    const handleClick = async (endpoint: string) => {
+        try {
+            // API 호출
+            const response = await axios.get(`https://j10a106.p.ssafy.io/api/word/list?type=${endpoint}&page=1&size=20`);
+
+            // 응답 받아서 리스트에 넣기
+            setWordList(response.data.data);
+            setSelectedButton(endpoint);
+            console.log('단어목록 가져오기 성공');
+        } catch (error) {
+            // 오류 처리
+            console.error(`단어 목록 가져오기 실패`, error);
+        }
+    };
+
+    const WordButton: React.FC<WordButtonProps> = ({ buttonText, apiEndpoint, onClick, selected }) => {
+        return (
+            <button className={`text-black ${selected ? 'bg-secondary-500' : 'bg-primary-500'} w-24 h-7 rounded-full text-sm hover:opacity-50`} onClick={() => onClick(apiEndpoint)}>
+                {buttonText}
+            </button>
+        );
+    };
 
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 flex">
             <div className='flex flex-col pt-20 pl-6'>
                 <h1 className='text-white font-bold text-xl w-48 pb-12'>단어장</h1>
                 <div className='flex flex-row gap-6 pb-12'>
-                    <button className='text-black bg-secondary-500 w-24 h-7 rounded-full text-sm hover:opacity-50'>북마크 한 단어</button>
-                    <button className='text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50'>기출 단어</button>
-                    <button className='text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50'>찾아본 단어</button>
+                    <WordButton buttonText="북마크 한 단어" apiEndpoint="like" onClick={handleClick} selected={selectedButton === "like"} />
+                    <WordButton buttonText="기출 단어" apiEndpoint="played"  onClick={handleClick} selected={selectedButton === "played"} />
+                    <WordButton buttonText="찾아본 단어" apiEndpoint="searched" onClick={handleClick} selected={selectedButton === "searched"} />
+
                 </div>
                 <div className="grid grid-cols-2 gap-6 overflow-y-auto pr-24">
-                    {word.map((item, index) => (
+                    {wordList && wordList.map((item, index) => (
                         <div key={index} >
                             <WordCard eng_text={item.eng_text} kor_text1={item.kor_text1} kor_text2={item.kor_text2} kor_text3={item.kor_text3} example={item.example} is_liked={item.is_liked} />
                         </div>
-                    ))}    
-                </div>       
+                    ))}
+                </div>
             </div>
         </div>
     );
