@@ -2,15 +2,20 @@ package org.englising.com.englisingbe.singleplay.service;
 
 import lombok.RequiredArgsConstructor;
 import org.englising.com.englisingbe.global.dto.PaginationDto;
+import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
+import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.global.util.PlayListType;
 import org.englising.com.englisingbe.singleplay.dto.response.PlayListDto;
 import org.englising.com.englisingbe.singleplay.dto.response.TrackResponseDto;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlay;
+import org.englising.com.englisingbe.singleplay.entity.SinglePlayHint;
+import org.englising.com.englisingbe.singleplay.repository.SinglePlayHintRepository;
 import org.englising.com.englisingbe.singleplay.repository.SinglePlayRepository;
 import org.englising.com.englisingbe.music.dto.TrackAlbumArtistDto;
 import org.englising.com.englisingbe.like.entity.TrackLike;
 import org.englising.com.englisingbe.like.service.TrackLikeServiceImpl;
 import org.englising.com.englisingbe.music.service.TrackServiceImpl;
+import org.englising.com.englisingbe.user.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,8 +30,10 @@ import java.util.stream.Collectors;
 public class SinglePlayServiceImpl {
     private final TrackLikeServiceImpl trackLikeService;
     private final TrackServiceImpl trackService;
+    private final UserService userService;
 
     private final SinglePlayRepository singlePlayRepository;
+    private final SinglePlayHintRepository singlePlayHintRepository;
 
     public PlayListDto getPlayList(PlayListType type, Integer page, Integer size, Long userId) {
         switch (type) {
@@ -43,10 +50,15 @@ public class SinglePlayServiceImpl {
         return null;
     }
 
-    public void createSinglePlay(){
+    public void createSinglePlay(Long userId, Long trackId, Integer singlePlayLevelId){
         // TODO
         // SinglePlay Repository에 Create
         // sigleplay-word에 추가
+        SinglePlay singlePlay = singlePlayRepository.save(SinglePlay.builder()
+                        .singlePlayHint(getSinglePlayHintById(singlePlayLevelId))
+                        .user(userService.getUserById(userId))
+                        .track(trackService.getTrackByTrackId(trackId))
+                .build());
 
 
     }
@@ -57,6 +69,11 @@ public class SinglePlayServiceImpl {
 
     public void getLyricStartTimes(){
 
+    }
+
+    private SinglePlayHint getSinglePlayHintById(Integer singlePlayHintId){
+        return singlePlayHintRepository.findSinglePlayHintBySingleplayLevelId(singlePlayHintId)
+                .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MATCHING_HINT));
     }
 
     private PlayListDto getLikedTracks(Integer page, Integer size, Long userId){
