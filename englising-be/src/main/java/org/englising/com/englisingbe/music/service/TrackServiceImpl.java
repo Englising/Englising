@@ -7,6 +7,8 @@ import org.englising.com.englisingbe.music.dto.TrackAlbumArtistDto;
 import org.englising.com.englisingbe.music.entity.Track;
 import org.englising.com.englisingbe.music.repository.TrackRepository;
 import org.englising.com.englisingbe.music.repository.TrackRepositorySupport;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,6 +35,10 @@ public class TrackServiceImpl {
     public Track getTrackByTrackId(Long trackId){
         return trackRepository.findById(trackId)
                 .orElseThrow(() -> new GlobalException(ErrorHttpStatus.NO_MATCHING_TRACK));
+    }
+
+    public Page<Track> getSearchTrackIds(String keyword, Pageable pageable){
+        return trackRepository.findByTitleContainingAndYoutubeIdIsNotNull(keyword, pageable);
     }
 
     public Track getRandomTrack(){
