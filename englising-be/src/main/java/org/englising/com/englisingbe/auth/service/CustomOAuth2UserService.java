@@ -6,6 +6,7 @@ import org.englising.com.englisingbe.auth.CustomOAuth2User;
 import org.englising.com.englisingbe.auth.OAuthAttributes;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.repository.UserRepository;
+import org.englising.com.englisingbe.user.service.UserService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -73,7 +75,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         //회원이 아니면 DB에 저장 (회원 등록)
         if(findUser == null) {          // User 객체는 OAuthAttributes의 toEntity() 메소드 이용해 생성
-            User createdUser = oAuthAttributes.toEntity(registrationId, oAuthAttributes.getOAuth2Response());
+            User createdUser = oAuthAttributes.toEntity(oAuthAttributes.getOAuth2Response(), userService);
             userRepository.save(createdUser);
             log.info("CustomOAuth2UserService ------ 회원 아닌 경우 db 저장" + createdUser);
         }
