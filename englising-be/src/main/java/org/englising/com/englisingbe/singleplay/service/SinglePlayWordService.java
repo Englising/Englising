@@ -37,9 +37,11 @@ public class SinglePlayWordService {
         SinglePlayWord singlePlayWord = getSinglePlayWordById(wordCheckRequestDto.singleplayWordId);
         if (singlePlayWord.getOriginWord().equals(wordCheckRequestDto.getWord())){
             singlePlayWord.setIsRight(true);
-            singlePlayWord = singlePlayWordRepository.save(singlePlayWord);
         }
-        return singlePlayWord;
+        else {
+            singlePlayWord.setIsRight(false);
+        }
+        return singlePlayWordRepository.save(singlePlayWord);
     }
 
     public RightWordCntDto getRightAndTotalCnt(Long singlePlayId){
@@ -51,6 +53,11 @@ public class SinglePlayWordService {
                         .filter(SinglePlayWord::getIsRight)
                         .count())
                 .build();
+    }
+
+    public List<SinglePlayWord> getAllSinglePlayWordsBySinglePlayId(Long singlePlayId){
+        return singlePlayWordRepository.getAllBySinglePlaySinglePlayId(singlePlayId)
+                .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MACHING_SINGLEPLAY));
     }
 
     private SinglePlayWord getSinglePlayWordById(Long id){

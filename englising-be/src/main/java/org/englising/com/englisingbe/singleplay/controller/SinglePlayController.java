@@ -127,8 +127,16 @@ public class SinglePlayController {
                     schema = @Schema(implementation = ResultResponseDto.class)
             )
     )
-    public ResponseEntity getSingleplayResult(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody Long singleplayId){
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity getSingleplayResult(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody Long singlePlayId){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        DefaultResponseDto.<SinglePlayResponseDto>builder()
+                                .status(HttpStatus.OK.value())
+                                .message("싱글플레이 결과를 가져왔습니다.")
+                                .data(singlePlayService.getSinglePlayResult(singlePlayId))
+                                .build()
+                );
     }
 
     @GetMapping("/track/{trackId}")
