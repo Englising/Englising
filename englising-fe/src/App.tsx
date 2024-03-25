@@ -56,7 +56,7 @@ function App() {
       ]
     },
     {
-      path: "/singlePlay",
+      path: "/singlePlay/:trackId/:level/:youtubeId",
       element: <SinglePlay/>
     },
     {
