@@ -16,15 +16,6 @@ public class WordResponseDto {
     public String korText2;
     public String korText3;
     public String example;
-    public boolean isLiked;
-
-//    public static WordResponseDto getWordResponseDto()
-
-
-
-
-
-
-
+    public boolean liked;
 
 }

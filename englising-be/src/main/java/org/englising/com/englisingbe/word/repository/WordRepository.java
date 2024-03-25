@@ -12,9 +12,4 @@ import java.util.Optional;
 
 public interface WordRepository extends JpaRepository<Word, Long> {
 
-//    @Query("SELECT * FROM Word w WHERE w.word_id IN " +
-//            "(SELECT wl.word_id FROM WordLike wl WHERE wl.user_id = :userId AND wl.isLiked = true)")
-//    Page<Word> findLikeWordsByUserId(Long userId, Pageable pageable);
-
-
 }
