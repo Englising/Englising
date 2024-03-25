@@ -73,16 +73,14 @@ function ChatArea() {
 
   const callback = (body: IMessage) => {
     const json = JSON.parse(body.body);
-    console.log("subscribe payload", json);
     setChatList((prev) => [...prev, json]);
   };
 
-  const [connect, disconnect] = useStomp(client, `/sub/chat/${multiId}`, callback);
+  const [connect, disconnect] = useStomp(client, `chat/${multiId}`, callback);
 
   const publish = (chat: Chat) => {
     if (!client.current?.connected) return;
 
-    console.log("publish", chat);
     client.current.publish({
       destination: `/pub/chat/${multiId}`,
       body: JSON.stringify({
