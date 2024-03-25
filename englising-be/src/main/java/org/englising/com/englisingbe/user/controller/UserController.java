@@ -25,7 +25,7 @@ public class UserController {
     )
     public ResponseEntity<DefaultResponseDto<?>> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
 //        ProfileDto profileDto = userService.getProfile(userDetails.getUsername());
-        ProfileDto profileDto = userService.getProfile("1"); //todo. 추후 위로 수정
+        ProfileDto profileDto = userService.getProfile("262"); //todo. 추후 위로 수정
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -43,7 +43,7 @@ public class UserController {
                                                             @RequestBody ProfileDto profileDto) {
 
 //        userService.updateProfile(userDetails.getUsername(), profileDto);
-        userService.updateProfile("1", profileDto);
+        userService.updateProfile("262", profileDto);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

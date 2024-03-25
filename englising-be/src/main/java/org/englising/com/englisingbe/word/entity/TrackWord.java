@@ -1,11 +1,9 @@
-package org.englising.com.englisingbe.music.entity;
+package org.englising.com.englisingbe.word.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.englising.com.englisingbe.word.entity.Word;
+import lombok.*;
+import org.englising.com.englisingbe.music.entity.Lyric;
+import org.englising.com.englisingbe.music.entity.Track;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,7 +14,6 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "track_word")
 public class TrackWord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,17 +25,18 @@ public class TrackWord {
     private Track track;
 
     @ManyToOne
+    @JoinColumn(name = "lyric_id", referencedColumnName = "lyric_id")
+    private Lyric lyric;
+
+    @ManyToOne
     @JoinColumn(name = "word_id", referencedColumnName = "word_id")
     private Word word;
 
-    @Column(name = "sentence_num")
-    private Integer sentenceNum;
+    @Column(name = "word_index")
+    private Integer wordIndex;
 
-    @Column(name = "sentence_seq")
-    private String sentenceSeq;
-
-    @Column(name = "importance")
-    private Float importance;
+    @Column(name = "origin_word")
+    private String originWord;
 
     @CreationTimestamp
     @Column(name = "created_at")

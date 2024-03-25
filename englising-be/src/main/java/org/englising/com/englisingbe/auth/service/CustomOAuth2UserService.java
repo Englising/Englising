@@ -6,6 +6,7 @@ import org.englising.com.englisingbe.auth.CustomOAuth2User;
 import org.englising.com.englisingbe.auth.OAuthAttributes;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.repository.UserRepository;
+import org.englising.com.englisingbe.user.service.UserService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -39,6 +41,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         //기본 OAuth2UserService 객체 생성
         OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
+
+        log.info("CustomOAuth2UserService oAuth2User 가져옴? - " + String.valueOf(oAuth2UserService.loadUser(userRequest)));
 
         //OAuth2UserService 사용하여 OAuth2User 정보 가져옴
         OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
@@ -65,22 +69,37 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         String email = String.valueOf(kakaoAccount.get("email"));
         User findUser = userRepository.findByEmail(email).orElse(null);
+        log.info("CustomOAuth2UserService - 카카오이메일 가져오기 성공? - " + email);
+        log.info("CustomOAuth2UserService - 이메일로 회원 조회 - " + findUser);
+
 
         //회원이 아니면 DB에 저장 (회원 등록)
         if(findUser == null) {          // User 객체는 OAuthAttributes의 toEntity() 메소드 이용해 생성
-            User createdUser = oAuthAttributes.toEntity(registrationId, oAuthAttributes.getOAuth2Response());
+            User createdUser = oAuthAttributes.toEntity(oAuthAttributes.getOAuth2Response(), userService);
             userRepository.save(createdUser);
-        }
+            log.info("CustomOAuth2UserService ------ 회원 아닌 경우 db 저장" + createdUser);
 
-        // DefualitOAuth2User 구현한 CustomOAuth2User 객체 생성해서 반환
-        return new CustomOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), // 우리 서비는 권한 따로 없기 때문에 모두 USER
-                        attributes,
-                        oAuthAttributes.getNameAttributeKey(),
-                        findUser.getEmail(),
-                        findUser.getNickname(),
-                        findUser.getProfileImg(),
-                        findUser.getColor()
-        );
+            return new CustomOAuth2User(
+                    Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+                    attributes,
+                    oAuthAttributes.getNameAttributeKey(),
+                    createdUser.getEmail(),
+                    createdUser.getNickname(),
+                    createdUser.getProfileImg(),
+                    createdUser.getColor()
+            );
+        } else {
+            // DefaulitOAuth2User 구현한 CustomOAuth2User 객체 생성해서 반환
+            return new CustomOAuth2User(
+                    Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), // 우리 서비는 권한 따로 없기 때문에 모두 USER
+                    attributes,
+                    oAuthAttributes.getNameAttributeKey(),
+                    findUser.getEmail(),
+                    findUser.getNickname(),
+                    findUser.getProfileImg(),
+                    findUser.getColor()
+            );
+
+        }
     }
 }
