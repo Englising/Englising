@@ -56,7 +56,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 // 응답에 쿠키 추가
                 response.addCookie(accessCookie);
                 response.addCookie(refreshCookie);
-                response.sendRedirect("https://j10a106.p.ssafy.io/englising/selectSingle1");
+                response.sendRedirect("https://j10a106.p.ssafy.io");
             }
         } catch (Exception e) {
             throw e;
