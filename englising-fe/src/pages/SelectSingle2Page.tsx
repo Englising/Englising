@@ -21,6 +21,7 @@ interface Music {
 }
 
 export interface SelectedMusic {
+    trackId: number;
     trackTitle: string;
     artists: string;
     albumImg: string;
@@ -43,6 +44,7 @@ const SelectSinglePage: React.FC = () => {
         });
     }, []);
     const [selectedMusic, setSeletedMusic] = useState<SelectedMusic>({
+        trackId: 0,
         trackTitle: "",
         artists: "",
         albumImg: "",
@@ -51,6 +53,7 @@ const SelectSinglePage: React.FC = () => {
 
     const handleClickButton = (index: number):void => {
         setSeletedMusic({
+            trackId: playList[index].trackId,
             trackTitle: playList[index].trackTitle,
             artists: playList[index].artists,
             albumImg: playList[index].albumImg,
@@ -74,7 +77,7 @@ const SelectSinglePage: React.FC = () => {
                 {/* lp판 */}
                 <div >
                     <h1 className='text-white font-bold text-xl w-60 pb-6'>싱글 플레이</h1>
-                    <LpPlayer title={selectedMusic.trackTitle} img={selectedMusic.albumImg} artists={selectedMusic.artists}/>
+                    <LpPlayer trackId={selectedMusic.trackId} title={selectedMusic.trackTitle} img={selectedMusic.albumImg} artists={selectedMusic.artists} youtubeId={selectedMusic.youtubeId}/>
                 </div>
 
                     {/* 플레이리스트 목록 */}
@@ -92,7 +95,7 @@ const SelectSinglePage: React.FC = () => {
                             ( // playList가 비어있지 않은 경우에만 map 함수 호출
                             playList.map((item, index) => (
                                 <div key={index} onClick={() => handleClickButton(index)}>
-                                <Singleroom  album_title={item.albumTitle} title={item.trackTitle} artists={item.artists} img={item.albumImg} is_like={item.is_like} score={item.score} youtubeId={item.youtubeId} />
+                                <Singleroom  album_title={item.albumTitle} title={item.trackTitle} artists={item.artists} img={item.albumImg} is_like={item.is_like} score={item.score} />
                             </div>
                                     ))
                             ) : (
