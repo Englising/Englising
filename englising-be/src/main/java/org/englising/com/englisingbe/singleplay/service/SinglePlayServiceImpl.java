@@ -5,10 +5,12 @@ import org.englising.com.englisingbe.global.dto.PaginationDto;
 import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
 import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.global.util.PlayListType;
-import org.englising.com.englisingbe.singleplay.dto.response.PlayListDto;
-import org.englising.com.englisingbe.singleplay.dto.response.TrackResponseDto;
+import org.englising.com.englisingbe.music.entity.Lyric;
+import org.englising.com.englisingbe.music.service.LyricServiceImpl;
+import org.englising.com.englisingbe.singleplay.dto.response.*;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlay;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlayHint;
+import org.englising.com.englisingbe.singleplay.entity.SinglePlayWord;
 import org.englising.com.englisingbe.singleplay.repository.SinglePlayHintRepository;
 import org.englising.com.englisingbe.singleplay.repository.SinglePlayRepository;
 import org.englising.com.englisingbe.music.dto.TrackAlbumArtistDto;
@@ -16,12 +18,15 @@ import org.englising.com.englisingbe.like.entity.TrackLike;
 import org.englising.com.englisingbe.like.service.TrackLikeServiceImpl;
 import org.englising.com.englisingbe.music.service.TrackServiceImpl;
 import org.englising.com.englisingbe.user.service.UserService;
+import org.englising.com.englisingbe.word.entity.TrackWord;
+import org.englising.com.englisingbe.word.service.TrackWordService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,11 +34,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SinglePlayServiceImpl {
     private final TrackLikeServiceImpl trackLikeService;
+    private final TrackWordService trackWordService;
     private final TrackServiceImpl trackService;
     private final UserService userService;
+    private final LyricServiceImpl lyricService;
 
     private final SinglePlayRepository singlePlayRepository;
     private final SinglePlayHintRepository singlePlayHintRepository;
+    private final SinglePlayWordService singlePlayWordService;
 
     public PlayListDto getPlayList(PlayListType type, Integer page, Integer size, Long userId) {
         switch (type) {
@@ -50,17 +58,32 @@ public class SinglePlayServiceImpl {
         return null;
     }
 
-    public void createSinglePlay(Long userId, Long trackId, Integer singlePlayLevelId){
+    public SinglePlayResponseDto createSinglePlay(Long userId, Long trackId, Integer singlePlayLevelId){
         // TODO
         // SinglePlay Repository에 Create
-        // sigleplay-word에 추가
         SinglePlay singlePlay = singlePlayRepository.save(SinglePlay.builder()
                         .singlePlayHint(getSinglePlayHintById(singlePlayLevelId))
                         .user(userService.getUserById(userId))
                         .track(trackService.getTrackByTrackId(trackId))
                 .build());
-
-
+        // 해당 Track의 Lyrics 가져옴
+        //TODO : trackId 변경
+        List<Lyric> lyrics = lyricService.getAllLyricsByTrackId(trackId);
+        // 해당 Track의 Random Words 가져옴
+        //TODO : Random 아니게 변경
+        List<TrackWord> selectedWords = trackWordService.getRandomTrackWords(trackId);
+        // SinglePlay-Word에 저장
+        List<SinglePlayWord> singlePlayWordList = singlePlayWordService.createSinglePlayWords(selectedWords, lyrics, singlePlay);
+        // Dto 생성
+        return SinglePlayResponseDto.builder()
+                .singlePlayId(singlePlay.getSinglePlayId())
+                .lyrics(getLyricDtoFromLyricList(lyrics, singlePlayWordList))
+                .words(getWordDtoFromSinglePlayWord(singlePlayWordList))
+                .totalWordCnt(singlePlayWordList.size())
+                .rightWordCnt((int) singlePlayWordList.stream()
+                        .filter(SinglePlayWord::getIsRight)
+                        .count())
+                .build();
     }
 
     public void checkWord(){
@@ -120,5 +143,32 @@ public class SinglePlayServiceImpl {
                 .playList(data)
                 .pagination(PaginationDto.from(page))
                 .build();
+    }
+
+    private List<LyricDto> getLyricDtoFromLyricList(List<Lyric> lyricList, List<SinglePlayWord> singlePlayWordList) {
+        return lyricList.stream()
+                .map(lyric -> {
+                    boolean isBlank = singlePlayWordList.stream()
+                            .anyMatch(spw -> spw.getLyric().getLyricId().equals(lyric.getLyricId()));
+                    return LyricDto.builder()
+                            .isBlank(isBlank)
+                            .startTime(lyric.getStartTime().floatValue())
+                            .endTime(lyric.getEndTime().floatValue())
+                            .lyric(Arrays.asList(lyric.getEnText().split(" ")))
+                            .build();
+                }).collect(Collectors.toList());
+    }
+
+    private List<WordResponseDto> getWordDtoFromSinglePlayWord(List<SinglePlayWord> singlePlayWordList){
+        return singlePlayWordList.stream()
+                .map(singlePlayWord -> {
+                    return WordResponseDto.builder()
+                            .singleplayWordId(singlePlayWord.getSinglePlayWordId())
+                            .sentenceIndex(singlePlayWord.getSentenceIndex())
+                            .wordIndex(singlePlayWord.getWordIndex())
+                            .word(singlePlayWord.getOriginWord())
+                            .isRight(singlePlayWord.getIsRight())
+                            .build();
+                }).toList();
     }
 }

@@ -11,9 +11,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LyricDto {
-    public Boolean isBlank;
-    public Float startTime;
-    public Float endTime;
-    public List<String> lyric;
+public class SinglePlayResponseDto {
+    public Long singlePlayId;
+    public List<LyricDto> lyrics;
+    public List<WordResponseDto> words;
+    public int totalWordCnt;
+    public int rightWordCnt;
 }
