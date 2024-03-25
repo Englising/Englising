@@ -16,6 +16,7 @@ public class SecurityAllowedUrls {
             "/auth/**",
             "/**",
             "/ws-stomp/**",
+            "/api/login/oauth2/**"
 //            "/oauth/**",
 //            "/oauth2/**"
     };
