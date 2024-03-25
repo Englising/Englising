@@ -15,6 +15,7 @@ import SinglePlay from './pages/SinglePage'
 import Multiplay from './pages/MultiplayPage'
 import WordListPage from './pages/WordListPage'
 import SidebarLayout from './pages/SidebarLayout'
+import PlayerTest from './component/multi/PlayerTest.tsx'
 
 
 function App() {
@@ -55,7 +56,7 @@ function App() {
       ]
     },
     {
-      path: "/singlePlay",
+      path: "/singlePlay/:trackId/:level/:youtubeId",
       element: <SinglePlay/>
     },
     {
@@ -66,6 +67,10 @@ function App() {
       path: "/multiPlay/:multiId",
       element: <Multiplay/>
     },
+    {
+      path: "/multiPlay/playerTest",
+      element: <PlayerTest/>
+    }
   ])
 
   return (

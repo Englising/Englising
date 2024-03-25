@@ -136,7 +136,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
             }
         });
 
-    },[idx, answer])
+    },[idx, toggleSubmit])
 
     useEffect(() => {
         // 모든 가사 이동이 생길때 
@@ -217,10 +217,10 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
                             let isBlank:boolean = false;
                             let blankIdx:number = 0;
 
-                            blankWord.forEach((blank) => {
+                            blankWord.forEach((blank, blnakIdx) => {
                                 if(word == blank.word && i == blank.sentenceIndex && j == blank.wordIndex){
-                                    isBlank = true;
-                                    blankIdx = blank.singlePlayWordId; //이거 고유 인덱스인지 확인
+                                    isBlank = true; 
+                                    blankIdx = blnakIdx; //이거 고유 인덱스인지 확인
                                 }
                             })
                             //만약 해당 단어가 빈칸이 필요하다면 -> isBlank 속성 값 결정

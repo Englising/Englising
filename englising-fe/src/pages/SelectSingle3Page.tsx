@@ -1,10 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import img2002 from '../assets/2002.jpg';
-// import imgChanges from '../assets/changes.jpg';
-// import imgLover from '../assets/lover.jpg';
-// import imgSugar from '../assets/sugar.jpg';
-// import imgYouth from '../assets/youth.jpg';
-// import imgMe from '../assets/me.jpg';
 import LpPlayer from '../component/main/LpPlayer.tsx';
 import Singleroom from '../component/main/SingleRoom.tsx';
 import axios from 'axios';
@@ -17,12 +11,15 @@ interface Music {
     albumImg: string;
     score: number;
     is_like: boolean;
+    youtubeId: string;
 }
 
 export interface SelectedMusic {
+    trackId: number;
     trackTitle: string;
     artists: string;
     albumImg: string;
+    youtubeId: string;
 }
 
 
@@ -41,67 +38,21 @@ const SelectSinglePage: React.FC = () => {
         });
     }, []);
 
-    // const music: Music[] = [{
-    //     album_title: 'album_title 1',
-    //     track_id: 1,
-    //     track_title: '2002',
-    //     artists: 'Anne-Marie',
-    //     album_img: img2002,
-    //     score: 2,
-    //     is_like: true
-    // }, {
-    //     album_title: 'album_title 2',
-    //     track_id: 2,
-    //     track_title: 'changes',
-    //     artists: 'Lauv',
-    //     album_img: imgChanges,
-    //     score: 3,
-    //     is_like: true
-    // },
-    // {
-    //     album_title: 'album_title 3',
-    //     track_id: 3,
-    //     track_title: 'lover',
-    //     artists: 'Taylor Swift',
-    //     album_img: imgLover,
-    //     score: 2,
-    //     is_like: false
-    // }, {
-    //     album_title: 'album_title 4',
-    //     track_id: 4,
-    //     track_title: 'Sugar',
-    //     artists: 'Maroon 5',
-    //     album_img: imgSugar,
-    //     score: 1,
-    //     is_like: false
-    // }, {
-    //     album_title: 'album_title 5',
-    //     track_id: 5,
-    //     track_title: 'YOUTH',
-    //     artists: 'Troye Sivan',
-    //     album_img: imgYouth,
-    //     score: 3,
-    //     is_like: true
-    // }, {
-    //     album_title: 'album_title 6',
-    //     track_id: 6,
-    //     track_title: 'ME!',
-    //     artists: 'Taylor Swift',
-    //     album_img: imgMe,
-    //     score: 1,
-    //     is_like: true
-    // }];
     const [selectedMusic, setSeletedMusic] = useState<SelectedMusic>({
+        trackId: 0,
         trackTitle: "",
         artists: "",
-        albumImg: ""
+        albumImg: "",
+        youtubeId: "",
     })
 
     const handleClickButton = (index: number):void => {
         setSeletedMusic({
+            trackId: playList[index].trackId,
             trackTitle: playList[index].trackTitle,
             artists: playList[index].artists,
-            albumImg: playList[index].albumImg
+            albumImg: playList[index].albumImg,
+            youtubeId: playList[index].youtubeId,
         })
     }
     return (
@@ -121,7 +72,7 @@ const SelectSinglePage: React.FC = () => {
                 {/* lp판 */}
                 <div >
                     <h1 className='text-white font-bold text-xl w-60 pb-6'>싱글 플레이</h1>
-                    <LpPlayer title={selectedMusic.trackTitle} img={selectedMusic.albumImg} artists={selectedMusic.artists}/>
+                    <LpPlayer trackId={selectedMusic.trackId} title={selectedMusic.trackTitle} img={selectedMusic.albumImg} artists={selectedMusic.artists} youtubeId={selectedMusic.youtubeId} />
                 </div>
 
                     {/* 플레이리스트 목록 */}
@@ -135,11 +86,15 @@ const SelectSinglePage: React.FC = () => {
     
                     <div className="relative flex flex-col overflow-y-auto h-full">
                         <div className='text-white grid grid-cols-3 gap-4 justify-items-start '>
-                            {playList.map((item, index)=> (
-                                <div key={index} onClick={() => handleClickButton(index)}>
-                                    <Singleroom album_title={item.albumTitle} title={item.trackTitle} artists={item.artists} img={item.albumImg} is_like={item.is_like} score={item.score} />
-                                </div>
-                            ))}
+                        {playList && playList.length > 0 ? ( // playList가 비어있지 않은 경우에만 map 함수 호출
+                        playList.map((item, index) => (
+                            <div key={index} onClick={() => handleClickButton(index)}>
+                                <Singleroom album_title={item.albumTitle} title={item.trackTitle} artists={item.artists} img={item.albumImg} is_like={item.is_like} score={item.score} />
+                            </div>
+                                ))
+                            ) : (
+                                <div className="text-white w-48">플레이리스트가 비어있습니다.</div>
+                            )}
                         </div>
                     </div>
                 </div>

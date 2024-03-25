@@ -9,9 +9,10 @@ interface LpPlayerProps {
     title?: string;
     img?: string;
     artists?: string;
+    youtubeId?: string
 }
 
-const LpPlayer: React.FC<LpPlayerProps> = ({ title, img, artists, trackId }) => {
+const LpPlayer: React.FC<LpPlayerProps> = ({ title, img, artists, trackId, youtubeId }) => {
 const navigate = useNavigate();
 
     const [bgColor1, setBgColor1] = useState('#ced4da');
@@ -28,6 +29,7 @@ const navigate = useNavigate();
     };
 
     useEffect(() => {
+        console.log(youtubeId);
         // 초기화 로직을 useEffect 내부에 넣어 한 번만 실행되도록 함
         selectLevel1();
     }, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행되도록 함
@@ -54,12 +56,14 @@ const navigate = useNavigate();
         opacity: img ? 0.5 : 1,
     };
 
-    const startSingleplay  = async () => {
-        axios.post("https://j10a106.p.ssafy.io/api/singleplay", {
-            trackId: trackId,
-            level: level,
+    const startSingleplay  = () => {
+        navigate(`/singlePlay/${trackId}/${level}/${youtubeId}`, {
+            state: {
+                title: title,
+                img: img,
+                artists: artists,
+            },
         })
-        navigate("/singlePlay");
         console.log("게임시작성공");
     };
 
@@ -109,7 +113,7 @@ const navigate = useNavigate();
                             </div>
                             <button className='bg-secondary-500 text-black absolute bottom-10 right-7 rounded-lg py-1.5 px-2 drop-shadow-md font-bold'
                                     onClick={startSingleplay}>
-                                <Link to ="/singlePlay"> Game Start</Link>
+                                <div> Game Start</div>
                             </button>
                         </div>
                     )}
