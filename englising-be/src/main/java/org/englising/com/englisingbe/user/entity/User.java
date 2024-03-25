@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Builder
-@Data
+//@Data
+@Getter
 @Entity
 @Table(name = "user")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 public class User {
 
     @Id
