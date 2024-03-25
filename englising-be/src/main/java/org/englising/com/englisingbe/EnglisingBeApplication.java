@@ -2,12 +2,12 @@ package org.englising.com.englisingbe;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplication
-@PropertySource("classpath:env.properties")
+@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
+@EnableAsync
 public class EnglisingBeApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(EnglisingBeApplication.class, args);
     }

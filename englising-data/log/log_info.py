@@ -11,6 +11,8 @@ class LogList(Enum):
     MUSIX = "MUSIX"
     PAPAGO = "PAPAGO"
     SAVE = "SAVE"
+    GOOGLE = "GOOGLE"
+    TRANSLATE = "TRANSLATE"
 
 
 class LogKind:

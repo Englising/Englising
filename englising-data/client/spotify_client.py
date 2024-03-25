@@ -23,18 +23,18 @@ spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 limit = 50
 
 
-def get_albums_by_year(year) -> List[str]:
+def get_albums_by_year(year) -> List[AlbumDto]:
     return get_search_albums("year:" + str(year))
 
 
-def get_albums_new() -> List[str]:
+def get_albums_new() -> List[AlbumDto]:
     return get_search_albums("tag:new")
 
 
-def get_search_albums(query: str) -> List[str]:
+def get_search_albums(query: str) -> List[AlbumDto]:
     log(LogList.SPOTIFY.name, LogKind.INFO, "Getting search albums {query}".format(query=query))
     try:
-        albums: List[str] = []
+        albums: List[AlbumDto] = []
         offset = 0
         total = None
         while total is None or len(albums) < total:
@@ -42,11 +42,27 @@ def get_search_albums(query: str) -> List[str]:
             if total is None:
                 total = spotify_results["total"]
             for item in spotify_results["items"]:
-                albums.append(item["id"])
+                albums.append(AlbumDto(
+                    title=item["name"],
+                    type=item["type"],
+                    total_tracks=item["total_tracks"],
+                    spotify_id=item["id"],
+                    cover_image=item["images"][0]["url"],
+                    release_date=item["release_date"]
+                ))
             offset += limit
         return albums
     except Exception as e:
-        log(LogList.SPOTIFY, LogKind.ERROR, "Failed search albums {e}".format(e=e))
+        log(LogList.SPOTIFY, LogKind.ERROR, "Failed to search albums: {e}".format(e=str(e)))
+        raise AlbumException()
+
+
+def get_album_popularity_by_spotify_id(spotify_id: str) -> int:
+    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting album {id}".format(id=spotify_id))
+    try:
+        return int(spotify.album(spotify_id)["popularity"])
+    except Exception as e:
+        log(LogList.SPOTIFY, LogKind.ERROR, "Failed album {e}".format(e=e))
         raise AlbumException()
 
 
@@ -78,10 +94,37 @@ def get_album_by_spotify_id(spotify_id: str) -> JobDto:
         raise AlbumException()
 
 
-def get_artist_by_spotify_id(spotify_id) -> ArtistDto:
+def get_artists_by_album_spotify_id(spotify_id: str) -> List[str]:
+    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting album {id}".format(id=spotify_id))
+    try:
+        result = spotify.album(spotify_id)
+        artists: List[str] = []
+        for artist in result["artists"]:
+            artists.append(artist["id"])
+        return artists
+    except Exception as e:
+        log(LogList.SPOTIFY, LogKind.ERROR, "Failed album {e}".format(e=e))
+        raise ArtistException()
+
+
+def get_tracks_by_album_spotify_id(spotify_id: str) -> List[str]:
+    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting album {id}".format(id=spotify_id))
+    try:
+        result = spotify.album(spotify_id)
+        tracks: List[str] = []
+        for track in result["tracks"]["items"]:
+            tracks.append(track["id"])
+        return tracks
+    except Exception as e:
+        log(LogList.SPOTIFY, LogKind.ERROR, "Failed album {e}".format(e=e))
+        raise TrackException()
+
+
+def get_artist_by_spotify_id_spotify(spotify_id) -> ArtistDto:
     log(LogList.SPOTIFY.name, LogKind.INFO, "Getting artist {id}".format(id=spotify_id))
     try:
         result = spotify.artist(spotify_id)
+        # print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+result)
         return ArtistDto(
             name=result["name"],
             genres=str(result["genres"]),
@@ -94,7 +137,7 @@ def get_artist_by_spotify_id(spotify_id) -> ArtistDto:
         raise ArtistException()
 
 
-def get_track_by_spotify_id(spotify_id) -> TrackDto:
+def get_track_by_spotify_id_spotify(spotify_id) -> TrackDto:
     log(LogList.SPOTIFY.name, LogKind.INFO, "Getting track {id}".format(id=spotify_id))
     try:
         result = spotify.track(spotify_id)
@@ -142,4 +185,24 @@ def get_track_audiofeature(spotify_id:str) -> TrackDto:
         raise TrackException()
 
 
-# get_track_by_spotify_id("0hL9gOw6XBWsygEUcVjxEc")
+def get_track_audiofeature(spotify_id:str, track_dto:TrackDto) -> TrackDto:
+    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting track audiofeatures {id}".format(id=spotify_id))
+    try:
+        result = spotify.audio_features(spotify_id)[0]
+        # if 0.33 < result["speechiness"] < 0.66 and result["liveness"] < 0.8:
+        #     return TrackDto(
+        #         feature_acousticness = result["acousticness"],
+        #         feature_danceability = result["danceability"],
+        #         feature_energy = result["energy"],
+        #         feature_positiveness = result["valence"]
+        #     )
+        if result["liveness"] is not None and result["liveness"] < 0.8:
+            track_dto.feature_acousticness = result["acousticness"]
+            track_dto.feature_danceability = result["danceability"]
+            track_dto.feature_energy = result["energy"]
+            track_dto.feature_positiveness = result["valence"]
+            return track_dto
+    except Exception as e:
+        log(LogList.SPOTIFY, LogKind.ERROR, "Failed track audiofeatures {e}".format(e=e))
+        raise TrackException()
+

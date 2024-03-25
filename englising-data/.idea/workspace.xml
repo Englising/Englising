@@ -6,20 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2924fc65-dde8-4dec-9c7e-b1f5a433e0fd" name="Changes" comment="✨feat-be: 데이터 게더링 작성 중">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/musix_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/musix_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/papago_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/papago_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/spotify_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/spotify_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/youtube_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/youtube_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core_service/album_gather_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/album_gather_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core_service/lyric_gather_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/lyric_gather_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core_service/track_gather_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/track_gather_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/job_dto.py" beforeDir="false" afterPath="$PROJECT_DIR$/dto/job_dto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/lyric_dto.py" beforeDir="false" afterPath="$PROJECT_DIR$/dto/lyric_dto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/log_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/log/log_info.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/logging_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/log/logging_config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/lyric.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/lyric.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/track.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/track.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +23,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="develop-fe" />
+        <entry key="$PROJECT_DIR$/.." value="release-be" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -70,8 +57,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.album.executor": "Run",
     "Python.album_gather_service.executor": "Run",
     "Python.artist_gather_service.executor": "Run",
+    "Python.google_trans_client.executor": "Run",
     "Python.job_dto.executor": "Run",
     "Python.log_format.executor": "Run",
     "Python.logging_config.executor": "Run",
@@ -84,7 +73,7 @@
     "Python.youtube_client.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature-be/data-gather",
+    "git-widget-placeholder": "develop-data",
     "last_opened_file_path": "C:/Users/SSAFY/Desktop/S10P22A106/englising-data/venv",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -122,6 +111,8 @@
       <workItem from="1709975156976" duration="14123000" />
       <workItem from="1710043828464" duration="19589000" />
       <workItem from="1710114247562" duration="18835000" />
+      <workItem from="1710201625867" duration="25927000" />
+      <workItem from="1710287373881" duration="954000" />
     </task>
     <task id="LOCAL-00001" summary="✨feat-be: 데이터 게더링 작성 중">
       <option name="closed" value="true" />
@@ -155,7 +146,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710071093977</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="✨feat-be: 데이터 게더링 작성 중">
+      <option name="closed" value="true" />
+      <created>1710233781888</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1710233781888</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -181,7 +180,9 @@
     <SUITE FILE_PATH="coverage/englising_data$papago_client.coverage" NAME="papago_client Coverage Results" MODIFIED="1710121257918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$musix_client.coverage" NAME="musix_client Coverage Results" MODIFIED="1710069840800" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$youtube_client.coverage" NAME="youtube_client Coverage Results" MODIFIED="1710065828626" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
-    <SUITE FILE_PATH="coverage/englising_data$main.coverage" NAME="main Coverage Results" MODIFIED="1710136606995" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/englising_data$album.coverage" NAME="album Coverage Results" MODIFIED="1710220793304" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model" />
+    <SUITE FILE_PATH="coverage/englising_data$main.coverage" NAME="main Coverage Results" MODIFIED="1710808324135" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/englising_data$google_trans_client.coverage" NAME="google_trans_client Coverage Results" MODIFIED="1710229590505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$album_gather_service.coverage" NAME="album_gather_service Coverage Results" MODIFIED="1710123336899" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
     <SUITE FILE_PATH="coverage/englising_data$artist_gather_service.coverage" NAME="artist_gather_service Coverage Results" MODIFIED="1710123307709" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
     <SUITE FILE_PATH="coverage/englising_data$logging_config.coverage" NAME="logging_config Coverage Results" MODIFIED="1709882946121" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
