@@ -25,6 +25,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -62,13 +63,6 @@ public class SecurityConfig {
                         .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패시
                         .successHandler(oAuth2LoginSuccessHandler)); //소셜 로그인 성공시
 
-//        http
-                // exception handling 할 때 우리가 만든 클래스를 추가
-//                .exceptionHandling(exception ->
-//                        exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-//                                .accessDeniedHandler(jwtAccessDeniedHandler));
-
-
 //        http.addFilterAfter(jwtAuthenticationFilter, OAuth2LoginAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 //        http.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
@@ -91,6 +85,11 @@ public class SecurityConfig {
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");
         configuration.setAllowCredentials(true);
+
+        configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
+        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+        configuration.setExposedHeaders(Collections.singletonList("Authorization-refresh"));
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
