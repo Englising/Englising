@@ -39,10 +39,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         try {
             // CustomOauth2User로 캐스팅하여 인증된 사용자 정보 가져옴
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+            log.info("OAuth2LoginSuccessHandler - oAuth2User 가져오나??" + oAuth2User);
 
-            String email = oAuth2User.getAttribute("email");
+            String email = oAuth2User.getEmail();
+//            String email = oAuth2User.getAttribute("email");
+            log.info("OAuth2LoginSuccessHandler - email --> " + email);
+
             User user = userRepository.findByEmail(email).orElse(null);
-
+            // user가 null이라서 밑에게 실행안하는 것 !!!!
             if (user != null) {
                 // 유저 정보 기반으로 토큰 생성
                 JwtResponseDto jwtResponseDto = jwtProvider.createTokens(authentication, user.getUserId());
@@ -56,7 +60,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 // 응답에 쿠키 추가
                 response.addCookie(accessCookie);
                 response.addCookie(refreshCookie);
-                response.sendRedirect("https://j10a106.p.ssafy.io");
+                response.sendRedirect("https://j10a106.p.ssafy.io/englising/selectSingle1");
             }
         } catch (Exception e) {
             throw e;
