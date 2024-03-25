@@ -11,6 +11,7 @@ interface Music {
     albumImg: string;
     score: number;
     is_like: boolean;
+    youtubeId: string;
 }
 
 export interface SelectedMusic {
@@ -18,17 +19,16 @@ export interface SelectedMusic {
     trackTitle: string;
     artists: string;
     albumImg: string;
+    youtubeId: string;
 }
-
 
 const SelectSinglePage: React.FC = () => {
     const [playList, setPlayList] = useState<Music[]>([]);
 
     useEffect(() => {
-    axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist?type=recommend&page=0&size=20")
+    axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist?type=recommend&page=0&size=1000")
         .then((Response) => {
-            console.log(Response.data)
-            setPlayList(Response.data.data.playList);
+            setPlayList(Response.data.data);
             console.log(playList);
         })
         .catch((error) => {
@@ -40,7 +40,8 @@ const SelectSinglePage: React.FC = () => {
         trackId: 0,
         trackTitle: "",
         artists: "",
-        albumImg: ""
+        albumImg: "",
+        youtubeId: "",
     })
 
     const handleClickButton = (index: number):void => {
@@ -48,7 +49,9 @@ const SelectSinglePage: React.FC = () => {
             trackId: playList[index].trackId,
             trackTitle: playList[index].trackTitle,
             artists: playList[index].artists,
-            albumImg: playList[index].albumImg
+            albumImg: playList[index].albumImg,
+            youtubeId: playList[index].youtubeId,
+            
         })
     }
     return (
@@ -68,7 +71,7 @@ const SelectSinglePage: React.FC = () => {
                 {/* lp판 */}
                 <div >
                     <h1 className='text-white font-bold text-xl w-60 pb-6'>싱글 플레이</h1>
-                    <LpPlayer trackId={selectedMusic.trackId} title={selectedMusic.trackTitle} img={selectedMusic.albumImg} artists={selectedMusic.artists}/>
+                    <LpPlayer trackId={selectedMusic.trackId} title={selectedMusic.trackTitle} img={selectedMusic.albumImg} artists={selectedMusic.artists} youtubeId={selectedMusic.youtubeId}/>
                 </div>
 
                     {/* 플레이리스트 목록 */}
@@ -82,11 +85,15 @@ const SelectSinglePage: React.FC = () => {
     
                     <div className="relative flex flex-col overflow-y-auto h-full">
                         <div className='text-white grid grid-cols-3 gap-4 justify-items-start '>
-                            {playList.map((item, index)=> (
-                                <div key={index} onClick={() => handleClickButton(index)}>
-                                    <Singleroom album_title={item.albumTitle} title={item.trackTitle} artists={item.artists} img={item.albumImg} is_like={item.is_like} score={item.score} />
-                                </div>
-                            ))}
+                        {playList && playList.length > 0 ? ( // playList가 비어있지 않은 경우에만 map 함수 호출
+                        playList.map((item, index) => (
+                            <div key={index} onClick={() => handleClickButton(index)}>
+                                <Singleroom album_title={item.albumTitle} title={item.trackTitle} artists={item.artists} img={item.albumImg} is_like={item.is_like} score={item.score} />
+                            </div>
+                                ))
+                            ) : (
+                                <div className="text-white w-48">플레이리스트가 비어있습니다.</div>
+                            )}
                         </div>
                     </div>
                 </div>
