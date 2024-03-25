@@ -1,28 +1,30 @@
-import { forwardRef, useEffect } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import styles from "./Multi.module.css";
 import useTimer from "../../hooks/useTimer";
 
 type TimerProps = {
-  roundTime: number;
+  roundTime: number | undefined;
+  leftTime: number | undefined;
+  status: string | undefined;
   onModalOpen: () => void;
 };
 
 const RADIUS = Math.PI * 2 * 50;
 
-const Timer = forwardRef(function Timer({ roundTime, onModalOpen }: TimerProps, ref) {
+const Timer = forwardRef(function Timer({ roundTime, leftTime, onModalOpen }: TimerProps, ref) {
   function calculateTime(time: number) {
     const min = Math.floor(time / 60);
     const sec = Math.floor(time - 60 * min);
 
     return min + " : " + String(sec).padStart(2, "0");
   }
+
   const [isOpen, time] = useTimer(roundTime, false);
 
   useEffect(() => {
     if (isOpen) {
       ref.current?.showModal();
       onModalOpen();
-      console.log("모달 오픈");
     }
   }, [isOpen]);
 
