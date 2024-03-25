@@ -7,6 +7,7 @@ public enum ErrorHttpStatus {
     UNAUTHORIZED_REFRESH_TOKEN(403,"RefreshToken이 유효하지 않습니다"),
     UNAUTHORIZED_TOKEN(403,"JWT토큰이 유효하지 않습니다"),
     NO_MATCHING_TRACK(404, "일치하는 노래가 없습니다"),
+    NO_MATCHING_HINT(404, "일치하는 힌트가 없습니다"),
     NO_MATCHING_MULTIPLAYGAME(404, "일치하는 게임이 없습니다"),
     USER_ALREADY_EXISTS(404, "이미 참여중인 유저입니다."),
     USER_NOT_FOUND(403, "회원을 찾을 수 없습니다."),
