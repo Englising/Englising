@@ -76,7 +76,15 @@ public class SinglePlayController {
             )
     )
     public ResponseEntity startSingleplay(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody SinglePlayRequestDto startDto){
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        DefaultResponseDto.<SinglePlayResponseDto>builder()
+                                .status(HttpStatus.OK.value())
+                                .message("싱글플레이 게임 시작을 위한 정보를 가져왔습니다.")
+                                .data(singlePlayService.createSinglePlay(1L, 158L, 1))
+                                .build()
+                );
     }
 
     @PostMapping("/word-check")
