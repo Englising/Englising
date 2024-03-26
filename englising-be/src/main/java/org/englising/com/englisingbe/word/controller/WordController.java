@@ -9,10 +9,7 @@ import org.englising.com.englisingbe.auth.dto.CustomUserDetails;
 import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
 import org.englising.com.englisingbe.user.dto.ProfileDto;
 import org.englising.com.englisingbe.user.dto.UserResponseMessage;
-import org.englising.com.englisingbe.word.dto.WordLikeResponseDto;
-import org.englising.com.englisingbe.word.dto.WordListResponseDto;
-import org.englising.com.englisingbe.word.dto.WordListType;
-import org.englising.com.englisingbe.word.dto.WordResponseMessage;
+import org.englising.com.englisingbe.word.dto.*;
 import org.englising.com.englisingbe.word.service.WordService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,12 +58,12 @@ public class WordController {
             @Parameter(name = "wordId", description = "wordId", in = ParameterIn.QUERY),
     })
     public ResponseEntity<DefaultResponseDto<?>> likeWord(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                          @RequestParam Long wordId) {
+                                                          @RequestBody WordLikeRequestDto wordLikeRequestDto) {
 
 //        Long userId = Long.parseLong(userDetails.getUsername());
-//        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordId, userId);
+//        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordLikeRequestDto.getWordId(), userId);
 
-        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordId, 1L);
+        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordLikeRequestDto.getWordId(), 1L);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
