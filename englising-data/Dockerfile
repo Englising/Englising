@@ -28,8 +28,8 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 ARG CHROME_DRIVER_VERSION=88.0.4324.96
 RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip && \
     unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/ && \
-    rm /tmp/chromedriver.zip
-COPY /usr/local/bin/chromedriver /app/chromedriver
+    rm /tmp/chromedriver.zip && \
+    mv /usr/local/bin/chromedriver /app/chromedriver
 
 # 애플리케이션 파일 복사
 COPY . .
