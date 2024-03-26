@@ -6,7 +6,7 @@ interface Props {
     onSetInfo(currIdx: number, blank: boolean, start: number, end: number): void,
     onSetProgressInfo(type: string, data?: number): void,
     playInfo: PlayInfo,
-    singleData: SingleData,
+    singleData: SingleData|undefined,
     answerInfo: AnswerInfo,
 }
 
@@ -16,28 +16,26 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
     const { answer, toggleSubmit } = answerInfo;
     
     {/* 가사 및 빈칸 Data */}
-    const [lyrics, setLyrics] = useState<Lyric[]>([]);
-    const [blankWord, setBlankWord] = useState<Word[]>([]);
+    const [lyrics, setLyrics] = useState<Lyric[] | undefined>([]);
+    const [blankWord, setBlankWord] = useState<Word[] | undefined>([]);
 
     {/* HTML 조작 */ }
     const lyricsRef = useRef<(HTMLDivElement | null)[]>([]);
     const blanksRef = useRef<(HTMLSpanElement | null)[]>([]);
-    const [preBlank, setPreBlank] = useState<number>(0);
-    const [currBlank, setCurrBlank] = useState<number>(0);
 
     {/* 힌트 */ }
     const [showModal, setShowModal] = useState<boolean>(false);
     const [hintWord, setHintWord] = useState<string>("");
     const [hintNum, setHintNum] = useState<number>(3);
     
-    // aixos 호출로 데이터 받기 -> Single Page에게 위임///////////////////
     useEffect(() => {
-        const lyricsData:Lyric[] = singleData.data.lyrics;
-        const blankData:Word[] = singleData.data.words;
-        setLyrics([...lyricsData]);
-        setBlankWord([...blankData]);
-    },[])
-    /////////////////////////////////////////////
+        const lyricsData:Lyric[] | undefined = singleData?.lyrics;
+        const blankData:Word[] | undefined = singleData?.words;
+        if (lyricsData != undefined && blankData != undefined) {
+            setLyrics([...lyricsData]);
+            setBlankWord([...blankData]);
+        }
+    },[singleData])
 
     // FootVar에서 답안이 입력되었을 때, 실행되는 hook
     useEffect(() => {
@@ -73,9 +71,9 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
         }
         
         // 빈칸에 들어갈 정답 가져오기
-        const solution = targetBlank?.textContent;
+        const solution = targetBlank?.textContent?.toLowerCase();
 
-        if(answer == solution){
+        if(answer.toLowerCase() == solution){
             if (targetBlank) {
                 // 정답시 스타일변경
                 targetBlank.dataset.solve = "2";
@@ -87,7 +85,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
 
             // 문장에 정답을 모두 맞췄을때, SinglePage Data 자체를 바꿔줌 (여긴 더이상 빈칸이 없어!)
             if(blankNum == 1 && incorrectNum == 0){
-                lyrics[idx].isBlank = !lyrics[idx].isBlank;
+                if(lyrics != undefined) lyrics[idx].isBlank = !lyrics[idx].isBlank;
             }
         }else {
             if (targetBlank) {
@@ -97,8 +95,8 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
             }
         }
         // 마지막 빈칸을 등록했을때 or 마지막 오답이 수정되었을때 넘어감
-        if(blankNum == 1 || incorrectNum <= 1 && blankNum == 0){ 
-            handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime);
+        if (blankNum == 1 || incorrectNum <= 1 && blankNum == 0) {
+            if(lyrics != undefined) handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime);
         }
         
         //targetBlank?.classList.remove('backdrop-blur', 'border', 'border-secondary-500');
@@ -202,7 +200,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
             {showModal ? (<div className="relative">
                 <HintModal hintWord={hintWord} hintNum={hintNum} onUse={onUse} onCancel={onCancel} />
             </div>) : (<></>)}
-            {lyrics.map((lyric, i) => {
+            {lyrics?.map((lyric, i) => {
                 return(
                     <div 
                     key={i} 
@@ -217,8 +215,9 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
                             let isBlank:boolean = false;
                             let blankIdx:number = 0;
 
-                            blankWord.forEach((blank, blnakIdx) => {
-                                if(word == blank.word && i == blank.sentenceIndex && j == blank.wordIndex){
+                            blankWord?.forEach((blank, blnakIdx) => {
+                                //console.log("단어 idx:", blank.sentenceIndex, "result:", word.toLowerCase(), blank.word.toLowerCase());
+                                if(word.toLowerCase().includes(blank.word.toLowerCase())  && i == blank.sentenceIndex && j == blank.wordIndex){
                                     isBlank = true; 
                                     blankIdx = blnakIdx; //이거 고유 인덱스인지 확인
                                 }

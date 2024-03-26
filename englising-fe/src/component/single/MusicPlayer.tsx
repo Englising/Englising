@@ -3,15 +3,16 @@ import { useEffect, useRef, useState } from "react";
 import { PlayInfo, ProgressInfo } from "../../pages/SinglePage.tsx";
 import { OnProgressProps } from "react-player/base";
 import { CircularProgressbar, buildStyles} from "react-circular-progressbar";
+import { useLocation, useParams } from "react-router-dom";
 import "react-circular-progressbar/dist/styles.css";
+import { getStartimeData } from "../../util/SinglePlayAPI.tsx";
 
 interface Props {
     onSetInfoIdx(currIdx: number):void,
     playInfo: PlayInfo,
-    progressInfo: ProgressInfo,  
+    progressInfo: ProgressInfo,
 }
-//임시 데이터: 음원의 id를 보내주면, 문장마다 시작하는 시간 리스트를 받아오는 코드로 대체
-const timeData = [7.5, 12.0, 15.9, 20.0, 24.3, 28.3, 32.4, 36.4, 41.4, 49.7, 56.4, 60.6, 65.0, 68.8, 90.3, 98.4];
+
 const hintStyle = "w-[1.5em] h-[1.5em] mx-[0.4em] rounded-full"
 
 const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
@@ -20,28 +21,40 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
     
     // 문제 진행도, 힌트
     let { totalWord, rightWord, hintNum } = progressInfo
+    
+    const { trackId, youtubeId } = useParams<{
+        trackId: string,
+        youtubeId: string
+    }>();
 
     // 유튜브 아이디를 주는 axios 넣기//
-    const url = "https://www.youtube.com/watch?v=EVJjmMW7eII";
+    const url = `https://www.youtube.com/watch?v=${youtubeId}`;
     const [playing, setPlaying] = useState<boolean>(true);
     const [volume, setVolume] = useState<number>(0.5);
     const [played, setPlayed] = useState<number>(0.0); // 재생중인 구간의 비율(ratio)
     const [playedSeconds, setPlayedSeconds] = useState<number>(0); // 재생중인 구간의 시간(s)
     const [endedSeconds, setEndedSeconds] = useState<number>(0); // 음원 전체 시간(s)
+    const timeData = useRef<number[]>([]);
+
+
+    {/** 프로필 */}
+    const { state } = useLocation();
+    const { title, img, artist } = state;
 
     const player = useRef<ReactPlayer | null>(null);
 
-    {/** 진행률 */ }
+    {/** 진행률 */}
     const percentage = (rightWord / totalWord) * 100;
 
-    {/** playButton */ }
+    {/** playButton */}
     const [togglePlay, setTogglePlay] = useState<boolean>(true);
 
     
     const handleProgress = (e: OnProgressProps) => {
         setPlayed(e.played);
         setPlayedSeconds(e.playedSeconds);
-        if(timeData[idx+1] < e.playedSeconds-0.1){
+        console.log(idx)
+        if(timeData.current[idx+1] < e.playedSeconds+0.5){
             if(!isBlank){
                 onSetInfoIdx(idx+1);
             }else {
@@ -65,7 +78,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
         setPlaying(true);
         
         if (isBlank) {
-            if(timeData[idx+1] < playedSeconds-0.1){
+            if(timeData.current[idx+1] < playedSeconds-0.1){
             onSetInfoIdx(idx + 1);
             }      
         }
@@ -93,11 +106,23 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
     },[toggleNext])
 
     // 힌트창이 켜졌을때 노래 일시중지
+    //
+    useEffect(() => {
+        const getData = async () => {
+            if (trackId != undefined) {
+                const startTimeData = await getStartimeData(parseInt(trackId));
+                console.log("잘들어왔남??",startTimeData.data.startTime)
+                timeData.current = startTimeData.data.startTime;
+            }
+        }
 
+        getData();
+    }, [])
+    
     return(
         <div className="w-full h-full flex flex-col items-center">
             <div className="w-full h-3/5 flex flex-col items-center justify-center">
-                <div className="text-[1.25em] my-[1em] text-white text-center">비비-밤양갱</div>
+                <div className="text-[1.25em] my-[1em] text-white text-center">{artist} {title}</div>
                 <div className="hidden">
                     <ReactPlayer
                     ref={player}
@@ -112,9 +137,11 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
                     onDuration={handleDuration}
                     />
                 </div>
-                <div className="w-[55%] h-[55%] bg-white rounded-lg">
+                <div className="w-[55%] h-[55%] relative">
+                    <div className="absolute inset-0">
+                        <img src={img} alt={title} className="w-full h-full object-cover rounded-xl" />
+                    </div>
                 </div>
-
                 <div className="w-[55%]">
 
                     {/* 음원 Volume Bar */ }
