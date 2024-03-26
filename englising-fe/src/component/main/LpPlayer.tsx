@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import lpPlayer from '../../assets/lp.png';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 interface LpPlayerProps {
