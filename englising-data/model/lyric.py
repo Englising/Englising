@@ -15,4 +15,6 @@ class Lyric(Base):
     updated_at = Column(TIMESTAMP, onupdate=func.now())
 
     track = relationship("Track", back_populates="lyrics")
+    track_words = relationship("TrackWord", back_populates="lyric")
+
 

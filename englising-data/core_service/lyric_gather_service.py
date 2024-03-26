@@ -1,78 +1,91 @@
 import time
+from queue import Queue, Empty
+
 import redis
 
+from database.mysql_manager import Session
 from util.worklist import WorkList
-from client.spotify_client import *
+from client.google_trans_client import *
 from client.musix_client import *
-from client.papago_client import *
+from crud.album_crud import *
+from crud.track_crud import *
+from crud.artist_track_crud import *
+from crud.lyric_crud import *
 
 from log.log_info import LogList, LogKind
 from log.englising_logger import log
 
-MAX_RETRY = 5
-
+# 변경 사항
+# 1. Redis Job Queue가 특정 개수 이하일 경우, DB에서 Lyric이 없는 Track 정보 조회, Job Queue에 넣음
+# 2. MusixMatch에서 Lyric 조회
+# 3. Google에서 Lyric 번역 조회
+# 4. Lyric DB에 저장
 
 class LyricWorker:
-    def __init__(self, redis_host='localhost', redis_port=6379, redis_db=0, queue_name=WorkList.LYRICS.name):
-        self.redis_connection = redis.Redis(host=redis_host, port=redis_port, db=redis_db)
-        self.queue_name = queue_name
+    def __init__(self):
+        self.job_queue = Queue()
 
     def start(self):
         while True:
-            _, job_dto_json = self.redis_connection.blpop(self.queue_name, timeout=None)
-            job_dto = JobDto.parse_raw(job_dto_json)
-            self.process_job(job_dto)
-            time.sleep(10)
+            session = Session()
+            queue_length = self.job_queue.qsize()
+            if queue_length <= 10:
+                tracks_without_lyrics = get_tracks_without_lyrics(session)
+                for track in tracks_without_lyrics:
+                    self.job_queue.put(track)
+            session.close()
 
-    def process_job(self, job_dto):
-        log(LogList.LYRICS.name, LogKind.INFO, "Starting Job: "+str(job_dto))
+            try:
+                track_dto = self.job_queue.get(timeout=5)
+                self.process_job(track_dto)
+                log(LogList.LYRICS.name, LogKind.INFO, "Finished Job: " + str(track_dto))
+                time.sleep(10)
+            except Empty:
+                time.sleep(10)
+
+    def process_job(self, track_dto):
+        log(LogList.LYRICS.name, LogKind.INFO, "Starting Job: "+str(track_dto))
+        session = Session()
         try:
-            for track in job_dto.tracks:
-                # 가사 가져오기
-                if track.lyrics is None or len(track.lyrics) == 0:
-                    track.lyrics = find_lyrics(MusixMatchDto(
-                        album=job_dto.album.title,
-                        artist=self.figure_artist(track, job_dto).name,
-                        track_name=track.title,
-                        track_spotify_id=track.spotify_id,
-                        track_duration=track.duration_ms
-                    ))
-                # 가사 영어인지 확인하기
-                if not detect_lyric_language(track.lyrics[0].en_text) :
-                    log(LogList.LYRICS.name, LogKind.INFO, "Lyric is not english " + track.title)
-                    self.remove_job(track.spotify_id, job_dto)
-                    return
-                # 가사 해석본 가져오기
-                for lyric in track.lyrics:
-                    if lyric.kr_text is None:
-                        lyric.kr_text = get_lyric_translation(lyric.en_text, track.spotify_id)
-            job_dto.retry = 0
-            print(job_dto)
-            self.redis_connection.rpush(WorkList.SAVE.name, job_dto.json())
+            artist = get_most_popular_artist_by_track_id(track_dto.track_id, session)
+            album = get_album_by_album_id(track_dto.album_id, session)
+            lyrics: List[LyricDto] = find_lyrics(MusixMatchDto(
+                album=album.title,
+                artist=artist.name,
+                track_name=track_dto.title,
+                track_spotify_id=track_dto.spotify_id,
+                track_duration=track_dto.duration_ms
+            ))
+            # 가사 영어인지 확인하기
+            if not detect_lyric_language(lyrics[0].en_text):
+                log(LogList.LYRICS.name, LogKind.INFO, "Lyric is not english " + track_dto.title)
+                return
+            # 가사 해석본 가져오기
+            for lyric in lyrics:
+                if lyric.kr_text is None:
+                    lyric.kr_text = get_translation(lyric.en_text)
+            for lyric in lyrics:
+                create_lyric(Lyric(
+                    track_id=track_dto.track_id,
+                    start_time=lyric.start_time,
+                    end_time=lyric.end_time,
+                    en_text=lyric.en_text,
+                    kr_text=lyric.kr_text
+                ), session)
+            session.commit()
         except LyricException as e:
             log(LogList.LYRICS.name, LogKind.ERROR, str(e))
-            if "DROP" in e.args:
-                self.remove_job(e.track_spotify_id, job_dto)
-                return
-            elif "TIMEOUT" in e.args:
-                self.retry_job(job_dto)
-                time.sleep(300)
-
-    def retry_job(self, job_dto):
-        if job_dto.retry < MAX_RETRY:
-            job_dto.retry += 1
-            log(LogList.LYRICS.name, LogKind.WARNING, f"Retrying job: {job_dto}. Attempt #{job_dto.retry}")
-            self.redis_connection.rpush(self.queue_name, job_dto.json())
-        else:
-            log(LogList.LYRICS.name, LogKind.ERROR, f"Job failed after {MAX_RETRY} retries: {job_dto}")
-
-    def remove_job(self, track_spotify_id: str, job_dto):
-        for track in job_dto.tracks:
-            if track.spotify_id == track_spotify_id:
-                job_dto.tracks.remove(track)
-        job_dto.track_ids.remove(track_spotify_id)
-
-    def figure_artist(self, track:TrackDto, job_dto:JobDto):
-        for artist in job_dto.artists:
-            if artist.spotify_id == track.artists[0]:
-                return artist
+            session.rollback()
+            if "TIMEOUT" in e.args:
+                self.job_queue.put(track_dto)
+                time.sleep(180)
+        except GoogleException as e:
+            self.job_queue.put(track_dto)
+            time.sleep(30)
+        except Exception as e:
+            log(LogList.LYRICS.name, LogKind.ERROR, str(e))
+            self.job_queue.put(track_dto)
+            session.rollback()
+            time.sleep(30)
+        finally:
+            session.close()

@@ -10,3 +10,10 @@ def create_artist_album(artist_album: ArtistAlbum, session):
 
 def get_artist_album_by_album_id(album_id: int, session):
     return session.query(ArtistAlbum).filter(ArtistAlbum.album_id == album_id).all()
+
+
+def get_artist_album_by_artist_id_album_id(artist_id: int, album_id: int, session):
+    return session.query(ArtistAlbum).filter(
+        ArtistAlbum.artist_id == artist_id,
+        ArtistAlbum.album_id == album_id
+    ).one_or_none()
