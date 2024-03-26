@@ -5,8 +5,12 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from dotenv import load_dotenv
+import os
 
-chromedriver_path = "../chromedriver"
+load_dotenv()
+
+chromedriver_path = os.getenv("CHROMEDRIVER_PATH")
 
 
 class YoutubeCrawler:
