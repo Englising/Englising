@@ -26,24 +26,16 @@ class TrackWorker:
     def __init__(self):
         self.job_queue = Queue()
 
-    # def __init__(self, redis_host='localhost', redis_port=6379, redis_db=0, queue_name=WorkList.TRACK.name):
-    #     self.redis_connection = redis.Redis(host=redis_host, port=redis_port, db=redis_db)
-    #     self.queue_name = queue_name
-
     def start(self):
         while True:
             session = Session()
-            # queue_length = self.redis_connection.llen(self.queue_name)
             queue_length = self.job_queue.qsize()
             if queue_length <= 10:
                 albums_without_tracks = get_album_without_tracks(session)
                 for album in albums_without_tracks:
                     self.job_queue.put(album)
-                    # self.redis_connection.rpush(self.queue_name, album.json())
             session.close()
 
-            # _, album_dto_json = self.redis_connection.blpop(self.queue_name, timeout=None)
-            # album_dto = Album.parse_raw(album_dto_json)
             try:
                 album_dto = self.job_queue.get(timeout=5)
                 self.process_job(album_dto)
@@ -90,7 +82,6 @@ class TrackWorker:
         except TrackException as e:
             log(LogList.TRACK.name, LogKind.ERROR, str(e))
             self.job_queue.put(album_dto)
-            # self.redis_connection.rpush(self.queue_name, album_dto.json())
             session.rollback()
             time.sleep(30)
         except Exception as e:

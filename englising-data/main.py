@@ -12,6 +12,7 @@ from core_service.youtube_gather_service import YoutubeWorker
 
 
 def main():
+    print("build complete")
     album_worker = AlbumWorker()
     artist_worker = ArtistWorker()
     track_worker = TrackWorker()
@@ -28,12 +29,12 @@ def main():
 
     # album_thread.start()
     artist_thread.start()
-    track_thread.start()
-    youtube_thread.start()
-    lyric_thread.start()
-    lyric_translate_thread.start()
+    # track_thread.start()
+    # youtube_thread.start()
+    # lyric_thread.start()
+    # lyric_translate_thread.start()
 
-    album_thread.join()
+    # album_thread.join()
     artist_thread.join()
     track_thread.join()
     youtube_thread.join()
