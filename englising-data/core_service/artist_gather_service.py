@@ -21,12 +21,9 @@ from log.englising_logger import log
 # 4. Artist, Artist_Album DB에 저장
 
 
-
 class ArtistWorker:
-
     def __init__(self):
         self.job_queue = Queue()
-
 
     def start(self):
         while True:
@@ -46,7 +43,7 @@ class ArtistWorker:
                 time.sleep(10)
 
     def process_job(self, album_dto: Album):
-        log(LogList.ARTIST.name, LogKind.INFO, "Starting Job: "+str(album_dto))
+        log(LogList.ARTIST.name, LogKind.INFO, "Starting Job: "+str(album_dto.album_id))
         session = Session()
         try:
             artist_spotify_ids = get_artists_by_album_spotify_id(album_dto.spotify_id)
@@ -54,7 +51,6 @@ class ArtistWorker:
                 artist = get_artist_by_spotify_id(artist_spotify_id, session)
                 if artist is None:
                     artist: ArtistDto = get_artist_by_spotify_id_spotify(artist_spotify_id)
-                    print(artist)
                     artist = create_artist(Artist(
                         name=artist.name,
                         genres=artist.genres,
@@ -67,7 +63,7 @@ class ArtistWorker:
                         artist_id=artist.artist_id,
                         album_id=album_dto.album_id
                     ), session)
-                session.commit()
+            session.commit()
         except ArtistException as e:
             log(LogList.ARTIST.name, LogKind.ERROR, str(e))
             self.job_queue.put(album_dto)
@@ -77,7 +73,7 @@ class ArtistWorker:
             log(LogList.ARTIST.name, LogKind.ERROR, str(e))
             self.job_queue.put(album_dto)
             session.rollback()
-            time.sleep(30)
+            time.sleep(5)
         finally:
             session.close()
 

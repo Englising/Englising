@@ -35,7 +35,7 @@ def get_track_by_track_id(track_id: int, session):
 
 
 def get_youtube_id_unfigured_tracks(session) -> List[YoutubeQueryDto]:
-    tracks = session.query(Track).filter(Track.youtube_id == None).limit(20)
+    tracks = session.query(Track).filter(Track.youtube_id == None).limit(100)
     tracks_with_top_artist = []
     for track in tracks:
         top_artist: Artist = None
@@ -66,5 +66,5 @@ def get_tracks_without_lyrics(session) -> Track:
 def get_tracks_without_words(session) -> List[Track]:
     return (session.query(Track)
             .outerjoin(TrackWord, Track.track_id == TrackWord.track_id)
-            .filter(TrackWord.track_id == None).limit(20).all())
+            .filter(TrackWord.track_id == None).limit(100).all())
 
