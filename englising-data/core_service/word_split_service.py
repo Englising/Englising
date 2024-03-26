@@ -9,11 +9,13 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag
+from better_profanity import profanity
 
 from database.mysql_manager import Session
 from client.naver_dict_client import NaverDictionaryCrawler
 from crud.word_crud import create_word, find_word_by_en_text
 from crud.lyric_crud import get_lyric_dtos_by_track_id
+from crud.track_crud import *
 from crud.track_word_crud import *
 from dto.lyric_dto import LyricDto
 from model.word import Word
@@ -32,6 +34,7 @@ class LyricWordWorker:
         self.naver_scraper = NaverDictionaryCrawler()
         self.stop_words = set(stopwords.words('english'))
         self.lemmatizer = WordNetLemmatizer()
+        self.count = 0
 
     def start(self):
         while True:
@@ -39,24 +42,37 @@ class LyricWordWorker:
             # queue에는 Lyric을 넣음
             if self.job_queue.qsize() <= 10:
                 session = Session()
-                self.job_queue.put(get_lyric_dtos_by_track_id(158, session))
+                tracks = get_tracks_without_words(session)
+                for track in tracks:
+                    self.job_queue.put(get_lyric_dtos_by_track_id(track.track_id, session))
             try:
                 lyric_list = self.job_queue.get(timeout=5)
                 self.process_job(lyric_list)
                 log(LogList.LYRIC_WORD.name, LogKind.INFO, f"Finished processing lyric data: {lyric_list}")
-                time.sleep(1)
+                time.sleep(10)
             except Empty:
                 log(LogList.LYRIC_WORD.name, LogKind.INFO, "Queue is empty, waiting...")
                 time.sleep(10)
 
     def process_job(self, lyric_list: List[LyricDto]):
+        log(LogList.LYRIC_WORD.name, LogKind.INFO, f"Starting Job trackId: {lyric_list[0].track_id}' Lyrics")
         session = Session()
+        self.count = 0
         try:
             self.naver_scraper.start_driver()
             # 가사 한 줄 처리
             for lyric in lyric_list:
                 # 단어로 가사 분리
                 origin_words = self.extract_words_from_lyric_with_space(lyric.en_text)
+                # 만약 욕설이 너무 많은 가사인 경우
+                if self.count >= 5:
+                    log(LogList.LYRIC_WORD.name, LogKind.WARNING, f"RatedR Track trackId: {lyric.track_id}")
+                    session.rollback()
+                    session = Session()
+                    update_track_lyric_status(lyric_list[0].track_id, "RATEDR", session)
+                    session.commit()
+                    session.close()
+                    return
                 for index, refined_word, origin_word in origin_words:
                     # 단어 하나씩 Word Table에 저장
                     word = find_word_by_en_text(refined_word, session)
@@ -73,13 +89,11 @@ class LyricWordWorker:
                         word_index = index,
                         origin_word = origin_word
                     ), session)
-                    print(("saved word"))
             session.commit()
         except Exception as e:
             log(LogList.LYRIC_WORD.name, LogKind.ERROR, f"Error processing lyric data: {e}")
             self.job_queue.put(lyric_list)
             session.rollback()
-            time.sleep(1)
         finally:
             self.naver_scraper.stop_driver()
             session.close()
@@ -106,7 +120,10 @@ class LyricWordWorker:
             tagged_words = pos_tag(tokenized_words)
             for word, tag in tagged_words:
                 if word.isalpha() and word.lower() not in self.stop_words and len(word) > 2 and self.is_wordnet_word(word):
-                    finished_words.append((index, self.lemmatizer.lemmatize(word.lower(), self.get_wordnet_pos(tag)), word.lower()))
+                    if profanity.contains_profanity(word):
+                        self.count += 1
+                    else:
+                        finished_words.append((index, self.lemmatizer.lemmatize(word.lower(), self.get_wordnet_pos(tag)), word.lower()))
                 index += 1
         return finished_words
 
@@ -135,7 +152,3 @@ class LyricWordWorker:
     def is_wordnet_word(self, word):
         return bool(wn.synsets(word))
 
-
-if __name__ == "__main__":
-    worker = LyricWordWorker()
-    worker.start()
