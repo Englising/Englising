@@ -1,4 +1,5 @@
 import time
+import re
 from queue import Queue, Empty
 from typing import List
 
@@ -10,7 +11,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag
 
 from database.mysql_manager import Session
-from client.naver_dict_client import NaverDictionaryScraper
+from client.naver_dict_client import NaverDictionaryCrawler
 from crud.word_crud import create_word, find_word_by_en_text
 from crud.lyric_crud import get_lyric_dtos_by_track_id
 from crud.track_word_crud import *
@@ -24,14 +25,13 @@ nltk.download('averaged_perceptron_tagger')
 nltk.download('punkt')
 nltk.download('stopwords')
 
-stop_words = set(stopwords.words('english'))
-lemmatizer = WordNetLemmatizer()
-
 
 class LyricWordWorker:
     def __init__(self):
         self.job_queue = Queue()
-        self.naver_scraper = NaverDictionaryScraper()
+        self.naver_scraper = NaverDictionaryCrawler()
+        self.stop_words = set(stopwords.words('english'))
+        self.lemmatizer = WordNetLemmatizer()
 
     def start(self):
         while True:
@@ -56,7 +56,7 @@ class LyricWordWorker:
             # 가사 한 줄 처리
             for lyric in lyric_list:
                 # 단어로 가사 분리
-                origin_words = self.extract_words_from_lyric(lyric.en_text)
+                origin_words = self.extract_words_from_lyric_with_space(lyric.en_text)
                 for index, refined_word, origin_word in origin_words:
                     # 단어 하나씩 Word Table에 저장
                     word = find_word_by_en_text(refined_word, session)
@@ -73,6 +73,7 @@ class LyricWordWorker:
                         word_index = index,
                         origin_word = origin_word
                     ), session)
+                    print(("saved word"))
             session.commit()
         except Exception as e:
             log(LogList.LYRIC_WORD.name, LogKind.ERROR, f"Error processing lyric data: {e}")
@@ -88,11 +89,26 @@ class LyricWordWorker:
         tagged_words = pos_tag(words)
 
         filtered_words_with_index = [
-            (index, lemmatizer.lemmatize(word.lower(), self.get_wordnet_pos(tag)), word.lower())
+            (index, self.lemmatizer.lemmatize(word.lower(), self.get_wordnet_pos(tag)), word.lower())
             for index, (word, tag) in enumerate(tagged_words)
-            if word.isalpha() and word.lower() not in stop_words and len(word) > 2 and self.is_wordnet_word(word)
+            if word.isalpha() and word.lower() not in self.stop_words and len(word) > 2 and self.is_wordnet_word(word)
         ]
         return filtered_words_with_index
+
+    def extract_words_from_lyric_with_space(self, en_text) -> list:
+        splitted_words = en_text.split(" ")
+        index = -1
+        finished_words = []
+
+        for word in splitted_words:
+            index += 1
+            tokenized_words = word_tokenize(word)
+            tagged_words = pos_tag(tokenized_words)
+            for word, tag in tagged_words:
+                if word.isalpha() and word.lower() not in self.stop_words and len(word) > 2 and self.is_wordnet_word(word):
+                    finished_words.append((index, self.lemmatizer.lemmatize(word.lower(), self.get_wordnet_pos(tag)), word.lower()))
+                index += 1
+        return finished_words
 
     def save_word_details(self, word_dto, session) -> Word:
         word = Word(
