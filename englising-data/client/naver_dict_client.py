@@ -8,7 +8,7 @@ from dto.word_dto import WordDto
 chromedriver_path = "../chromedriver"
 
 
-class NaverDictionaryScraper:
+class NaverDictionaryCrawler:
     def __init__(self):
         self.driver = None
 
