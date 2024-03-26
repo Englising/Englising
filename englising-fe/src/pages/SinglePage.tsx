@@ -49,10 +49,9 @@ export interface SingleData {
 }
 
 const SinglePage = () => {
-    const { trackId, level, youtubeId } = useParams<{
+    const { trackId, level } = useParams<{
         trackId: string,
         level: string,
-        youtubeId: string
     }>();
 
     const [singleData, setSingleData] = useState<SingleData>({
@@ -177,7 +176,7 @@ return (
                     </div>
                 </div>
                 <div className="w-full h-[10%] bg-black flex justify-center">
-                    <FooterVar onSetAnswer = {onSetAnswer} onSkip = {onSkip}/>
+                <FooterVar onSetAnswer={onSetAnswer} onSkip={onSkip} idx={playInfo.idx} />
                 </div>
                 </div>
         </div>

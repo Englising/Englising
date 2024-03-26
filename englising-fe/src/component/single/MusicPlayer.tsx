@@ -44,7 +44,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
     const player = useRef<ReactPlayer | null>(null);
 
     {/** 진행률 */}
-    const percentage = (rightWord / totalWord) * 100;
+    const [percentage, setPercentage] = useState<number>(0);
 
     {/** playButton */}
     const [togglePlay, setTogglePlay] = useState<boolean>(true);
@@ -118,6 +118,10 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
 
         getData();
     }, [])
+
+    useEffect(() => {
+        setPercentage((rightWord / totalWord) * 100);
+    },[progressInfo])
     
     return(
         <div className="w-full h-full flex flex-col items-center">
