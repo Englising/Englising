@@ -54,8 +54,7 @@ public class WordController {
             description = "단어 즐겨찾기를 등록하고 즐겨찾기 상태를 반환합니다"
     )
     @Parameters({
-            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
-            @Parameter(name = "wordId", description = "wordId", in = ParameterIn.QUERY),
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE)
     })
     public ResponseEntity<DefaultResponseDto<?>> likeWord(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                           @RequestBody WordLikeRequestDto wordLikeRequestDto) {

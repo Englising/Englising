@@ -1,6 +1,7 @@
 package org.englising.com.englisingbe.like.service;
 
 import lombok.RequiredArgsConstructor;
+import org.englising.com.englisingbe.like.dto.TrackLikeResponseDto;
 import org.englising.com.englisingbe.like.entity.TrackLike;
 import org.englising.com.englisingbe.like.repository.TrackLikeRepository;
 import org.englising.com.englisingbe.like.repository.TrackLikeRepositorySupport;
@@ -24,5 +25,12 @@ public class TrackLikeServiceImpl {
 
     public boolean checkTrackLikeByUserId(Long userId, Long trackId){
         return trackLikeRepository.existsByUserUserIdAndTrackTrackIdAndIsLikedTrue(userId, trackId);
+    }
+
+    public TrackLikeResponseDto likeTrack(Long trackId, long userId) {
+
+
+
+        return null;
     }
 }
