@@ -23,16 +23,20 @@ class YoutubeCrawler:
         self.driver = None
 
     def start_driver(self):
+        print("Starting Youtube Crawler")
         self.service = Service(executable_path=chromedriver_path)
         self.driver = webdriver.Chrome(service=self.service, options=options)
 
     def get_video_info(self, searchWord):
+        print("Starting Youtube Crawler : getting video info")
         self.driver.get("https://www.youtube.com/results?search_query=" + searchWord)
-        time.sleep(5)
+        time.sleep(15)
 
         try:
+            print("Starting Youtube Crawler : getting video items")
             video_items = self.driver.find_elements(By.TAG_NAME, "ytd-video-renderer")
             for item in video_items:
+                print("Starting Youtube Crawler : getting video"+str(item))
                 title_element = item.find_element(By.ID, "video-title")
                 title = title_element.get_attribute("title")
                 url = title_element.get_attribute("href")
@@ -43,6 +47,8 @@ class YoutubeCrawler:
                 duration = duration_elements[0].text.strip() if duration_elements else "Unknown"
                 if duration != "Unknown" and duration != "":
                         print(f"Title: {title}, Duration: {duration}, YouTube ID: {youtube_id}")
+                else:
+                    break
         except Exception as e:
             print(f"Error: {e}")
 
