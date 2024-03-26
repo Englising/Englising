@@ -2,6 +2,7 @@ import time
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -11,6 +12,10 @@ import os
 load_dotenv()
 
 chromedriver_path = os.getenv("CHROMEDRIVER_PATH")
+options = Options()
+options.add_argument('--headless')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
 
 
 class YoutubeCrawler:
@@ -19,7 +24,7 @@ class YoutubeCrawler:
 
     def start_driver(self):
         self.service = Service(executable_path=chromedriver_path)
-        self.driver = webdriver.Chrome(service=self.service)
+        self.driver = webdriver.Chrome(service=self.service, options=options)
 
     def get_video_info(self, searchWord):
         self.driver.get("https://www.youtube.com/results?search_query=" + searchWord)

@@ -1,6 +1,7 @@
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
 from dto.word_dto import WordDto
@@ -10,6 +11,10 @@ import os
 load_dotenv()
 
 chromedriver_path = os.getenv("CHROMEDRIVER_PATH")
+options = Options()
+options.add_argument('--headless')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
 
 
 class NaverDictionaryCrawler:
@@ -18,7 +23,7 @@ class NaverDictionaryCrawler:
 
     def start_driver(self):
         self.service = Service(executable_path=chromedriver_path)
-        self.driver = webdriver.Chrome(service=self.service)
+        self.driver = webdriver.Chrome(service=self.service, options=options)
 
     def get_word_details(self, word: str) -> WordDto:
         url = f'https://en.dict.naver.com/#/search?query={word}&range=all'
