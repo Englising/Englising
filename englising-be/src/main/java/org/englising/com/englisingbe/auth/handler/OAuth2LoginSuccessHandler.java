@@ -1,5 +1,6 @@
 package org.englising.com.englisingbe.auth.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,13 +11,16 @@ import org.englising.com.englisingbe.auth.jwt.CookieUtil;
 import org.englising.com.englisingbe.auth.jwt.JwtProvider;
 import org.englising.com.englisingbe.auth.jwt.JwtResponseDto;
 import org.englising.com.englisingbe.auth.CustomOAuth2User;
+import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
 import org.englising.com.englisingbe.user.entity.User;
 import org.englising.com.englisingbe.user.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 // OAuth2 로그인 성공 시 로직 처리
 // 로그인 성공했으면 accessToken, refreshToken 생성 후 헤더애 넣어주기
@@ -39,14 +43,13 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         try {
             // CustomOauth2User로 캐스팅하여 인증된 사용자 정보 가져옴
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-            log.info("OAuth2LoginSuccessHandler - oAuth2User 가져오나??" + oAuth2User);
+//            log.info("OAuth2LoginSuccessHandler - oAuth2User 가져오나??" + oAuth2User);
 
             String email = oAuth2User.getEmail();
-//            String email = oAuth2User.getAttribute("email");
-            log.info("OAuth2LoginSuccessHandler - email --> " + email);
+//            log.info("OAuth2LoginSuccessHandler - email --> " + email);
 
             User user = userRepository.findByEmail(email).orElse(null);
-            // user가 null이라서 밑에게 실행안하는 것 !!!!
+
             if (user != null) {
                 // 유저 정보 기반으로 토큰 생성
                 JwtResponseDto jwtResponseDto = jwtProvider.createTokens(authentication, user.getUserId());
@@ -61,6 +64,16 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 response.addCookie(accessCookie);
                 response.addCookie(refreshCookie);
                 response.sendRedirect("https://j10a106.p.ssafy.io/englising/selectSingle1");
+            } else {
+                log.info("OAuth2LoginSuccessHandler -> oAuth2User is null");
+
+                response.setContentType("application/json");
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.writeValue(response.getWriter(), ErrorHttpStatus.OAUTH2_USER_NOT_FOUND);
+
+                response.sendRedirect("https://j10a106.p.ssafy.io");
             }
         } catch (Exception e) {
             throw e;
