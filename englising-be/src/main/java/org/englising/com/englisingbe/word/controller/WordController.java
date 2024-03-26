@@ -66,7 +66,7 @@ public class WordController {
 //        Long userId = Long.parseLong(userDetails.getUsername());
 //        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordId, userId);
 
-        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(1L, 1L);
+        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordId, 1L);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
