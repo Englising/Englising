@@ -34,4 +34,4 @@ RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/$CH
 COPY . .
 
 # 애플리케이션 실행
-CMD ["python", "./main.py"]
+CMD ["python", "./youtube_crawler.py"]

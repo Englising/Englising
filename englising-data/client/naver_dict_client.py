@@ -5,10 +5,10 @@ from selenium.webdriver.common.by import By
 
 from dto.word_dto import WordDto
 
-chromedriver_path = "../chromedriver.exe"
+chromedriver_path = "../chromedriver"
 
 
-class NaverDictionaryScraper:
+class NaverDictionaryCrawler:
     def __init__(self):
         self.driver = None
 

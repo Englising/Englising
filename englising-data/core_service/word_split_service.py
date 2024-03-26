@@ -11,7 +11,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag
 
 from database.mysql_manager import Session
-from client.naver_dict_client import NaverDictionaryScraper
+from client.naver_dict_client import NaverDictionaryCrawler
 from crud.word_crud import create_word, find_word_by_en_text
 from crud.lyric_crud import get_lyric_dtos_by_track_id
 from crud.track_word_crud import *
@@ -29,7 +29,7 @@ nltk.download('stopwords')
 class LyricWordWorker:
     def __init__(self):
         self.job_queue = Queue()
-        self.naver_scraper = NaverDictionaryScraper()
+        self.naver_scraper = NaverDictionaryCrawler()
         self.stop_words = set(stopwords.words('english'))
         self.lemmatizer = WordNetLemmatizer()
 
@@ -44,7 +44,6 @@ class LyricWordWorker:
                 lyric_list = self.job_queue.get(timeout=5)
                 self.process_job(lyric_list)
                 log(LogList.LYRIC_WORD.name, LogKind.INFO, f"Finished processing lyric data: {lyric_list}")
-                return
                 time.sleep(1)
             except Empty:
                 log(LogList.LYRIC_WORD.name, LogKind.INFO, "Queue is empty, waiting...")
@@ -52,22 +51,15 @@ class LyricWordWorker:
 
     def process_job(self, lyric_list: List[LyricDto]):
         session = Session()
-        for lyric in lyric_list:
-            print(lyric.lyric_id)
-            print(lyric.en_text)
         try:
             self.naver_scraper.start_driver()
             # 가사 한 줄 처리
             for lyric in lyric_list:
                 # 단어로 가사 분리
-                # origin_words = self.extract_words_from_lyric(lyric.en_text)
-                print("lyric"+str(lyric.lyric_id))
                 origin_words = self.extract_words_from_lyric_with_space(lyric.en_text)
-                print(origin_words)
                 for index, refined_word, origin_word in origin_words:
                     # 단어 하나씩 Word Table에 저장
                     word = find_word_by_en_text(refined_word, session)
-                    print("entext "+word.en_text)
                     if word is None:
                         word_dto = self.naver_scraper.get_word_details(refined_word)
                         if word_dto.ko_text_1 is None or word_dto.ko_text_1 == '':

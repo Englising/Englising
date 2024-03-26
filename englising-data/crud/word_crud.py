@@ -11,5 +11,5 @@ def create_word(word: Word, session):
     return word
 
 
-def find_word_by_en_text(en_text:str, session):
+def find_word_by_en_text(en_text:str, session) -> Word:
     return session.query(Word).filter(Word.en_text == en_text).first()
