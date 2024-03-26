@@ -23,5 +23,7 @@ class Track(Base):
     created_at = Column(TIMESTAMP, nullable=False, default=func.now())
     updated_at = Column(TIMESTAMP, onupdate=func.now())
 
-    lyrics = relationship('Lyric', backref='track', uselist=False)
+    lyrics = relationship('Lyric', back_populates='track', uselist=True)
     artists = relationship('Artist', secondary='artist_track', back_populates='tracks')
+    track_words = relationship("TrackWord", back_populates="track")
+
