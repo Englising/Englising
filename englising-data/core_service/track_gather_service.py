@@ -40,22 +40,21 @@ class TrackWorker:
                 album_dto = self.job_queue.get(timeout=5)
                 self.process_job(album_dto)
                 log(LogList.TRACK.name, LogKind.INFO, "Finished Job: " + str(album_dto))
-                time.sleep(5)
+                time.sleep(10)
             except Empty:
                 time.sleep(10)
 
     def process_job(self, album_dto):
-        log(LogList.TRACK.name, LogKind.INFO, "Starting Job: "+str(album_dto))
+        log(LogList.TRACK.name, LogKind.INFO, "Starting Job: "+str(album_dto.album_id))
         session = Session()
         try:
             track_spotify_ids = get_tracks_by_album_spotify_id(album_dto.spotify_id)
-            print(track_spotify_ids)
             for track_spotify_id in track_spotify_ids:
                 track = get_track_by_spotify_id(track_spotify_id, session)
                 if track is None:
                     track: TrackDto = get_track_by_spotify_id_spotify(track_spotify_id)
                     artists = track.artists
-                    track = get_track_audiofeature(track_spotify_id, track)
+                    track = get_track_audiofeature_spotify(track_spotify_id, track)
                     if track is not None and detect_lyric_language(track.title):
                         track_entity = create_track(Track(
                             album_id=album_dto.album_id,
@@ -78,7 +77,7 @@ class TrackWorker:
                                     artist_id=get_artist_by_spotify_id(artist, session).artist_id,
                                     track_id=track_entity.track_id
                                 ), session)
-                        session.commit()
+            session.commit()
         except TrackException as e:
             log(LogList.TRACK.name, LogKind.ERROR, str(e))
             self.job_queue.put(album_dto)
@@ -88,6 +87,6 @@ class TrackWorker:
             log(LogList.TRACK.name, LogKind.ERROR, str(e))
             self.job_queue.put(album_dto)
             session.rollback()
-            time.sleep(30)
+            time.sleep(5)
         finally:
             session.close()
