@@ -33,15 +33,20 @@ const SideBar: React.FC = () => {
         setModalOpen(false);
         // 프로필 재설정
         // 모달이 닫힐 때 프로필을 다시 불러오기
-        axios.get("https://j10a106.p.ssafy.io/api/user/profile")
-            .then((Response) => {
-                setProfile(Response.data.data);
-                console.log(Response.data.data);
-            })
-            .catch((error) => {
-                console.error('프로필 가져오기 실패', error);
-            });
+        // axios.get("https://j10a106.p.ssafy.io/api/user/profile")
+        //     .then((Response) => {
+        //         setProfile(Response.data.data);
+        //         console.log(Response.data.data);
+        //     })
+        //     .catch((error) => {
+        //         console.error('프로필 가져오기 실패', error);
+        //     });
     }
+
+    const updateProfile = (updatedProfile: Profile) => { // 프로필 업데이트 함수 정의
+        setProfile(updatedProfile);
+    };
+
 
     const activeStyle = {
         color: "#00ffff",
@@ -70,7 +75,7 @@ const SideBar: React.FC = () => {
     return (
         <div>
             <div className={`w-64 flex flex-col justify-center pl-5 gap-3.5 text-white relative pt-12 `}>
-                <div className="w-28 h-28 rounded-full relative justify-center place-self-center " style={{background: profile?.color }} >
+                <div className="w-28 h-28 rounded-full relative justify-center place-self-center" style={{background: profile?.color }} >
                     <img src={profile?.profileImg}  className='w-20 h-20 absolute top-4 left-4  place-self-center'/>
                     <div onClick={openModal}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#00ffff" className="w-8 h-8 absolute top-20 left-20">
@@ -79,8 +84,14 @@ const SideBar: React.FC = () => {
                         </svg>
                     </div>
                 </div>
-                {modalOpen && <SettingProfile open={modalOpen} close={closeModal}></SettingProfile>}
-                <div className='pt-6 text-sm text-primary-300'>MUSIC</div>
+                <div className='flex flex-row justify-center'>
+                    <div className='text-secondary-500'>{profile?.nickname}</div>
+                    <div>님, 하위!</div>
+                </div>
+                <div>
+                {modalOpen && <SettingProfile open={modalOpen} close={closeModal} updateProfile={updateProfile} />}
+                </div>
+                <div className='pt-4 text-sm text-primary-300'>MUSIC</div>
                 <div className='flex flex-row gap-2 pl-5 pt-3'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m9 9 10.5-3m0 6.553v3.75a2.25 2.25 0 0 1-1.632 2.163l-1.32.377a1.803 1.803 0 1  1-.99-3.467l2.31-.66a2.25 2.25 0 0 0 1.632-2.163Zm0 0V2.25L9 5.25v10.303m0 0v3.75a2.25 2.25 0 0 1-1.632 2.163l-1.32.377a1.803 1.803 0 0 1-.99-3.467l2.31-.66A2.25 2.25 0 0 0 9 15.553Z" />
