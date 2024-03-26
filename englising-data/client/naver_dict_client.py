@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 
 from dto.word_dto import WordDto
 
-chromedriver_path = "../chromedriver"
+chromedriver_path = "../chromedriver.exe"
 
 
 class NaverDictionaryScraper:
