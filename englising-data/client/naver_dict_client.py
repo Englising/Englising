@@ -4,8 +4,12 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 
 from dto.word_dto import WordDto
+from dotenv import load_dotenv
+import os
 
-chromedriver_path = "../chromedriver"
+load_dotenv()
+
+chromedriver_path = os.getenv("CHROMEDRIVER_PATH")
 
 
 class NaverDictionaryCrawler:
