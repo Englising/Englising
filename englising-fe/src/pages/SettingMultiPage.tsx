@@ -5,6 +5,7 @@ import axios from 'axios';
 
 const SettingMulti = () => {
     const [roomImg, setRoomImg] = useState<string>("");
+    const [isSecret, setIsSecret] = useState<boolean>(false);
     
     //일단 이 페이지 들어오면 roomImg api로 요청해서 바꿈
     useEffect(() => {
@@ -24,10 +25,11 @@ const SettingMulti = () => {
     };
 
     const [roomInfo, setRoomInfo] = useState({
-        roomName: "방 이름", // 방 이름
-        maxUser: 1, // 최대 사용자 수
+        roomName: "", // 방 이름
+        maxUser: 2, // 최대 사용자 수
         currentUser: 1, // 현재 사용자 수
-        password: 1111,
+        password: "",
+        isSecret: false,
         roomImg: roomImg,
     });
 
@@ -41,6 +43,15 @@ const SettingMulti = () => {
         setRoomInfo({ ...roomInfo, maxUser: parseInt(event.target.value) });
     };
 
+    const handlePublicityChange = (isPublic: boolean) => {
+        setIsSecret(!isPublic); // 공개 여부 상태 업데이트
+        setRoomInfo({ ...roomInfo, isSecret: !isPublic }); // roomInfo 업데이트
+    };
+
+    const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setRoomInfo({ ...roomInfo, password: event.target.value });
+    };
+
     const finishSetting = async () => {
         if(roomInfo.roomName===""){
             alert("방 이름을 입력해주세요!");
@@ -50,12 +61,14 @@ const SettingMulti = () => {
                 roomName: roomInfo.roomName, // 방 이름
                 maxUser: roomInfo.maxUser, // 최대 사용자 수
                 currentUser: roomInfo.currentUser, // 현재 사용자 수
+                isSecret: roomInfo.isSecret,
                 password: roomInfo.password,
                 roomImg: roomImg,
             })
             //request로 multiplayId 받아서 waitroom/multiplayId로 보내주기
         }
     }
+
 
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 flex">
@@ -68,9 +81,8 @@ const SettingMulti = () => {
                             <h1>인원 수</h1>
                             <h1>방 이름</h1>
                             <h1>공개 범위</h1>
-                            <h1>비밀 번호</h1>
+                            {roomInfo.isSecret ? <h1>비밀 번호</h1> : <div></div>}
                         </div>
-                        
                     </div>
                     {/* 설정하기 */}
                     <div className='flex flex-col pt-40 space-y-12'>
@@ -111,26 +123,39 @@ const SettingMulti = () => {
                         />
                         {/* 공개범위설정 */}
                         <div className='flex flex-row space-x-5 pt-3.5 pb-4'>
-                            <button className='text-black bg-secondary-500 w-24 h-7 rounded-full text-sm hover:opacity-50'>전체공개</button>
-                            <button className='text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50'>친구만</button>
+                        <button 
+                            className={`text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50 ${!isSecret && 'bg-secondary-500 text-black border-0'}`} // isSecret이 false면 선택된 스타일을 적용
+                            onClick={() => handlePublicityChange(true)} // 전체공개 버튼 클릭 시 공개 상태로 변경
+                        >
+                            전체공개
+                        </button>
+                        <button 
+                            className={`text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50 ${isSecret && 'bg-secondary-500 text-black border-0'}`} // isSecret이 true면 선택된 스타일을 적용
+                            onClick={() => handlePublicityChange(false)} // 친구만 버튼 클릭 시 비공개 상태로 변경
+                        >
+                            친구만
+                        </button>                 
                         </div>
                         {/* 비밀번호 설정 */}
-                        <input
+                        {roomInfo.isSecret ? <input
                             type="text"
                             name="room_password"
-                            className='w-64 h-10 pl-3 bg-secondary-100 rounded-lg placeholder:text-primary-700 '
+                            className='w-64 h-10 pl-3 bg-secondary-100 rounded-lg placeholder:text-primary-700 text-black'
                             placeholder='비밀번호를 입력하시오 (4자릿수 숫자)'
                             value={roomInfo.password}
-                        />
+                            onChange={handlePasswordChange}
+                        /> : <div></div>}
+                        
                         {/* 방 설정완료 */}
                         <div className='pl-28 pt-10' onClick={finishSetting}>
                             <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'>방 설정 완료</button>
                         </div>
                     </div>
                     {/* 방 미리보기 */}
-                    <div className='h-48 pt-52 pl-24 flex flex-col items-center relative'>
+                    <div className='h-48 pt-48 pl-24 flex flex-col items-center relative'>
+                        <h1 className='text-white pb-5 text-sm'>↓ 랜덤 버튼을 눌러서 방 이미지를 바꿔봐요! ↓</h1>
                         <Multiroom room_name={roomInfo.roomName} room_id={1} max_user={roomInfo.maxUser} current_user={roomInfo.currentUser} multi_img={roomImg} />
-                        <div className='absolute top-[218px] right-[160px]' onClick={changeRoomImg}><RandomButton/></div>
+                        <div className='absolute top-[250px] right-[35px]' onClick={changeRoomImg}><RandomButton/></div>
                         <h1 className='text-secondary-500 pt-6 font-semibold'>방 미리보기</h1>
                     </div>
                     
