@@ -1,6 +1,7 @@
 from typing import List
 
 from dto.track_dto import YoutubeQueryDto
+from model import TrackWord
 from model.artist import Artist
 from model.lyric import Lyric
 from model.track import Track
@@ -15,6 +16,11 @@ def create_track(track: Track, session):
 
 def update_track(youtube: YoutubeQueryDto, session):
     session.query(Track).filter(Track.track_id == youtube.track_id).update({"youtube_id": youtube.youtube_id})
+    session.flush()
+
+
+def update_track_lyric_status(track_id:int, status: str, session):
+    session.query(Track).filter(Track.track_id == track_id).update({"lyric_status": status})
     session.flush()
 
 
@@ -55,3 +61,10 @@ def get_tracks_without_lyrics(session) -> Track:
         .outerjoin(Lyric, Track.track_id == Lyric.track_id) \
         .filter(Lyric.lyric_id == None) \
         .all()
+
+
+def get_tracks_without_words(session) -> List[Track]:
+    return (session.query(Track)
+            .outerjoin(TrackWord, Track.track_id == TrackWord.track_id)
+            .filter(TrackWord.track_id == None).limit(20).all())
+
