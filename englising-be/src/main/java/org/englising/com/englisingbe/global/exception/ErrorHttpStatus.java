@@ -5,7 +5,9 @@ import lombok.Getter;
 @Getter
 public enum ErrorHttpStatus {
     UNAUTHORIZED_REFRESH_TOKEN(403,"RefreshToken이 유효하지 않습니다"),
+    UNAUTHORIZED_ACCESS_TOKEN(403, "AccessToken이 만료되어 재발급 되었습니다"),
     UNAUTHORIZED_TOKEN(403,"JWT토큰이 유효하지 않습니다"),
+    OAUTH2_USER_NOT_FOUND(403, "Oauth2로 인증된 사용자가 없습니다"),
     NO_MATCHING_TRACK(404, "일치하는 노래가 없습니다"),
     NO_MATCHING_HINT(404, "일치하는 힌트가 없습니다"),
     NO_MACHING_SINGLEPLAY(404, "일치하는 싱글플레이 게임이 없습니다"),

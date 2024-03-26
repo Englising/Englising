@@ -16,14 +16,6 @@ import java.util.Map;
 public class OAuthAttributes {
     private final String nameAttributeKey; //OAuth2 로그인 진행 시 키가 되는 필드 값
     private final OAuth2Response oAuth2Response; // 소셜 타입별 로그인 유저 응답 정보
-//    private final UserService userService;
-
-//    @Builder
-//    private OAuthAttributes (String nameAttributeKey, OAuth2Response oAuth2Response, UserService userService) {
-//        this.nameAttributeKey = nameAttributeKey;
-//        this.oAuth2Response = oAuth2Response;
-//        this.userService = userService;
-//    }
 
     @Builder
     private OAuthAttributes (String nameAttributeKey, OAuth2Response oAuth2Response) {
