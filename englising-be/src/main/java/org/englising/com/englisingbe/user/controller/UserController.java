@@ -24,8 +24,10 @@ public class UserController {
             description = "회원 프로필을 조회합니다"
     )
     public ResponseEntity<DefaultResponseDto<?>> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
-//        ProfileDto profileDto = userService.getProfile(userDetails.getUsername());
-        ProfileDto profileDto = userService.getProfile("262"); //todo. 추후 위로 수정
+//        Long userId = Long.parseLong(userDetails.getUsername());
+
+//        ProfileDto profileDto = userService.getProfile(userId);
+        ProfileDto profileDto = userService.getProfile(262L); //todo. 추후 위로 수정
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -41,9 +43,10 @@ public class UserController {
     )
     public ResponseEntity<DefaultResponseDto<?>> updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                             @RequestBody ProfileDto profileDto) {
+//        Long userId = Long.parseLong(userDetails.getUsername());
 
-//        userService.updateProfile(userDetails.getUsername(), profileDto);
-        userService.updateProfile("262", profileDto);
+//        userService.updateProfile(userId, profileDto);
+        userService.updateProfile(262L, profileDto);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -74,8 +77,11 @@ public class UserController {
             summary = "닉네임 중복 확인",
             description = "닉네임 중복 가능성을 확인합니다"
     )
-    public ResponseEntity<DefaultResponseDto<?>> checkNickname(@RequestBody NicknameRequestDto nicknameRequestDto) {
-        NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname());
+    public ResponseEntity<DefaultResponseDto<?>> checkNickname(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                               @RequestBody NicknameRequestDto nicknameRequestDto) {
+//        Long userId = Long.parseLong(userDetails.getUsername());
+//        NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname(), userId);
+        NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname(), 262L);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

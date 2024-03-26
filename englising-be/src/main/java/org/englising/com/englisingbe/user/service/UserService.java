@@ -32,23 +32,24 @@ public class UserService {
 //    todo. private final S3Service s3Service; s3 이미지 처리
 
     // UserId로 User 반환
-    public User getUserById(long userId) {
+    public User getUserById(Long userId) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new GlobalException(ErrorHttpStatus.USER_NOT_FOUND));
 
         return user;
     }
 
-    public ProfileDto getProfile(String userId) {
-        User user = getUserById(Long.parseLong(userId));
+    public ProfileDto getProfile(Long userId) {
+        User user = getUserById(userId);
 
         return new ProfileDto(user.getProfileImg(), user.getColor(), user.getNickname());
     }
 
-    public void updateProfile(String userId, ProfileDto profileDto) {
-        User user = getUserById(Long.parseLong(userId));
+    public void updateProfile(Long userId, ProfileDto profileDto) {
+        User user = getUserById(userId);
 
-        boolean isExist = userRepository.existsByNickname(profileDto.getNickname());
+        boolean isExist = userRepository.existsByNicknameAndUserIdNot(profileDto.getNickname(), userId);
+//        boolean isExist = userRepository.existsByNickname(profileDto.getNickname());
 
         if(isExist) {
             throw new GlobalException(ErrorHttpStatus.USER_NICKNAME_DUPLICATED);
@@ -56,12 +57,11 @@ public class UserService {
 
         // todo. s3에서 프로필 이미지 삭제
         //  후 새로운 이미지 등록
-
         user.updateUser(profileDto.getNickname(), profileDto.getColor(), profileDto.getProfileImg());
     }
 
-    public NicknameResponseDto checkNickname(String nickname) {
-        boolean isExist = userRepository.existsByNickname(nickname);
+    public NicknameResponseDto checkNickname(String nickname, Long userId) {
+        boolean isExist = userRepository.existsByNicknameAndUserIdNot(nickname, userId);
 
         return new NicknameResponseDto(isExist);
     }

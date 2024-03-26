@@ -1,5 +1,6 @@
 package org.englising.com.englisingbe.auth.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import org.englising.com.englisingbe.auth.SecurityAllowedUrls;
 import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
 import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.user.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -30,7 +32,6 @@ import java.util.Arrays;
 @Slf4j
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    // todo. "kakao로그인 페이지 get 요청" 추가
 
     private final JwtProvider jwtProvider;
     private final CookieUtil cookieUtil;
@@ -58,12 +59,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // refreshToken null이거나 만료시 다음 필터로 넘기지 않고 에러 반환
             if (refreshToken == null || !jwtProvider.isTokenValid(refreshToken)) {
-                //response Body
-                PrintWriter writer = response.getWriter();
-                writer.print("refresh Token invalid."); //todo. json형식으로 변경
 
-                // response status code
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.writeValue(response.getWriter(), ErrorHttpStatus.UNAUTHORIZED_REFRESH_TOKEN);
+
                 return;
 
             } else {
@@ -74,19 +76,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
                     Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
-
                     response.addCookie(accessCookie);
                     response.addCookie(refreshCookie);
 
-                    //response body
-                    PrintWriter writer = response.getWriter();
-                    writer.print("refreshToken invalid -> refreshToken reissued.");
+                    response.setContentType("application/json");
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
-                    //response status code
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    objectMapper.writeValue(response.getWriter(), ErrorHttpStatus.UNAUTHORIZED_ACCESS_TOKEN);
                     return;
 
                 } catch (Exception e) {
+                    log.info("JwtAuthenticationFilter -> " + e.getMessage());
 
                     PrintWriter writer = response.getWriter();
                     writer.print("Error while refreshing token: {}" + e.getMessage());
@@ -101,9 +102,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         //유효한 토큰이면 해당 토큰으로 Authentication 가져와서 SecurityContext에 저장
         Authentication authentication = jwtProvider.getAuthentication(accessToken); // 스프링 시큐리티 인증 토큰 생성
         SecurityContextHolder.getContext().setAuthentication(authentication); //세션에 사용자 등록
-        filterChain.doFilter(request, response); // 다음 필터 진행
-
+        filterChain.doFilter(request, response);
     }
 }
+
+
+//                //response Body
+//                PrintWriter writer = response.getWriter();
+//                writer.print("refresh Token invalid."); //todo. json형식으로 변경
+//
+//                // response status code
+//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
 
