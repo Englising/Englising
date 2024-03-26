@@ -5,8 +5,12 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from dotenv import load_dotenv
+import os
 
-chromedriver_path = "../chromedriver"
+load_dotenv()
+
+chromedriver_path = os.getenv("CHROMEDRIVER_PATH")
 
 
 class YoutubeCrawler:
@@ -32,8 +36,8 @@ class YoutubeCrawler:
                 duration_elements = item.find_elements(By.CSS_SELECTOR,
                                                        "span.style-scope.ytd-thumbnail-overlay-time-status-renderer")
                 duration = duration_elements[0].text.strip() if duration_elements else "Unknown"
-
-                print(f"Title: {title}, Duration: {duration}, YouTube ID: {youtube_id}")
+                if duration != "Unknown" and duration != "":
+                        print(f"Title: {title}, Duration: {duration}, YouTube ID: {youtube_id}")
         except Exception as e:
             print(f"Error: {e}")
 
