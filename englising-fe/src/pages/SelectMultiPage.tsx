@@ -22,8 +22,18 @@ const SelectMultiPage: React.FC = () => {
     const [selectedButton, setSelectedButton] = useState<string>(''); // 선택된 버튼 상태
 
     useEffect(() => {
-        // 페이지가 처음 렌더링될 때 "like" 버튼을 선택된 상태로 설정
-        setSelectedButton("all");
+        axios.get(`https://j10a106.p.ssafy.io/api/multiplay/rooms?genre=all&page=0&size=1000`)
+            .then((response) => {
+                // 응답 받아서 리스트에 넣기
+                setMultiRoom(response.data.data);
+                setSelectedButton("all");
+                console.log(response.data.data)
+                console.log('대기방 가져오기 성공');
+            })
+            .catch((error) => {
+                // 오류 처리
+                console.error(`대기방 목록 가져오기 실패`, error);
+            });
     }, []); 
 
     const handleClick = async (endpoint: string) => {
@@ -34,6 +44,7 @@ const SelectMultiPage: React.FC = () => {
             // 응답 받아서 리스트에 넣기
             setMultiRoom(response.data.data);
             setSelectedButton(endpoint);
+            console.log(response)
             console.log('대기방 목록 가져오기 성공');
         } catch (error) {
             // 오류 처리
@@ -64,7 +75,7 @@ const SelectMultiPage: React.FC = () => {
                         <div className='flex flex-row gap-6 pb-6'>
                             <RoomButton buttonText="All" apiEndpoint="all" onClick={handleClick} selected={selectedButton === "all"} />
                             <RoomButton buttonText="POP" apiEndpoint="pop"  onClick={handleClick} selected={selectedButton === "pop"} />
-                            <RoomButton buttonText="R&B" apiEndpoint="rnb" onClick={handleClick} selected={selectedButton === "hiphop"} />
+                            <RoomButton buttonText="R&B" apiEndpoint="rnb" onClick={handleClick} selected={selectedButton === "rnb"} />
                             <RoomButton buttonText="ROCK" apiEndpoint="rock"  onClick={handleClick} selected={selectedButton === "rock"} />
                             <RoomButton buttonText="DANCE" apiEndpoint="dance" onClick={handleClick} selected={selectedButton === "dance"} />
 
@@ -73,7 +84,7 @@ const SelectMultiPage: React.FC = () => {
                             {multiroom && multiroom.length > 0 ? ( // multiroom 배열이 비어있지 않은 경우에만 map 함수 호출
                                 <div className='text-white grid grid-cols-4 gap-9 justify-items-start overflow-y-auto'>
                                     {multiroom.map((item) => (
-                                        <Multiroom key={item.multiPlayId} room_name={item.roomName} room_id={item.multiPlayId} max_user={item.maxUser} current_user={item.currentUser} multi_img={item.multiPlayImgUrl} />
+                                        <Multiroom key={item.multiPlayId} roomName={item.roomName} roomId={item.multiPlayId} maxUser={item.maxUser} currentUser={item.currentUser} multiPlayImgUrl={item.multiPlayImgUrl} />
                                     ))}
                                 </div>
                             ) : (
