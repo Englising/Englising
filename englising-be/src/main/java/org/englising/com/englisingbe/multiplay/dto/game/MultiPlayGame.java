@@ -10,6 +10,7 @@ import org.englising.com.englisingbe.global.util.MultiPlayStatus;
 import java.util.List;
 import java.util.Map;
 import org.englising.com.englisingbe.music.entity.Lyric;
+import org.englising.com.englisingbe.music.entity.Track;
 
 @Data
 @Builder
@@ -17,7 +18,7 @@ import org.englising.com.englisingbe.music.entity.Lyric;
 @AllArgsConstructor
 public class MultiPlayGame {
     private Long multiPlayId;
-    private Long trackId;
+    private Track track;
     private int maxUser;
     private String roomName;
     private Genre genre;
@@ -25,6 +26,8 @@ public class MultiPlayGame {
     private int roomPw;
     private String multiplayImgUrl;
 
+    private String beforeLyric;
+    private String afterLyric;
     private List<MultiPlaySentence> sentences;
     private Map<Integer, String> answerAlphabets;
     private int selectedHint;
