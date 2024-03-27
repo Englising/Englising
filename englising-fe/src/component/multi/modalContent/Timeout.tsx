@@ -7,7 +7,6 @@ type ModalContentProps = {
 };
 
 function Timeout({ time, children }: ModalContentProps) {
-  console.log("round time", time);
   return (
     <>
       <div className="min-w-[45rem] px-16 py-16 text-center">

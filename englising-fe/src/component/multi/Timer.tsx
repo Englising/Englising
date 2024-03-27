@@ -1,9 +1,17 @@
 import styles from "./Multi.module.css";
 import useTimer from "../../hooks/useTimer";
+import { RefObject, forwardRef, useEffect } from "react";
+
+type TimerProps = {
+  roundTime: number;
+  leftTime: number;
+  status: string;
+  onModalOpen: () => void;
+};
 
 const RADIUS = Math.PI * 2 * 50;
 
-const Timer = ({ roundTime }: { roundTime: number }) => {
+const Timer = forwardRef(function Timer({ roundTime, leftTime, onModalOpen }: TimerProps, ref) {
   const calculateTime = (time: number) => {
     const min = Math.floor(time / 60);
     const sec = Math.floor(time - 60 * min);
@@ -11,7 +19,14 @@ const Timer = ({ roundTime }: { roundTime: number }) => {
     return min + " : " + String(sec).padStart(2, "0");
   };
 
-  const [, time] = useTimer(roundTime, false);
+  const [isOpen, time] = useTimer(roundTime, false);
+
+  useEffect(() => {
+    if (ref && isOpen) {
+      ref.current.showModal();
+      onModalOpen();
+    }
+  }, [isOpen]);
 
   return (
     <div className="relatvie w-20 h-20 mt-4 flex justify-center items-center border-4 border-white rounded-full">
@@ -38,6 +53,6 @@ const Timer = ({ roundTime }: { roundTime: number }) => {
       </p>
     </div>
   );
-};
+});
 
 export default Timer;

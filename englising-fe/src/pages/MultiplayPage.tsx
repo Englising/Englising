@@ -9,16 +9,31 @@ import Modal from "../component/multi/Modal";
 import Timeout from "../component/multi/modalContent/Timeout";
 import Success from "../component/multi/modalContent/Success";
 import Fail from "../component/multi/modalContent/Fail";
-import HintRoulette from "../component/multi/modalContent/HintRoulette.js";
-import MultiInputArea from "../component/multi/MultiInputArea.js";
+import HintRoulette from "../component/multi/modalContent/Hint/HintRoulette.js";
+import MultiInputArea from "../component/multi/MultiInputArea";
 import { Quiz } from "../component/multi/MultiInputArea";
 import useStomp from "../hooks/useStomp.js";
+import { getMultiplayInfo } from "../util/multiAxios.js";
+import Hint from "../component/multi/modalContent/Hint/Hint.js";
 
 export interface User {
   userId: number;
   profileImage: string;
   nickname: string;
 }
+
+type Track = {
+  afterLyric: string;
+  beforeLyric: string;
+  title: string;
+  youtubeId: string;
+};
+
+type Room = {
+  name: string;
+  currentUser: User[];
+  hint?: string;
+};
 
 function MultiplayPage() {
   const roundClient = useRef<Client>();
@@ -31,19 +46,8 @@ function MultiplayPage() {
   const [time, setTime] = useState<number>();
   const [leftTime, setLeftTime] = useState<number>();
   const [quiz, setQuiz] = useState<Quiz[]>();
-  const [userList, setUserList] = useState([
-    {
-      userId: 1,
-      nickname: "망곰",
-      profileImage:
-        "https://d2u3dcdbebyaiu.cloudfront.net/uploads/atch_img/654/d10c916fa0beb0b2ea3590f8fef4b728_res.jpeg",
-    },
-    {
-      userId: 2,
-      nickname: "마루",
-      profileImage: "https://i.pinimg.com/564x/86/42/7f/86427ff9f865c6e943e2b86497cbf098.jpg",
-    },
-  ]);
+  const [track, setTrack] = useState<Track>();
+  const [room, setRoom] = useState<Room>();
 
   const handleModalOpen = () => {
     setModalOpen(!modalOpen);
@@ -52,8 +56,16 @@ function MultiplayPage() {
   useEffect(() => {
     roundConnect();
     timeConnect();
-    // leftTime: 1
-    // message: "남은 시간 타이머"
+
+    // 참여 게임 정보 받기
+    // getMultiplayInfo(multiId as string)
+    //   .then((res) => {
+    //     setRoom({
+    //       currentUser: res.data.data.currentUser,
+    //       name: res.data.data.roomName,
+    //     });
+    //   })
+    //   .catch((e) => console.log(e));
 
     return () => {
       roundDisconnect();
@@ -63,7 +75,7 @@ function MultiplayPage() {
 
   const roundCallback = (body: IMessage) => {
     const json = JSON.parse(body.body);
-    console.log(json);
+    console.log("round", json);
     setStatus(json.status);
     setRound(json.round);
     switch (json.status) {
@@ -72,7 +84,13 @@ function MultiplayPage() {
         setTime(3);
         // 1라운드일 때 문제 정보 받기
         if (json.round == 1) {
-          setQuiz(json.data);
+          setQuiz(json.data.sentences);
+          setTrack({
+            afterLyric: json.data.afterLyric,
+            beforeLyric: json.data.beforeLyric,
+            title: json.data.trackTitle,
+            youtubeId: json.data.youtubeId,
+          });
         }
 
         if (json.round == 3) {
@@ -113,6 +131,10 @@ function MultiplayPage() {
     }
   }, [modalOpen]);
 
+  useEffect(() => {
+    console.log(status, time);
+  }, [status]);
+
   return (
     <>
       <div className="h-screen p-8 flex gap-10 bg-gray-800 text-white">
@@ -121,21 +143,25 @@ function MultiplayPage() {
             Round {round}/<span className="text-white">3</span>
           </p>
           <div className="flex flex-col gap-4 justify-self-start">
-            {userList.map((user) => {
+            {room?.currentUser.map((user) => {
               return <UserProfile key={user.userId} user={user} classes={"w-10 h-10"} />;
             })}
           </div>
-          {status == "INPUTSTART" ? <Timer roundTime={time as number} /> : ""}
+          {status == "INPUTSTART" ? (
+            <Timer ref={dialog} roundTime={time} status={status} leftTime={leftTime} onModalOpen={handleModalOpen} />
+          ) : (
+            ""
+          )}
         </section>
         <section className="grow grid grid-rows-[0.5fr_9fr] gap-4">
-          <p className="text-xl font-bold text-secondary-400 text-center">아보카도 좋아하는 모임</p>
+          <p className="text-xl font-bold text-secondary-400 text-center">{room && room.name}</p>
           <div className="flex flex-col gap-4">
             <div className="bg-gradient-to-r from-secondary-400 to-purple-500 rounded-full p-px text-center">
-              <div className="bg-gray-800 py-1 rounded-full">So come on, let's go</div>
+              <div className="bg-gray-800 py-1 rounded-full">{track && track.beforeLyric}</div>
             </div>
             <div className="h-full flex flex-col gap-4 justify-center">{quiz && <MultiInputArea quiz={quiz} />}</div>
             <div className="justify-self-end bg-gradient-to-r from-secondary-400 to-purple-500 rounded-full p-px text-center">
-              <div className="bg-gray-800 py-1 rounded-full">where we'll have some fun</div>
+              <div className="bg-gray-800 py-1 rounded-full">{track && track.afterLyric}</div>
             </div>
           </div>
         </section>
@@ -149,29 +175,32 @@ function MultiplayPage() {
       </div>
       {modalOpen && (
         <Modal ref={dialog}>
-          <Timeout time={time as number}>
-            {status == "ROUNDSTART" && (
-              <p>
-                {time}초 뒤 게임 시작과 함께
-                <br />
-                문제 구간의 음악이 재생됩니다!
-              </p>
-            )}
-            {status == "INPUTEND" && (
-              <>
-                <p className="text-secondary-400 font-bold text-3xl">답변 제출 기간이 종료되었습니다</p>
-                <p className="mt-6 mb-12 font-bold text-xl">{time}초 후, 이번 라운드의 결과가 공개됩니다</p>
-              </>
-            )}
-            {status == "ROUNDEND" && (
-              <>
-                <p>라운드 결과 들어갈곳</p>
-              </>
-            )}
-          </Timeout>
+          {round == 3 && status == "ROUNDSTART" ? (
+            <Hint />
+          ) : (
+            <Timeout time={time as number}>
+              {status == "ROUNDSTART" && (
+                <p>
+                  {time}초 뒤 게임 시작과 함께
+                  <br />
+                  문제 구간의 음악이 재생됩니다!
+                </p>
+              )}
+              {status == "INPUTEND" && (
+                <>
+                  <p className="text-secondary-400 font-bold text-3xl">답변이 제출되었습니다</p>
+                  <p className="mt-6 mb-12 font-bold text-xl">{time}초 후, 이번 라운드의 결과가 공개됩니다</p>
+                </>
+              )}
+              {status == "ROUNDEND" && (
+                <>
+                  <p>라운드 결과 들어갈곳</p>
+                </>
+              )}
+            </Timeout>
+          )}
           {/* <Success /> */}
           {/* <Fail /> */}
-          {/* <HintRoulette /> */}
         </Modal>
       )}
     </>
