@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface TrackLikeRepository extends JpaRepository<TrackLike, Long> {
-    Page<TrackLike> getTrackLikeByUserUserId(Long userId, Pageable pageable);
+    Page<TrackLike> getTrackLikeByUserUserIdAndIsLikedTrue(Long userId, Pageable pageable);
     boolean existsByUserUserIdAndTrackTrackIdAndIsLikedTrue(Long userId, Long trackId);
     @Query(value = "SELECT * FROM track_like t WHERE t.track_id = :trackId and t.user_id = :userId", nativeQuery = true)
     Optional<TrackLike> findByTrackIdAndUserId(Long userId, Long trackId);
