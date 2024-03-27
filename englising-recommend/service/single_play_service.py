@@ -10,7 +10,7 @@ from model import Lyric
 session = Session()
 
 
-def get_lyrics_from_track_id(track_id: int):
+def get_lyrics_from_track_id(track_id: int) -> List[LyricDto]:
     lyrics = lyric_crud.get_lyrics_by_track_id(session, track_id)
     return list(map(get_lyric_into_words, lyrics))
 
@@ -24,6 +24,7 @@ def get_lyric_into_words(lyric: Lyric) -> List[LyricDto]:
         tokenized_words = word_tokenize(word)
         finished_words.extend(tokenized_words)
     return LyricDto(
+        lyricId = lyric.lyric_id,
         isBlank = False,
         startTime = lyric.start_time,
         endTime = lyric.end_time,
