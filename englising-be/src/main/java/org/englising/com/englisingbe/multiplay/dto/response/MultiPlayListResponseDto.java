@@ -16,4 +16,6 @@ public class MultiPlayListResponseDto {
     private Integer maxUser;
     private String multiPlayImgUrl;
     private Genre genre;
+    private Boolean isSecret;
+    private Integer password;
 }

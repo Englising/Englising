@@ -28,6 +28,9 @@ public class SinglePlayWordService {
         Collections.sort(singlePlayWordList, new Comparator<SinglePlayWord>() {
             @Override
             public int compare(SinglePlayWord o1, SinglePlayWord o2) {
+                if(o1.getSentenceIndex() == o2.getSentenceIndex()){
+                    return o1.getWordIndex() - o2.getWordIndex();
+                }
                 return o1.getSentenceIndex() - o2.getSentenceIndex();
             }
         });

@@ -50,7 +50,7 @@ public class MultiPlaySetterService {
 
     private int getRandomIndex(List<Lyric> lyrics){
         Random random = new Random();
-        return random.nextInt(lyrics.size() - lyricTotal +1);
+        return 1 + random.nextInt(lyrics.size() - lyricTotal + 2);
     }
 
     private List<MultiPlaySentence> getMultiPlaySentenceFromLyric(List<Lyric> lyrics){

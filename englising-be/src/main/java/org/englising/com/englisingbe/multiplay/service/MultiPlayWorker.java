@@ -7,7 +7,7 @@ import java.util.Random;
 import org.englising.com.englisingbe.global.util.MultiPlayStatus;
 import org.englising.com.englisingbe.global.util.WebSocketUrls;
 import org.englising.com.englisingbe.multiplay.dto.game.MultiPlayGame;
-import org.englising.com.englisingbe.multiplay.dto.game.MultiPlaySentence;
+import org.englising.com.englisingbe.multiplay.dto.game.MultiPlayStartInfo;
 import org.englising.com.englisingbe.multiplay.dto.socket.HintAnswerDto;
 import org.englising.com.englisingbe.multiplay.dto.socket.RoundDto;
 import org.englising.com.englisingbe.multiplay.dto.socket.RoundResultDto;
@@ -53,10 +53,16 @@ public class MultiPlayWorker {
                 this.multiPlayGame = redisService.updateRoundStatus(multiPlayGame.getMultiPlayId(), 1, MultiPlayStatus.ROUNDSTART);
                 // 라운드 시작 알림 + 게임 정보 전송
                 messagingTemplate.convertAndSend(roundDestination,
-                        RoundDto.<List<MultiPlaySentence>>builder()
+                        RoundDto.<MultiPlayStartInfo>builder()
                                 .round(multiPlayGame.getRound())
                                 .status(MultiPlayStatus.ROUNDSTART)
-                                .data(multiPlayGame.getSentences())
+                                .data(MultiPlayStartInfo.builder()
+                                        .trackTitle(multiPlayGame.getTrack().getTitle())
+                                        .youtubeId(multiPlayGame.getTrack().getYoutubeId())
+                                        .beforeLyric(multiPlayGame.getBeforeLyric())
+                                        .afterLyric(multiPlayGame.getAfterLyric())
+                                        .sentences(multiPlayGame.getSentences())
+                                        .build())
                                 .build());
                 // 노래 시작 알림 예약
                 scheduleNextTask(this::sendMusicStartAlert, bufferTime);
