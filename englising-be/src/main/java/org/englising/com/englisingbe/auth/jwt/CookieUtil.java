@@ -22,7 +22,7 @@ public class CookieUtil {
         cookie.setPath("/");
         cookie.setSecure(false); // todo. true로 변경
 //        cookie.setSecure(true);
-        cookie.setDomain(".localhost");
+//        cookie.setDomain(".localhost");
         cookie.setHttpOnly(true);
 
         return cookie;
@@ -34,7 +34,7 @@ public class CookieUtil {
         cookie.setMaxAge(1209600);
         cookie.setPath("/");
         cookie.setSecure(false);
-        cookie.setDomain(".localhost"); //todo. 삭제
+//        cookie.setDomain(".localhost"); //todo. 삭제
 //        cookie.setSecure(true);
         cookie.setHttpOnly(true);
 
