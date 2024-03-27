@@ -20,7 +20,6 @@ from crud.track_crud import *
 # 4. 해당하는 영상이 없을 경우, NONE으로 update
 
 class YoutubeWorker:
-
     def __init__(self):
         self.job_queue = Queue()
         self.youtube_crawler = YoutubeCrawler()
@@ -50,7 +49,7 @@ class YoutubeWorker:
                 youtube_query_dto.artist_name,
                 youtube_query_dto.duration_ms
             )
-            youtube_query_dto.youtube_id = "NONE" if youtube_result.youtube_id is None else youtube_result.youtube_id
+            youtube_query_dto.youtube_id = "NONE" if youtube_result is None else youtube_result.youtube_id
             update_track(youtube_query_dto, session)
             session.commit()
         except Exception as e:
