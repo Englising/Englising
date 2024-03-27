@@ -38,7 +38,6 @@ public class AuthController {
         response.addCookie(accessCookie);
         response.addCookie(refreshCookie);
 
-        // ResponseEntity에 헤더와 본문 설정
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new DefaultResponseDto<>(200, "토큰 발급이 완료되었습니다.", jwtResponseDto));

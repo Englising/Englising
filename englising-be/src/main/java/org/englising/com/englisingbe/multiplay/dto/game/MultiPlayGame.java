@@ -9,6 +9,7 @@ import org.englising.com.englisingbe.global.util.MultiPlayStatus;
 
 import java.util.List;
 import java.util.Map;
+import org.englising.com.englisingbe.music.entity.Lyric;
 
 @Data
 @Builder
@@ -32,4 +33,6 @@ public class MultiPlayGame {
     private List<MultiPlayUser> users;
     private int round;
     private MultiPlayStatus status;
+
+    private boolean isGameEnd;
 }
