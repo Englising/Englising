@@ -6,6 +6,7 @@ import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.music.entity.Lyric;
 import org.englising.com.englisingbe.singleplay.dto.RightWordCntDto;
 import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
+import org.englising.com.englisingbe.singleplay.dto.response.LyricDto;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlay;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlayWord;
 import org.englising.com.englisingbe.singleplay.repository.SinglePlayWordRepository;
@@ -22,7 +23,7 @@ import java.util.List;
 public class SinglePlayWordService {
     private final SinglePlayWordRepository singlePlayWordRepository;
 
-    public List<SinglePlayWord> createSinglePlayWords(List<TrackWord> selectedWords, List<Lyric> lyrics, SinglePlay singlePlay){
+    public List<SinglePlayWord> createSinglePlayWords(List<TrackWord> selectedWords, List<LyricDto> lyrics, SinglePlay singlePlay){
         List<SinglePlayWord> singlePlayWordList = new ArrayList<>(trackWordsToSinglePlayWords(selectedWords, lyrics, singlePlay)); // 변경 가능한 리스트로 변환
         Collections.sort(singlePlayWordList, new Comparator<SinglePlayWord>() {
             @Override
@@ -65,7 +66,7 @@ public class SinglePlayWordService {
                 .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MATCHING_SINGLEPLAYWORD));
     }
 
-    private List<SinglePlayWord> trackWordsToSinglePlayWords(List<TrackWord> selectedWords, List<Lyric> lyrics, SinglePlay singlePlay){
+    private List<SinglePlayWord> trackWordsToSinglePlayWords(List<TrackWord> selectedWords, List<LyricDto> lyrics, SinglePlay singlePlay){
         return selectedWords.stream()
                 .map(trackWord -> {
                     return SinglePlayWord.builder()
@@ -84,9 +85,9 @@ public class SinglePlayWordService {
         return singlePlayWordRepository.saveAll(words);
     }
 
-    private long getFirstLyricId(List<Lyric> lyrics){
+    private long getFirstLyricId(List<LyricDto> lyrics){
         return lyrics.stream()
-                .min(Comparator.comparing(Lyric::getLyricId))
+                .min(Comparator.comparing(LyricDto::getLyricId))
                 .get().getLyricId();
     }
 }
