@@ -1,15 +1,8 @@
 package org.englising.com.englisingbe.multiplay.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
-import org.englising.com.englisingbe.global.exception.GlobalException;
-import org.englising.com.englisingbe.global.util.MultiPlayStatus;
 import org.englising.com.englisingbe.multiplay.dto.socket.AnswerDto;
-import org.englising.com.englisingbe.multiplay.dto.socket.HintDto;
-import org.englising.com.englisingbe.multiplay.dto.socket.RoundDto;
 import org.englising.com.englisingbe.multiplay.service.AnswerInputService;
-import org.englising.com.englisingbe.multiplay.service.AnswerQueueService;
-import org.englising.com.englisingbe.redis.service.RedisServiceImpl;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -34,13 +27,5 @@ public class SocketController {
     public AnswerDto sendAnswer(@DestinationVariable Long multiPlayId, @RequestBody AnswerDto answerDto){
         answerInputService.updateAnswer(multiPlayId, answerDto, 1L); //TODO userId 쿠키에서 가져오기
         return answerDto;
-    }
-
-    @MessageMapping("/hint/{multiPlayId}")
-    @SendTo("/sub/hint/{multiPlayId}")
-    public HintDto sendHintResult(@DestinationVariable Long multiPlayId, @RequestBody HintDto hintDto){
-        //TODO hint 결과 넘겨주는 로직
-
-        return hintDto;
     }
 }

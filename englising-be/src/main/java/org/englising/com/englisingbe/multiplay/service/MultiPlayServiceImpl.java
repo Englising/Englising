@@ -16,6 +16,7 @@ import org.englising.com.englisingbe.multiplay.dto.request.MultiPlayRequestDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayDetailResponseDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayListResponseDto;
 import org.englising.com.englisingbe.multiplay.entity.MultiPlay;
+import org.englising.com.englisingbe.multiplay.repository.MultiPlayHintRepository;
 import org.englising.com.englisingbe.multiplay.repository.MultiPlayImgRepository;
 import org.englising.com.englisingbe.multiplay.repository.MultiPlayRepository;
 import org.englising.com.englisingbe.music.service.LyricServiceImpl;
@@ -30,6 +31,8 @@ import org.springframework.stereotype.Service;
 public class MultiPlayServiceImpl {
     private final MultiPlayRepository multiPlayRepository;
     private final MultiPlayImgRepository multiPlayImgRepository;
+    private final MultiPlayHintRepository multiPlayHintRepository;
+
     private final TrackServiceImpl trackService;
     private final MultiPlaySetterService multiPlaySetterService;
     private final RedisServiceImpl redisService;
@@ -46,7 +49,7 @@ public class MultiPlayServiceImpl {
         redisService.saveMultiPlayGame(game);
         // Redis에 AnswerMap 저장
         redisService.saveAnswerMap(multiPlay.getMultiplayId(), multiPlaySetterService.getAnswerInputMapFromMultiPlaySentenceList(game.getSentences(), false));
-        //TODO AnswerQueue 생성, 시작 (MultiplayStart로 이동하기)
+        // AnswerQueue 생성, 시작
         answerQueueService.createQueue(multiPlay.getMultiplayId());
         answerQueueService.processQueue(multiPlay.getMultiplayId());
         return multiPlay.getMultiplayId();
@@ -126,7 +129,7 @@ public class MultiPlayServiceImpl {
                 .afterLyric(afterLyric)
                 .sentences(sentences)
                 .answerAlphabets(multiPlaySetterService.getAnswerInputMapFromMultiPlaySentenceList(sentences, true))
-                .selectedHint(0) //TODO 힌트 랜덤 선택
+                .selectedHint(Math.toIntExact(multiPlayHintRepository.findRandom().getMultiplayHintId()))
                 .managerUserId(userId)
                 .users(new ArrayList<>())
                 .round(1)
