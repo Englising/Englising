@@ -84,11 +84,9 @@ public class WordService {
         return getWordListDtoByPageAndList(wordList, singlePlays);
     }
 
-
-
     private WordListResponseDto getLikedWords(Integer page, Integer size, Long userId) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt", "createdAt"));
-        Page<WordLike> wordLikes = wordLikeRepository.getWordLikeByUserUserId(userId, pageable);
+        Page<WordLike> wordLikes = wordLikeRepository.getWordLikeByUserUserIdAndIsLikedTrue(userId, pageable);
         List<WordResponseDto> wordList = wordLikes
                 .stream()
                 .map(word -> {

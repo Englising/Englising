@@ -1,4 +1,4 @@
-package org.englising.com.englisingbe.like.dto;
+package org.englising.com.englisingbe.word.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TrackLikeResponseDto {
-    public boolean liked;
+public class WordLikeRequestDto {
+    public Long wordId;
 }
