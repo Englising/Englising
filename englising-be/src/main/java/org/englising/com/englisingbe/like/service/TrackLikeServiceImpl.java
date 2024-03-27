@@ -33,7 +33,7 @@ public class TrackLikeServiceImpl {
 
     public Page<TrackLike> getLikedTrackResponseDtoByUserId(Long userId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt", "createdAt"));
-        return trackLikeRepository.getTrackLikeByUserUserId(userId, pageable);
+        return trackLikeRepository.getTrackLikeByUserUserIdAndIsLikedTrue(userId, pageable);
     }
 
     public boolean checkTrackLikeByUserId(Long userId, Long trackId){
