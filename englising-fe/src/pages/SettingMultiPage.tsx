@@ -1,18 +1,20 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import Multiroom from '../component/main/MultiRoom.tsx';
 import RandomButton from '../component/main/RandomButton.tsx';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const SettingMulti = () => {
     const [roomImg, setRoomImg] = useState<string>("");
     const [isSecret, setIsSecret] = useState<boolean>(false);
+    const [multiId, setMultiId] = useState<number>(0);
     
     //일단 이 페이지 들어오면 roomImg api로 요청해서 바꿈
     useEffect(() => {
         axios.get("https://j10a106.p.ssafy.io/api/multiplay/image")
             .then((Response) => {
                 setRoomImg(Response.data.data);
-                console.log(roomImg)
+                setRoomInfo({ ...roomInfo, roomImg: Response.data.data});
             })
     }, []);
 
@@ -20,11 +22,13 @@ const SettingMulti = () => {
         axios.get("https://j10a106.p.ssafy.io/api/multiplay/image")
             .then((Response) => {
                 setRoomImg(Response.data.data);
-                console.log(roomImg)
+                setRoomInfo({ ...roomInfo, roomImg: Response.data.data});
             })
     };
 
     const [roomInfo, setRoomInfo] = useState({
+        roomId:0,
+        genre: "pop",
         roomName: "", // 방 이름
         maxUser: 2, // 최대 사용자 수
         currentUser: 1, // 현재 사용자 수
@@ -43,27 +47,40 @@ const SettingMulti = () => {
         setRoomInfo({ ...roomInfo, maxUser: parseInt(event.target.value) });
     };
 
+    //공개범위 변경
     const handlePublicityChange = (isPublic: boolean) => {
         setIsSecret(!isPublic); // 공개 여부 상태 업데이트
         setRoomInfo({ ...roomInfo, isSecret: !isPublic }); // roomInfo 업데이트
     };
 
+    //비밀번호 설정
     const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
         setRoomInfo({ ...roomInfo, password: event.target.value });
     };
+
+    const handleGenreChange = (genre: string) => {
+        setRoomInfo({ ...roomInfo, genre });
+    };    
+
 
     const finishSetting = async () => {
         if(roomInfo.roomName===""){
             alert("방 이름을 입력해주세요!");
         } 
         else{
+            console.log(roomInfo)
             axios.post("https://j10a106.p.ssafy.io/api/multiplay",{
                 roomName: roomInfo.roomName, // 방 이름
                 maxUser: roomInfo.maxUser, // 최대 사용자 수
                 currentUser: roomInfo.currentUser, // 현재 사용자 수
                 isSecret: roomInfo.isSecret,
                 password: roomInfo.password,
-                roomImg: roomImg,
+                multiPlayImgUrl: roomInfo.roomImg,
+                genre: roomInfo.genre,
+            })
+            .then((Response) => {
+                setMultiId(Response.data.data);
+                console.log(Response.data.data);
             })
             //request로 multiplayId 받아서 waitroom/multiplayId로 보내주기
         }
@@ -121,6 +138,34 @@ const SettingMulti = () => {
                             className='w-64 h-10 pl-3 bg-secondary-100 rounded-lg placeholder:text-primary-700 '
                             placeholder='방 이름을 입력하시오'
                         />
+                        {/* 장르 설정 */}
+                        <div>
+                        <button 
+                            className={`text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50 ${roomInfo.genre === 'rock' && 'bg-secondary-500 text-black border-0'}`} // hiphop 장르가 선택된 경우 스타일 적용
+                            onClick={() => handleGenreChange('rock')} // hiphop 버튼 클릭 시
+                        >
+                            ROCK
+                        </button>
+                        <button 
+                            className={`text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50 ${roomInfo.genre === 'pop' && 'bg-secondary-500 text-black border-0'}`} // pop 장르가 선택된 경우 스타일 적용
+                            onClick={() => handleGenreChange('pop')} // pop 버튼 클릭 시
+                        >
+                            POP
+                        </button>
+                        <button 
+                            className={`text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50 ${roomInfo.genre === 'rnb' && 'bg-secondary-500 text-black border-0'}`} // rnb 장르가 선택된 경우 스타일 적용
+                            onClick={() => handleGenreChange('rnb')} // rnb 버튼 클릭 시
+                        >
+                            R&B
+                        </button>
+                        <button 
+                            className={`text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50 ${roomInfo.genre === 'dance' && 'bg-secondary-500 text-black border-0'}`} // dance 장르가 선택된 경우 스타일 적용
+                            onClick={() => handleGenreChange('dance')} // dance 버튼 클릭 시
+                        >
+                            DANCE
+                        </button>
+                        </div>
+
                         {/* 공개범위설정 */}
                         <div className='flex flex-row space-x-5 pt-3.5 pb-4'>
                         <button 
@@ -148,17 +193,20 @@ const SettingMulti = () => {
                         
                         {/* 방 설정완료 */}
                         <div className='pl-28 pt-10' onClick={finishSetting}>
-                            <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'>방 설정 완료</button>
+                            <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'>
+                                <p>
+                                    <Link to ={`/waitroom/${multiId}`}>방 설정 완료</Link>
+                                </p>        
+                            </button>
                         </div>
                     </div>
                     {/* 방 미리보기 */}
                     <div className='h-48 pt-48 pl-24 flex flex-col items-center relative'>
                         <h1 className='text-white pb-5 text-sm'>↓ 랜덤 버튼을 눌러서 방 이미지를 바꿔봐요! ↓</h1>
-                        <Multiroom room_name={roomInfo.roomName} room_id={1} max_user={roomInfo.maxUser} current_user={roomInfo.currentUser} multi_img={roomImg} />
+                        <Multiroom roomName={roomInfo.roomName} roomId={1} maxUser={roomInfo.maxUser} currentUser={roomInfo.currentUser} multiPlayImgUrl={roomInfo.roomImg} />
                         <div className='absolute top-[250px] right-[35px]' onClick={changeRoomImg}><RandomButton/></div>
                         <h1 className='text-secondary-500 pt-6 font-semibold'>방 미리보기</h1>
                     </div>
-                    
                 </div>
             </div>
         </div>

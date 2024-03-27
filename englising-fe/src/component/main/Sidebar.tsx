@@ -31,16 +31,6 @@ const SideBar: React.FC = () => {
 
     const closeModal = () => {
         setModalOpen(false);
-        // 프로필 재설정
-        // 모달이 닫힐 때 프로필을 다시 불러오기
-        // axios.get("https://j10a106.p.ssafy.io/api/user/profile")
-        //     .then((Response) => {
-        //         setProfile(Response.data.data);
-        //         console.log(Response.data.data);
-        //     })
-        //     .catch((error) => {
-        //         console.error('프로필 가져오기 실패', error);
-        //     });
     }
 
     const updateProfile = (updatedProfile: Profile) => { // 프로필 업데이트 함수 정의
