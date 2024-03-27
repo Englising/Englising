@@ -63,6 +63,8 @@ public class MultiPlayServiceImpl {
                             .maxUser(multiPlayGame.getMaxUser())
                             .multiPlayImgUrl(multiPlayGame.getMultiplayImgUrl())
                             .genre(multiPlayGame.getGenre())
+                            .isSecret(multiPlayGame.isSecret())
+                            .password(multiPlayGame.getRoomPw())
                             .build();
                 }).toList();
     }
