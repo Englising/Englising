@@ -14,6 +14,7 @@ import java.util.List;
 public class MultiPlayStartInfo {
     private String trackTitle;
     private String youtubeId;
+    private int selectedHint;
     private String beforeLyric;
     private String afterLyric;
     private List<MultiPlaySentence> sentences;

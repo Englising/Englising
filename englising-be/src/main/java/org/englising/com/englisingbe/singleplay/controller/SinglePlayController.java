@@ -46,10 +46,10 @@ public class SinglePlayController {
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = TrackResponseDto.class)
+                    schema = @Schema(implementation = PlayListDto.class)
             )
     )
-    public ResponseEntity getPlaylists(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam PlayListType type, @RequestParam Integer page, @RequestParam Integer size){
+    public ResponseEntity getPlaylists(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(defaultValue = "pop") PlayListType type, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
@@ -72,7 +72,7 @@ public class SinglePlayController {
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = StartResponseDto.class)
+                    schema = @Schema(implementation = SinglePlayResponseDto.class)
             )
     )
     public ResponseEntity startSinglePlay(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody SinglePlayRequestDto startDto){
@@ -124,7 +124,7 @@ public class SinglePlayController {
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = ResultResponseDto.class)
+                    schema = @Schema(implementation = SinglePlayResponseDto.class)
             )
     )
     public ResponseEntity getSingleplayResult(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody Long singlePlayId){
