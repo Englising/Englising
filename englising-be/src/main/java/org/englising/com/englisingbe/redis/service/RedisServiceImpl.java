@@ -106,4 +106,8 @@ public class RedisServiceImpl {
         }
         return Optional.empty();
     }
+
+    public void deleteMultiPlayGame(Long multiPlayId){
+        redisTemplate.delete(gamePrefix + multiPlayId);
+    }
 }
