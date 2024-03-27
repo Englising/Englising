@@ -63,8 +63,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 // 응답에 쿠키 추가
                 response.addCookie(accessCookie);
                 response.addCookie(refreshCookie);
-                response.sendRedirect("https://j10a106.p.ssafy.io/englising/selectSingle1");
-//                response.sendRedirect("http://localhost:5173/englising/selectSingle1");
+//                response.sendRedirect("https://j10a106.p.ssafy.io/englising/selectSingle1");
+                response.sendRedirect("http://localhost:5173/englising/selectSingle1");
             } else {
                 log.info("OAuth2LoginSuccessHandler -> oAuth2User is null");
 
@@ -74,8 +74,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.writeValue(response.getWriter(), ErrorHttpStatus.OAUTH2_USER_NOT_FOUND);
 
-                response.sendRedirect("https://j10a106.p.ssafy.io");
-//                response.sendRedirect("http://localhost:5173");
+//                response.sendRedirect("https://j10a106.p.ssafy.io");
+                response.sendRedirect("http://localhost:5173");
             }
         } catch (Exception e) {
             throw e;
