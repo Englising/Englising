@@ -86,7 +86,7 @@ public class RedisServiceImpl {
     public void updateAlphabetInput(Long multiPlayId, AnswerDto answerDto){
         Map<Integer, String> answerMap = findMultiPlayAnswerMap(multiPlayId)
                 .orElseThrow(()->new GlobalException(ErrorHttpStatus.NO_MATCHING_MULTIPLAYGAME));
-        answerMap.put(answerDto.getAlphabetId(), answerDto.getAlphabet());
+        answerMap.put(answerDto.getAlphabetIndex(), answerDto.getAlphabet());
         System.out.println(answerMap);
         saveAnswerMap(multiPlayId, answerMap);
     }
