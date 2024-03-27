@@ -53,7 +53,6 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
     const handleProgress = (e: OnProgressProps) => {
         setPlayed(e.played);
         setPlayedSeconds(e.playedSeconds);
-        console.log(idx)
         if(timeData.current[idx+1] < e.playedSeconds+0.5){
             if(!isBlank){
                 onSetInfoIdx(idx+1);
@@ -111,11 +110,9 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
         const getData = async () => {
             if (trackId != undefined) {
                 const startTimeData = await getStartimeData(parseInt(trackId));
-                console.log("잘들어왔남??",startTimeData.data.startTime)
                 timeData.current = startTimeData.data.startTime;
             }
         }
-
         getData();
     }, [])
 
