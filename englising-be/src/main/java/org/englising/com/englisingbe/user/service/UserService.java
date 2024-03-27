@@ -83,9 +83,11 @@ public class UserService {
         int animalsIdx = (int) (Math.random() * animals.size());
         String ani = animals.get(animalsIdx);
 
-        String uuid = UUID.randomUUID().toString();
-
-        String nickname = adj + ani + uuid;
+        String nickname = adj + ani;
+        int nickCnt = userRepository.countByNicknameStartingWith(nickname);
+        if (nickCnt > 0) {
+            return nickname + (nickCnt + 1);
+        }
 
         return nickname;
     }
@@ -109,8 +111,5 @@ public class UserService {
         return profileColorRepository.findById(colorId)
                 .get().getProfileColor();
     }
-
-
-
 
 }
