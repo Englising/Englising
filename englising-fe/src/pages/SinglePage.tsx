@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { getSinglePlayData } from "../util/SinglePlayAPI";
 import Lyrics from "../component/single/Lyrics";
 import MusicPlayer from "../component/single/MusicPlayer";
@@ -53,6 +53,12 @@ const SinglePage = () => {
         trackId: string,
         level: string,
     }>();
+
+    
+    const { state } = useLocation();
+    const { img } = state;
+
+    const [bgImg, setBgImg] = useState<string>("");
 
     const [singleData, setSingleData] = useState<SingleData>({
         lyrics: [],
@@ -133,11 +139,6 @@ const SinglePage = () => {
         }
     }
 
-
-
-    //동적으로 url 구성, className에 들어가야함
-    const url = `bg-[url('src/assets/bam.PNG')] bg-cover bg-center h-screen w-screen p-0 m-0`;
-
     useEffect(() => {
 
         const data = {
@@ -154,6 +155,7 @@ const SinglePage = () => {
                 console.error('Error fetching data:', error)
             }
         }
+        setBgImg(`bg-[url('${img}')] bg-cover bg-center h-screen w-screen p-0 m-0`);
         getData();
     },[])
 
@@ -163,9 +165,11 @@ const SinglePage = () => {
             rightWord: 0,
             hintNum: 3,            
         });
-    },[singleData])
+    }, [singleData])
+
+
 return (
-        <div className={url}>            
+        <div className={bgImg}>            
             <div className="h-svh w-screen flex flex-col bg-black bg-opacity-80 items-center">
                 <div className="h-[90%] w-9/12 flex">
                     <div className="w-2/5 h-full items-center">
