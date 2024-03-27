@@ -1,12 +1,12 @@
 import useTimer from "../../../hooks/useTimer";
 
 type CountdownProps = {
-  time: number | undefined;
+  time: number;
   classes?: string;
 };
 
 const Countdown = ({ time, classes }: CountdownProps) => {
-  const [val, remainingTime] = useTimer(time, true);
+  const [, remainingTime] = useTimer(time, true);
 
   return <p className={`${classes}`}>{remainingTime}</p>;
 };
