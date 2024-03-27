@@ -1,5 +1,4 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
-import Multiroom from '../component/main/MultiRoom.tsx';
 import RandomButton from '../component/main/RandomButton.tsx';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -32,7 +31,7 @@ const SettingMulti = () => {
         roomName: "", // 방 이름
         maxUser: 2, // 최대 사용자 수
         currentUser: 1, // 현재 사용자 수
-        password: "",
+        password: 0,
         isSecret: false,
         roomImg: roomImg,
     });
@@ -55,7 +54,7 @@ const SettingMulti = () => {
 
     //비밀번호 설정
     const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setRoomInfo({ ...roomInfo, password: event.target.value });
+        setRoomInfo({ ...roomInfo, password: parseInt(event.target.value) });
     };
 
     const handleGenreChange = (genre: string) => {
@@ -94,17 +93,18 @@ const SettingMulti = () => {
                     {/* 설정할 카테고리 */}
                     <div className='flex flex-col pt-20 pl-6'>
                         <h1 className='text-white font-bold text-xl w-48 pb-16'>단체 플레이</h1>
-                        <div className='pl-3 font-extrabold text-secondary-500 space-y-20 pb-20'>
+                        <div className='pl-3 font-extrabold text-secondary-500 space-y-16 pb-20'>
                             <h1>인원 수</h1>
                             <h1>방 이름</h1>
+                            <h1>장르</h1>
                             <h1>공개 범위</h1>
                             {roomInfo.isSecret ? <h1>비밀 번호</h1> : <div></div>}
                         </div>
                     </div>
                     {/* 설정하기 */}
-                    <div className='flex flex-col pt-40 space-y-12'>
+                    <div className='flex flex-col pt-40 space-y-10'>
                         {/* 인원수 설정 */}
-                        <div className='flex flex-row pb-5'>
+                        <div className='flex flex-row pb-2'>
                             <div>
                                 <div className='text-white flex flex-row space-x-12'>
                                     <h1>2</h1>
@@ -139,7 +139,7 @@ const SettingMulti = () => {
                             placeholder='방 이름을 입력하시오'
                         />
                         {/* 장르 설정 */}
-                        <div>
+                        <div className='flex flex-row gap-2 pt-3'>
                         <button 
                             className={`text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50 ${roomInfo.genre === 'rock' && 'bg-secondary-500 text-black border-0'}`} // hiphop 장르가 선택된 경우 스타일 적용
                             onClick={() => handleGenreChange('rock')} // hiphop 버튼 클릭 시
@@ -167,7 +167,7 @@ const SettingMulti = () => {
                         </div>
 
                         {/* 공개범위설정 */}
-                        <div className='flex flex-row space-x-5 pt-3.5 pb-4'>
+                        <div className='flex flex-row space-x-5 pt-4 pb-4'>
                         <button 
                             className={`text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50 ${!isSecret && 'bg-secondary-500 text-black border-0'}`} // isSecret이 false면 선택된 스타일을 적용
                             onClick={() => handlePublicityChange(true)} // 전체공개 버튼 클릭 시 공개 상태로 변경
@@ -192,7 +192,7 @@ const SettingMulti = () => {
                         /> : <div></div>}
                         
                         {/* 방 설정완료 */}
-                        <div className='pl-28 pt-10' onClick={finishSetting}>
+                        <div className='pl-28 pt-8' onClick={finishSetting}>
                             <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'>
                                 <p>
                                     <Link to ={`/waitroom/${multiId}`}>방 설정 완료</Link>
@@ -203,7 +203,19 @@ const SettingMulti = () => {
                     {/* 방 미리보기 */}
                     <div className='h-48 pt-48 pl-24 flex flex-col items-center relative'>
                         <h1 className='text-white pb-5 text-sm'>↓ 랜덤 버튼을 눌러서 방 이미지를 바꿔봐요! ↓</h1>
-                        <Multiroom roomName={roomInfo.roomName} roomId={1} maxUser={roomInfo.maxUser} currentUser={roomInfo.currentUser} multiPlayImgUrl={roomInfo.roomImg} />
+                        <div className='text-white bg-primary-800/50 w-52 relative rounded-lg hover:opacity-50 relative'>
+                            <img src={roomInfo.roomImg} alt={roomInfo.roomName} className='w-52 h-48 rounded-t-lg '/>
+                            <div className='flex flex-row'>
+                                <div className='pt-2 pl-2'>
+                                    <div className='text-lg font-extrabold text-white pt-3'>{roomInfo.roomName} </div>
+                                    <div className='flex flex-row text-sm pb-4 gap-1'>
+                                        <div className='text-secondary-500'> {roomInfo.currentUser} </div>
+                                        <div>/</div>
+                                        <div> {roomInfo.maxUser}</div>
+                                    </div>
+                                </div>  
+                            </div>
+                        </div>
                         <div className='absolute top-[250px] right-[35px]' onClick={changeRoomImg}><RandomButton/></div>
                         <h1 className='text-secondary-500 pt-6 font-semibold'>방 미리보기</h1>
                     </div>
