@@ -31,8 +31,8 @@ public class SearchController {
 
     @GetMapping("/search")
     @Operation(
-            summary = "싱글플레이가 가능한 노래의 플레이리스트 조회",
-            description = "type 파라미터로 플레이리스트의 종류를 보내주세요. 페이지네이션이 적용되어 있습니다"
+            summary = "싱글플레이가 가능한 노래 중 노래 제목에 대한 검색 결과",
+            description = "type 파라미터로 검색어를 보내주세요. 페이지네이션이 적용되어 있습니다"
     )
     @Parameters({
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
@@ -43,10 +43,10 @@ public class SearchController {
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = TrackResponseDto.class)
+                    schema = @Schema(implementation = PlayListDto.class)
             )
     )
-    public ResponseEntity getPlaylists(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam String keyword, @RequestParam Integer page, @RequestParam Integer size){
+    public ResponseEntity getPlaylists(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(defaultValue = "space") String keyword, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
