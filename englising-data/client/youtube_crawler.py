@@ -59,7 +59,6 @@ class YoutubeCrawler:
             log(LogList.YOUTUBE.name, LogKind.INFO, f"Finished Searching {track_title} {artist_name}")
             return self.figure_closest_time(youtube_list, duration_ms)
 
-
     def extract_duration_from_aria_label(self, aria_label):
         parts = aria_label.split(" ")
         hours, minutes, seconds = 0, 0, 0
