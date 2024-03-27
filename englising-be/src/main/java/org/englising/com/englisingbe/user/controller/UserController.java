@@ -24,9 +24,9 @@ public class UserController {
             description = "회원 프로필을 조회합니다"
     )
     public ResponseEntity<DefaultResponseDto<?>> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
-//        Long userId = Long.parseLong(userDetails.getUsername());
-//        ProfileDto profileDto = userService.getProfile(userId);
-        ProfileDto profileDto = userService.getProfile(419L); //todo. 추후 위로 수정
+        Long userId = Long.parseLong(userDetails.getUsername());
+        ProfileDto profileDto = userService.getProfile(userId);
+//        ProfileDto profileDto = userService.getProfile(419L); //todo. 추후 위로 수정
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -42,9 +42,9 @@ public class UserController {
     )
     public ResponseEntity<DefaultResponseDto<?>> updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                             @RequestBody ProfileDto profileDto) {
-//        Long userId = Long.parseLong(userDetails.getUsername());
-//        userService.updateProfile(userId, profileDto);
-        userService.updateProfile(419L, profileDto);
+        Long userId = Long.parseLong(userDetails.getUsername());
+        userService.updateProfile(userId, profileDto);
+//        userService.updateProfile(419L, profileDto);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -77,9 +77,9 @@ public class UserController {
     )
     public ResponseEntity<DefaultResponseDto<?>> checkNickname(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                @RequestBody NicknameRequestDto nicknameRequestDto) {
-//        Long userId = Long.parseLong(userDetails.getUsername());
-//        NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname(), userId);
-        NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname(), 419L);
+        Long userId = Long.parseLong(userDetails.getUsername());
+        NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname(), userId);
+//        NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname(), 419L);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
