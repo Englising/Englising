@@ -66,5 +66,7 @@ def get_tracks_without_lyrics(session) -> Track:
 def get_tracks_without_words(session) -> List[Track]:
     return (session.query(Track)
             .outerjoin(TrackWord, Track.track_id == TrackWord.track_id)
-            .filter(TrackWord.track_id == None).limit(100).all())
-
+            .filter(TrackWord.track_id == None)
+            .filter(Track.lyric_status != 'RATEDR')
+            .limit(100)
+            .all())
