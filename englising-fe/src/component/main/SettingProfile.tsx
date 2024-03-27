@@ -45,7 +45,13 @@ const SettingProfile: React.FC<SettingProfileProps> = (props) => {
                 close(); // 모달 닫기
             })
             .catch((error) => {
-                console.error('프로필 업데이트 실패', error);
+                console.log(error.response.status);
+                if (error.response && error.response.request.status === 403) {
+                    alert("중복된 닉네임입니다");
+                } else {
+                    console.error('프로필 업데이트 실패', error);
+                }
+                // console.error('프로필 업데이트 실패', error);
             });
     };
 
