@@ -1,15 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import ChatMessage from "./ChatMessage";
 import { useParams } from "react-router";
 import { Client, IMessage } from "@stomp/stompjs";
+import ChatMessage from "./ChatMessage";
 import useStomp from "../../hooks/useStomp";
+import styles from "../multi/Multi.module.css";
 
 const loginUserId = 1;
-
-type Chat = {
-  userId: number;
-  message: string;
-};
 
 function ChatArea() {
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -78,7 +74,7 @@ function ChatArea() {
 
   const [connect, disconnect] = useStomp(client, `chat/${multiId}`, callback);
 
-  const publish = (chat: Chat) => {
+  const publish = () => {
     if (!client.current?.connected) return;
 
     client.current.publish({
@@ -92,8 +88,8 @@ function ChatArea() {
 
   const handleChatSubmit = () => {
     if (!inputRef.current) return;
-    const chat = { userId: loginUserId, message: inputRef.current.value };
-    publish(chat);
+
+    publish();
     inputRef.current.value = "";
   };
 
@@ -110,9 +106,9 @@ function ChatArea() {
   }, []);
 
   return (
-    <section className="max-h-[425px] flex flex-col p-2 bg-primary-400 rounded-lg">
+    <section className="max-h-[447px] flex flex-col p-2 bg-primary-400 rounded-lg">
       <p className="font-bold text-secondary-400 text-center">CHAT</p>
-      <div className="flex flex-col grow gap-2 my-1 px-1 overflow-y-scroll text-sm scrollbar">
+      <div className={`flex flex-col grow gap-2 my-1 px-1 overflow-y-scroll text-sm ${styles.scrollbar}`}>
         {chatList &&
           chatList.map((chat, index) => {
             let profileVisible = false;
