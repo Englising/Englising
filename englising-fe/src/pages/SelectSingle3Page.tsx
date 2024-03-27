@@ -1,10 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import img2002 from '../assets/2002.jpg';
-// import imgChanges from '../assets/changes.jpg';
-// import imgLover from '../assets/lover.jpg';
-// import imgSugar from '../assets/sugar.jpg';
-// import imgYouth from '../assets/youth.jpg';
-// import imgMe from '../assets/me.jpg';
 import LpPlayer from '../component/main/LpPlayer.tsx';
 import Singleroom from '../component/main/SingleRoom.tsx';
 import axios from 'axios';
@@ -61,6 +55,13 @@ const SelectSinglePage: React.FC = () => {
             youtubeId: playList[index].youtubeId,
         })
     }
+
+    const toggleLike = (index: number) => {
+        const updatedPlaylist = [...playList];
+        updatedPlaylist[index].is_like = !updatedPlaylist[index].is_like;
+        setPlayList(updatedPlaylist);
+    };
+
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 flex">
             {/*검색창*/}
@@ -94,10 +95,26 @@ const SelectSinglePage: React.FC = () => {
                         <div className='text-white grid grid-cols-3 gap-4 justify-items-start '>
                         {playList && playList.length > 0 ? ( // playList가 비어있지 않은 경우에만 map 함수 호출
                         playList.map((item, index) => (
-                            <div key={index} onClick={() => handleClickButton(index)}>
-                                <Singleroom album_title={item.albumTitle} title={item.trackTitle} artists={item.artists} img={item.albumImg} is_like={item.is_like} score={item.score} />
+                            <div key={index} className='relative' >
+                                <div onClick={() => handleClickButton(index)}>
+                                <Singleroom track_id={item.trackId} album_title={item.albumTitle} title={item.trackTitle} artists={item.artists} img={item.albumImg} is_like={item.is_like} score={item.score} />
+                                </div>
+                                {/* 하트 아이콘 */}
+                                {item.is_like ? (
+                                    <div onClick={() => toggleLike(index)} className='absolute top-0 left-0'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FF69B4" className="w-6 h-6 absolute left-2 top-2 z-40">
+                                        <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                                        </svg>
+                                    </div>
+                                ) : (
+                                    <div onClick={() => toggleLike(index)} className='absolute top-0 left-0'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 absolute left-2 top-2 z-40">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                                        </svg>
+                                    </div>
+                                )}
                             </div>
-                                ))
+                        ))
                             ) : (
                                 <div className="text-white w-48">플레이리스트가 비어있습니다.</div>
                             )}

@@ -1,65 +1,65 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Multiroom from '../component/main/MultiRoom.tsx';
-import imgRoom1 from '../assets/imgRoom1.jpg';
-import imgRoom2 from '../assets/imgRoom2.jpg';
-import imgRoom3 from '../assets/imgRoom3.jpg';
-import imgRoom4 from '../assets/imgRoom4.jpg';
-import imgRoom5 from '../assets/imgRoom5.jpg';
-import imgRoom6 from '../assets/imgRoom6.jpg';
-
+import axios from 'axios';
 
 interface Room {
-    room_id: number;
-    room_name: string;
-    current_user: number;
-    max_user: number;
-    multi_img: string;
+    multiPlayId: number;
+    roomName: string;
+    currentUser: number;
+    maxUser: number;
+    multiPlayImgUrl: string;
+}
+
+interface RoomButtonProps {
+    buttonText: string;
+    apiEndpoint: string;
+    onClick: (endpoint: string) => void; // 클릭 이벤트 핸들러
+    selected: boolean; // 선택된 버튼 여부
 }
 
 const SelectMultiPage: React.FC = () => {
-        
-    const room: Room[] = [{
-        room_id: 1,
-        room_name: 'A106 들어와라',
-        current_user: 5,
-        max_user: 6,
-        multi_img: imgRoom1,
-    }, {
-        room_id: 2,
-        room_name: '싸피초등학교 16기',
-        current_user: 4,
-        max_user: 6,
-        multi_img: imgRoom2,
-    },
-    {
-        room_id: 3,
-        room_name: '아보카도 좋아하는 모임',
-        current_user: 2,
-        max_user: 6,
-        multi_img: imgRoom3,
+    const [multiroom, setMultiRoom] = useState<Room[]>([]);
+    const [selectedButton, setSelectedButton] = useState<string>(''); // 선택된 버튼 상태
 
-    }, {
-        room_id: 4,
-        room_name: '싸피 오픽 스터디',
-        current_user: 3,
-        max_user: 5,
-        multi_img: imgRoom4,
+    useEffect(() => {
+        axios.get(`https://j10a106.p.ssafy.io/api/multiplay/rooms?genre=all&page=0&size=1000`)
+            .then((response) => {
+                // 응답 받아서 리스트에 넣기
+                setMultiRoom(response.data.data);
+                setSelectedButton("all");
+                console.log(response.data.data)
+                console.log('대기방 가져오기 성공');
+            })
+            .catch((error) => {
+                // 오류 처리
+                console.error(`대기방 목록 가져오기 실패`, error);
+            });
+    }, []); 
 
-    }, {
-        room_id: 5,
-        room_name: '돼지파뤼',
-        current_user: 3,
-        max_user: 4,
-        multi_img: imgRoom5,
+    const handleClick = async (endpoint: string) => {
+        try {
+            // API 호출
+            const response = await axios.get(`https://j10a106.p.ssafy.io/api/multiplay/rooms?genre=${endpoint}&page=0&size=1000`);
 
-    }, {
-        room_id: 6,
-        room_name: '대우부대찌개 갈 사람',
-        current_user: 4,
-        max_user: 6,
-        multi_img: imgRoom6,
-    }];
+            // 응답 받아서 리스트에 넣기
+            setMultiRoom(response.data.data);
+            setSelectedButton(endpoint);
+            console.log(response)
+            console.log('대기방 목록 가져오기 성공');
+        } catch (error) {
+            // 오류 처리
+            console.error(`대기방 목록 가져오기 실패`, error);
+        }
+    };
 
+    const RoomButton: React.FC<RoomButtonProps> = ({ buttonText, apiEndpoint, onClick, selected }) => {
+        return (
+            <button className={`text-black ${selected ? 'bg-secondary-500' : 'bg-primary-500'} w-24 h-7 rounded-full text-sm hover:opacity-50`} onClick={() => onClick(apiEndpoint)}>
+                {buttonText}
+            </button>
+        );
+    };
+    
     return (
         <div className="bg-black h-screen w-screen m-0 p-0 flex">
             <div className='flex flex-col pt-10 pl-8'>
@@ -73,18 +73,23 @@ const SelectMultiPage: React.FC = () => {
                         </div>
                         {/* 장르 선택 버튼 */}
                         <div className='flex flex-row gap-6 pb-6'>
-                            <button className='text-black bg-secondary-500 w-24 h-7 rounded-full text-sm hover:opacity-50'>All</button>
-                            <button className='text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50'>POP</button>
-                            <button className='text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50'>HIP-HOP</button>
-                            <button className='text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50'>ROCK</button>
-                            <button className='text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50'>DANCE</button>
+                            <RoomButton buttonText="All" apiEndpoint="all" onClick={handleClick} selected={selectedButton === "all"} />
+                            <RoomButton buttonText="POP" apiEndpoint="pop"  onClick={handleClick} selected={selectedButton === "pop"} />
+                            <RoomButton buttonText="R&B" apiEndpoint="rnb" onClick={handleClick} selected={selectedButton === "rnb"} />
+                            <RoomButton buttonText="ROCK" apiEndpoint="rock"  onClick={handleClick} selected={selectedButton === "rock"} />
+                            <RoomButton buttonText="DANCE" apiEndpoint="dance" onClick={handleClick} selected={selectedButton === "dance"} />
+
                         </div>
                         <div className="relative flex flex-col">
-                            <div className='text-white grid grid-cols-4 gap-9 justify-items-start overflow-y-auto'>
-                                {room.map((item)=> (
-                                    <Multiroom room_name={item.room_name} room_id={item.room_id} max_user={item.max_user} current_user={item.current_user} multi_img={item.multi_img}/>
-                                ))}
-                            </div>
+                            {multiroom && multiroom.length > 0 ? ( // multiroom 배열이 비어있지 않은 경우에만 map 함수 호출
+                                <div className='text-white grid grid-cols-4 gap-9 justify-items-start overflow-y-auto'>
+                                    {multiroom.map((item) => (
+                                        <Multiroom key={item.multiPlayId} roomName={item.roomName} roomId={item.multiPlayId} maxUser={item.maxUser} currentUser={item.currentUser} multiPlayImgUrl={item.multiPlayImgUrl} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-white w-full">대기방 목록이 없습니다.</div>
+                            )}
                         </div>
                     </div>
                 </div>
