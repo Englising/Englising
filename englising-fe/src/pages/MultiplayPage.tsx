@@ -1,27 +1,24 @@
 import { useEffect, useRef, useState } from "react";
+import { Client, IMessage } from "@stomp/stompjs";
+import { useParams } from "react-router";
 import UserProfile from "../component/multi/UserProfile";
 import ChatArea from "../component/chat/ChatArea";
 import MemoArea from "../component/multi/MemoArea";
-import NoticeArea from "../component/multi/NoticeArea";
 import Timer from "../component/multi/Timer";
 import Modal from "../component/multi/Modal";
 import Timeout from "../component/multi/modalContent/Timeout";
 import Success from "../component/multi/modalContent/Success";
 import Fail from "../component/multi/modalContent/Fail";
 import HintRoulette from "../component/multi/modalContent/HintRoulette.js";
-import useStomp from "../hooks/useStomp.js";
-import { Client, IMessage } from "@stomp/stompjs";
-import { useParams } from "react-router";
 import MultiInputArea from "../component/multi/MultiInputArea.js";
 import { Quiz } from "../component/multi/MultiInputArea";
+import useStomp from "../hooks/useStomp.js";
 
 export interface User {
   userId: number;
   profileImage: string;
   nickname: string;
 }
-
-const TIME = 5;
 
 function MultiplayPage() {
   const roundClient = useRef<Client>();
@@ -30,7 +27,7 @@ function MultiplayPage() {
   const { multiId } = useParams();
   const [modalOpen, setModalOpen] = useState(false);
   const [status, setStatus] = useState<string>();
-  const [round, setRound] = useState<number>();
+  const [round, setRound] = useState<number>(1);
   const [time, setTime] = useState<number>();
   const [leftTime, setLeftTime] = useState<number>();
   const [quiz, setQuiz] = useState<Quiz[]>();
@@ -66,16 +63,16 @@ function MultiplayPage() {
 
   const roundCallback = (body: IMessage) => {
     const json = JSON.parse(body.body);
-    // console.log("round sub", json);
+    console.log(json);
     setStatus(json.status);
     setRound(json.round);
     switch (json.status) {
       case "ROUNDSTART":
         setModalOpen(true);
+        setTime(3);
         // 1라운드일 때 문제 정보 받기
         if (json.round == 1) {
           setQuiz(json.data);
-          setTime(3);
         }
 
         if (json.round == 3) {
@@ -95,6 +92,7 @@ function MultiplayPage() {
         break;
       case "ROUNDEND":
         setModalOpen(true);
+        setTime(0);
         break;
     }
   };
@@ -115,14 +113,10 @@ function MultiplayPage() {
     }
   }, [modalOpen]);
 
-  useEffect(() => {
-    // setModalOpen(false);
-  }, [status]);
-
   return (
     <>
       <div className="h-screen p-8 flex gap-10 bg-gray-800 text-white">
-        <section className="shrink-0 grid grid-rows-[1fr_7fr_2fr] gap-4 justify-items-center">
+        <section className="shrink-0 grid grid-rows-[0.5fr_7fr_2fr] gap-4 justify-items-center">
           <p className="text-3xl font-bold text-secondary-400">
             Round {round}/<span className="text-white">3</span>
           </p>
@@ -131,26 +125,21 @@ function MultiplayPage() {
               return <UserProfile key={user.userId} user={user} classes={"w-10 h-10"} />;
             })}
           </div>
-          {status == "INPUTSTART" ? (
-            <Timer ref={dialog} roundTime={time} status={status} leftTime={leftTime} onModalOpen={handleModalOpen} />
-          ) : (
-            ""
-          )}
+          {status == "INPUTSTART" ? <Timer roundTime={time as number} /> : ""}
         </section>
-        <section className="grow grid grid-rows-[1fr_7fr_2fr] gap-4">
+        <section className="grow grid grid-rows-[0.5fr_9fr] gap-4">
           <p className="text-xl font-bold text-secondary-400 text-center">아보카도 좋아하는 모임</p>
           <div className="flex flex-col gap-4">
             <div className="bg-gradient-to-r from-secondary-400 to-purple-500 rounded-full p-px text-center">
               <div className="bg-gray-800 py-1 rounded-full">So come on, let's go</div>
             </div>
-            <div className="h-full flex flex-col gap-6 justify-center">{quiz && <MultiInputArea quiz={quiz} />}</div>
+            <div className="h-full flex flex-col gap-4 justify-center">{quiz && <MultiInputArea quiz={quiz} />}</div>
             <div className="justify-self-end bg-gradient-to-r from-secondary-400 to-purple-500 rounded-full p-px text-center">
               <div className="bg-gray-800 py-1 rounded-full">where we'll have some fun</div>
             </div>
           </div>
-          <NoticeArea />
         </section>
-        <section className="shrink-0 grid grid-rows-[1fr_7fr_2fr] gap-4">
+        <section className="shrink-0 grid grid-rows-[0.5fr_7fr_2fr] gap-4">
           <div className="flex-shrink-0">
             <button>나가기</button>
           </div>
@@ -160,7 +149,7 @@ function MultiplayPage() {
       </div>
       {modalOpen && (
         <Modal ref={dialog}>
-          <Timeout time={time}>
+          <Timeout time={time as number}>
             {status == "ROUNDSTART" && (
               <p>
                 {time}초 뒤 게임 시작과 함께
