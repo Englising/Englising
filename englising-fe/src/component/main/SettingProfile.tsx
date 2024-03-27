@@ -17,6 +17,7 @@ interface SettingProfileProps {
 const SettingProfile: React.FC<SettingProfileProps> = (props) => {
     const [profile, setProfile] = useState<Profile>({ color: '', nickname: '', profileImg: '' });
 
+
     const { open, close, updateProfile } = props;
 
     useEffect(() => {
@@ -34,7 +35,7 @@ const SettingProfile: React.FC<SettingProfileProps> = (props) => {
     const getRandomProfile = async () => {
         axios.get("https://j10a106.p.ssafy.io/api/user/profile/random")
             .then((Response) => {
-                setProfile(Response.data.data);
+                setProfile({ ...profile, profileImg: Response.data.data.profileImg, color: Response.data.data.color});
             })
     };
 

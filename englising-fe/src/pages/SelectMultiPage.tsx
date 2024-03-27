@@ -8,6 +8,9 @@ interface Room {
     currentUser: number;
     maxUser: number;
     multiPlayImgUrl: string;
+    isSecret: boolean;
+    genre: string;
+    password : number;
 }
 
 interface RoomButtonProps {
@@ -22,7 +25,9 @@ const SelectMultiPage: React.FC = () => {
     const [selectedButton, setSelectedButton] = useState<string>(''); // 선택된 버튼 상태
 
     useEffect(() => {
-        axios.get(`https://j10a106.p.ssafy.io/api/multiplay/rooms?genre=all&page=0&size=1000`)
+        axios.get(`https://j10a106.p.ssafy.io/api/multiplay/rooms?genre=all&page=0&size=1000`, {
+            withCredentials: true, 
+        })
             .then((response) => {
                 // 응답 받아서 리스트에 넣기
                 setMultiRoom(response.data.data);
@@ -35,6 +40,8 @@ const SelectMultiPage: React.FC = () => {
                 console.error(`대기방 목록 가져오기 실패`, error);
             });
     }, []); 
+
+
 
     const handleClick = async (endpoint: string) => {
         try {
@@ -84,7 +91,7 @@ const SelectMultiPage: React.FC = () => {
                             {multiroom && multiroom.length > 0 ? ( // multiroom 배열이 비어있지 않은 경우에만 map 함수 호출
                                 <div className='text-white grid grid-cols-4 gap-9 justify-items-start overflow-y-auto'>
                                     {multiroom.map((item) => (
-                                        <Multiroom key={item.multiPlayId} roomName={item.roomName} roomId={item.multiPlayId} maxUser={item.maxUser} currentUser={item.currentUser} multiPlayImgUrl={item.multiPlayImgUrl} />
+                                        <Multiroom key={item.multiPlayId} roomName={item.roomName} roomId={item.multiPlayId} maxUser={item.maxUser} currentUser={item.currentUser} multiPlayImgUrl={item.multiPlayImgUrl} isSecret={item.isSecret} genre={item.genre} password={item.password}/>
                                     ))}
                                 </div>
                             ) : (
