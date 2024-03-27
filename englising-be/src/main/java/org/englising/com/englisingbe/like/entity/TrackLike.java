@@ -1,10 +1,7 @@
 package org.englising.com.englisingbe.like.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.englising.com.englisingbe.music.entity.Track;
 import org.englising.com.englisingbe.user.entity.User;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,7 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Timestamp;
 
 @Entity
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,4 +39,8 @@ public class TrackLike {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    public void updateTrackLike(Boolean isLiked) {
+        this.isLiked = isLiked;
+    }
 }
