@@ -18,6 +18,7 @@ import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayListRespons
 import org.englising.com.englisingbe.multiplay.entity.MultiPlay;
 import org.englising.com.englisingbe.multiplay.repository.MultiPlayImgRepository;
 import org.englising.com.englisingbe.multiplay.repository.MultiPlayRepository;
+import org.englising.com.englisingbe.music.service.LyricServiceImpl;
 import org.englising.com.englisingbe.music.service.TrackServiceImpl;
 import org.englising.com.englisingbe.redis.service.RedisServiceImpl;
 import org.englising.com.englisingbe.user.service.UserService;
@@ -35,6 +36,7 @@ public class MultiPlayServiceImpl {
     private final UserService userService;
     private final SimpMessagingTemplate messagingTemplate;
     private final AnswerQueueService answerQueueService;
+    private final LyricServiceImpl lyricService;
 
     public Long createMultiPlay(MultiPlayRequestDto requestDto, Long userId) {
         MultiPlay multiPlay = multiPlayRepository
@@ -105,15 +107,21 @@ public class MultiPlayServiceImpl {
 
     private MultiPlayGame getMultiPlayGameFromMultiPlay(MultiPlay multiPlay, Long userId){
         List<MultiPlaySentence> sentences = multiPlaySetterService.getMultiPlaySentenceListFromTrack(multiPlay.getTrack().getTrackId());
+        long startLyricId = lyricService.getLyricIdByStartTimeAndTrackId(multiPlay.getTrack().getTrackId(), sentences.get(0).getStartTime());
+        long endLyricId = lyricService.getLyricIdByStartTimeAndTrackId(multiPlay.getTrack().getTrackId(), sentences.get(sentences.size()-1).getStartTime());
+        String beforeLyric = lyricService.getLyricByLyricId(startLyricId-1).getEnText();
+        String afterLyric = lyricService.getLyricByLyricId(endLyricId+1).getEnText();
         return MultiPlayGame.builder()
                 .multiPlayId(multiPlay.getMultiplayId())
-                .trackId(multiPlay.getTrack().getTrackId())
+                .track(multiPlay.getTrack())
                 .maxUser(multiPlay.getMaxUser())
                 .roomName(multiPlay.getRoomName())
                 .genre(multiPlay.getGenre())
                 .isSecret(multiPlay.getIsSecret())
                 .roomPw(multiPlay.getRoomPw())
                 .multiplayImgUrl(multiPlay.getMultiPlayImgUrl())
+                .beforeLyric(beforeLyric)
+                .afterLyric(afterLyric)
                 .sentences(sentences)
                 .answerAlphabets(multiPlaySetterService.getAnswerInputMapFromMultiPlaySentenceList(sentences, true))
                 .selectedHint(0) //TODO 힌트 랜덤 선택
