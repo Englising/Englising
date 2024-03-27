@@ -37,21 +37,21 @@ def main():
 
     # album_thread.start()
     # artist_thread.start()
-    track_thread.start()
+    # track_thread.start()
     youtube_thread.start()
     lyric_thread.start()
     lyric_translate_thread.start()
-    # lyric_word_thread.start()
-    # genre_configure_thread.start()
+    lyric_word_thread.start()
+    genre_configure_thread.start()
 
     # album_thread.join()
     # artist_thread.join()
-    track_thread.join()
+    # track_thread.join()
     youtube_thread.join()
     lyric_thread.join()
     lyric_translate_thread.join()
-    # lyric_word_thread.join()
-    # genre_configure_thread.join()
+    lyric_word_thread.join()
+    genre_configure_thread.join()
 
 
 if __name__ == "__main__":
