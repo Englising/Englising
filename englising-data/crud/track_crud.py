@@ -1,5 +1,6 @@
 from typing import List
 
+from database.mysql_manager import Session
 from dto.track_dto import YoutubeQueryDto
 from model import TrackWord
 from model.artist import Artist
@@ -66,5 +67,19 @@ def get_tracks_without_lyrics(session) -> Track:
 def get_tracks_without_words(session) -> List[Track]:
     return (session.query(Track)
             .outerjoin(TrackWord, Track.track_id == TrackWord.track_id)
-            .filter(TrackWord.track_id == None).limit(100).all())
+            .filter(TrackWord.track_id == None)
+            .filter(Track.lyric_status != 'RATEDR')
+            .limit(100)
+            .all())
 
+
+def get_tracks_without_genre(session) -> List[Track]:
+    return (session.query(Track)
+            .filter(Track.genre == None)
+            .limit(100)
+            .all())
+
+
+def update_track_genre(session: Session, track: Track, genre: str):
+    session.query(Track).filter(Track.track_id == track.track_id).update({"genre": genre})
+    session.flush()
