@@ -176,6 +176,7 @@ public class SinglePlayServiceImpl {
 
     private PlayListDto getRecommendedTracks(Integer page, Integer size, Long userId){
         // TODO FastAPI를 통해 추천 플레이리스트 가져오는 로직 구현
+        List<TrackResponseDto> recommendedTracks = recommendApiService.getRecommendTrackByUserId(userId);
         return getLikedTracks(page, size, userId);
     }
 
