@@ -12,8 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LyricDto {
-    public Boolean isBlank;
-    public Float startTime;
-    public Float endTime;
-    public List<String> lyric;
+    private Long lyricId;
+    private Boolean isBlank;
+    private Float startTime;
+    private Float endTime;
+    private List<String> lyric;
 }

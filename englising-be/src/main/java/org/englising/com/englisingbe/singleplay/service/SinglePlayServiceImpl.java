@@ -21,6 +21,7 @@ import org.englising.com.englisingbe.like.entity.TrackLike;
 import org.englising.com.englisingbe.like.service.TrackLikeServiceImpl;
 import org.englising.com.englisingbe.music.service.TrackServiceImpl;
 import org.englising.com.englisingbe.user.service.UserService;
+import org.englising.com.englisingbe.webclient.service.RecommendApiService;
 import org.englising.com.englisingbe.word.entity.TrackWord;
 import org.englising.com.englisingbe.word.service.TrackWordService;
 import org.springframework.data.domain.Page;
@@ -45,6 +46,7 @@ public class SinglePlayServiceImpl {
     private final SinglePlayRepository singlePlayRepository;
     private final SinglePlayHintRepository singlePlayHintRepository;
     private final SinglePlayWordService singlePlayWordService;
+    private final RecommendApiService recommendApiService;
 
     public PlayListDto getPlayList(PlayListType type, Integer page, Integer size, Long userId) {
         switch (type) {
@@ -69,18 +71,17 @@ public class SinglePlayServiceImpl {
                         .user(userService.getUserById(userId))
                         .track(trackService.getTrackByTrackId(trackId))
                 .build());
-        // 해당 Track의 Lyrics 가져옴
-        //TODO : trackId 변경
-        List<Lyric> lyrics = lyricService.getAllLyricsByTrackId(trackId);
+        // Lyric이 토큰 단위로 잘린 Dto 가져옴
+        List<LyricDto> lyricWordSplitted = recommendApiService.getSplittedWordsOfLyricByTrackId(trackId);
         // 해당 Track의 Random Words 가져옴
         //TODO : Random 아니게 변경
         List<TrackWord> selectedWords = trackWordService.getRandomTrackWords(trackId);
         // SinglePlay-Word에 저장
-        List<SinglePlayWord> singlePlayWordList = singlePlayWordService.createSinglePlayWords(selectedWords, lyrics, singlePlay);
+        List<SinglePlayWord> singlePlayWordList = singlePlayWordService.createSinglePlayWords(selectedWords, lyricWordSplitted, singlePlay);
         // Dto 생성
         return SinglePlayResponseDto.builder()
                 .singlePlayId(singlePlay.getSinglePlayId())
-                .lyrics(getLyricDtoFromLyricList(lyrics, singlePlayWordList))
+                .lyrics(getLyricDtoFromLyricList(lyricWordSplitted, singlePlayWordList))
                 .words(getWordDtoFromSinglePlayWord(singlePlayWordList))
                 .totalWordCnt(singlePlayWordList.size())
                 .rightWordCnt((int) singlePlayWordList.stream()
@@ -109,13 +110,13 @@ public class SinglePlayServiceImpl {
         // SinglePlay Repository에서 조회
         SinglePlay singlePlay = getSinglePlayById(singlePlayId);
         // 해당 Track의 Lyrics 가져옴
-        List<Lyric> lyrics = lyricService.getAllLyricsByTrackId(singlePlay.getTrack().getTrackId());
+        List<LyricDto> lyricWordSplitted = recommendApiService.getSplittedWordsOfLyricByTrackId(singlePlay.getTrack().getTrackId());
         // SinglePlay-Word에 저장
         List<SinglePlayWord> singlePlayWordList = singlePlayWordService.getAllSinglePlayWordsBySinglePlayId(singlePlayId);
         // Dto 생성
         return SinglePlayResponseDto.builder()
                 .singlePlayId(singlePlay.getSinglePlayId())
-                .lyrics(getLyricDtoFromLyricList(lyrics, singlePlayWordList))
+                .lyrics(getLyricDtoFromLyricList(lyricWordSplitted, singlePlayWordList))
                 .words(getWordDtoFromSinglePlayWord(singlePlayWordList))
                 .totalWordCnt(singlePlayWordList.size())
                 .rightWordCnt((int) singlePlayWordList.stream()
@@ -132,7 +133,6 @@ public class SinglePlayServiceImpl {
                         .map(lyric -> lyric.getStartTime().floatValue()).toList())
                 .build();
     }
-
 
     public PlayListDto getSearchTracks(String keyword, Integer page, Integer size, Long userId){
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "spotifyPopularity"));
@@ -203,17 +203,12 @@ public class SinglePlayServiceImpl {
                 .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MACHING_SINGLEPLAY));
     }
 
-    private List<LyricDto> getLyricDtoFromLyricList(List<Lyric> lyricList, List<SinglePlayWord> singlePlayWordList) {
+    private List<LyricDto> getLyricDtoFromLyricList(List<LyricDto> lyricList, List<SinglePlayWord> singlePlayWordList) {
         return lyricList.stream()
                 .map(lyric -> {
-                    boolean isBlank = singlePlayWordList.stream()
-                            .anyMatch(spw -> spw.getLyric().getLyricId().equals(lyric.getLyricId()));
-                    return LyricDto.builder()
-                            .isBlank(isBlank)
-                            .startTime(lyric.getStartTime().floatValue())
-                            .endTime(lyric.getEndTime().floatValue())
-                            .lyric(Arrays.asList(lyric.getEnText().split(" ")))
-                            .build();
+                    lyric.setIsBlank(singlePlayWordList.stream()
+                            .anyMatch(spw -> spw.getLyric().getLyricId().equals(lyric.getLyricId())));
+                    return lyric;
                 }).collect(Collectors.toList());
     }
 
