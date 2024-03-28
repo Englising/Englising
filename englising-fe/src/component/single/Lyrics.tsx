@@ -102,7 +102,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
             }
 
              // 문장에 정답을 모두 맞췄을때, SinglePage Data 자체를 바꿔줌 (여긴 더이상 빈칸이 없어!)
-            if(blankNum == 1 && incorrectNum == 0){
+            if(blankNum == 1 && incorrectNum == 0 || blankNum == 0 && incorrectNum == 1){
                 onSetIsBlank(idx);
             }
 
