@@ -4,7 +4,7 @@ import { MutableRefObject } from "react";
 const useStomp = (client: MutableRefObject<Client | undefined>, url: string, callback: (body: IMessage) => void) => {
   const connect = () => {
     client.current = new Client({
-      brokerURL: "wss://j10a106.p.ssafy.io/ws-stomp",
+      brokerURL: import.meta.env.VITE_SOKCET_BROKER_URL,
       onConnect: () => {
         console.log("connect success");
         client.current?.subscribe(`/sub/${url}`, callback);
