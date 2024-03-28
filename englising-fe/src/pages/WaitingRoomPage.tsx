@@ -36,10 +36,10 @@ const WaitingRoomPage: React.FC = () => {
     const [connect, disconnect] =useStomp(client, `participant/${params}`, (message: IMessage) => {
         console.log("Received message:", message.body);
         const userData = JSON.parse(message.body);
-        const state = userData.state;
+        const state = userData.kind;
 
-        const userExists = multiroom?.currentUser.some(user => user.userId === userData.userId);
-        if (!userExists) {
+        // const userExists = multiroom?.currentUser.some(user => user.userId === userData.userId);
+        // if (!userExists) {
             if (state === 'enter') {
                 setMultiRoom(prevState => {
                     if (!prevState) return prevState;
@@ -59,7 +59,8 @@ const WaitingRoomPage: React.FC = () => {
                 disconnect();
             }
         }
-    });
+    // }
+    );
 
     useEffect(() => {
         axios.get(`https://j10a106.p.ssafy.io/api/multiplay/${params}`)
@@ -71,6 +72,7 @@ const WaitingRoomPage: React.FC = () => {
 
     useEffect(()=>{
         console.log("연결 시도")
+        console.log(multiroom)
         connect();
 
         return () => disconnect();
@@ -79,6 +81,11 @@ const WaitingRoomPage: React.FC = () => {
     const leaveRoom = ():void => {
         axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`)
     }
+
+    const startGame = ():void => {
+        window.location.href = `/waitroom/${multiroom?.multiPlayId}`;
+    }
+
 
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 ">
@@ -123,13 +130,11 @@ const WaitingRoomPage: React.FC = () => {
                     </div>
                 </div>
 
-                <div className='flex flex-row justify-center pt-10'>
+                <div className='flex flex-row justify-center pt-10 gap-8'>
                     {/* 방장이면 이거 표시되게 */}
                     {/* {(userId === multiroom?.managerUserId) && */}
-                    <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'> 
-                        <p>
-                        <Link to = {`/multiPlay/${multiroom?.multiPlayId}`}> 게임시작 </Link>
-                        </p>
+                    <button onClick={startGame} className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'> 
+                        게임시작        
                     </button> 
                     {/* } */}
                     <button onClick={leaveRoom} className='text-black bg-red-400 w-48 h-12 rounded-lg text-sm hover:opacity-50'>

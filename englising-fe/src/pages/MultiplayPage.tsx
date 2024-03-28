@@ -10,7 +10,7 @@ import Timeout from "../component/multi/modalContent/Timeout";
 import Success from "../component/multi/modalContent/Success";
 import Fail from "../component/multi/modalContent/Fail";
 import HintRoulette from "../component/multi/modalContent/Hint/HintRoulette.js";
-import MultiInputArea from "../component/multi/MultiInputArea";
+import MultiInputArea, { Alphabet } from "../component/multi/MultiInputArea";
 import { Quiz } from "../component/multi/MultiInputArea";
 import Hint from "../component/multi/modalContent/Hint/Hint.js";
 import useStomp from "../hooks/useStomp";
@@ -40,11 +40,11 @@ type Track = {
   endTime: number;
 };
 
-type Room = {
+interface Room {
   name: string;
   currentUser: User[];
-  hint?: string;
-};
+  hint: number;
+}
 
 function MultiplayPage() {
   const roundClient = useRef<Client>();
@@ -56,9 +56,10 @@ function MultiplayPage() {
   const [round, setRound] = useState<number>(1);
   const [time, setTime] = useState<number>();
   const [leftTime, setLeftTime] = useState<number>();
-  const [quiz, setQuiz] = useState<Quiz[]>();
-  const [track, setTrack] = useState<Track>();
-  const [room, setRoom] = useState<Room>();
+  const [quiz, setQuiz] = useState<Quiz[]>([]);
+  const [track, setTrack] = useState<Track | null>(null);
+  const [room, setRoom] = useState<Room | null>(null);
+  const [hintResult, setHintResult] = useState<Alphabet[] | null>(null);
 
   const handleModalOpen = () => {
     setModalOpen(!modalOpen);
@@ -71,7 +72,6 @@ function MultiplayPage() {
     speed: 1,
     onPlay: 0,
   });
-
 
   const basicPlay = () => {
     // 특정시간에 도달하면 playInfo 값 넣어주기 (url, startTime, endTime, speed)
@@ -114,7 +114,7 @@ function MultiplayPage() {
         setRoom({
           currentUser: res.data.data.currentUser,
           name: res.data.data.roomName,
-          hint: res.data.data.selectedHint,
+          hint: 0,
         });
       })
       .catch((e) => console.log(e));
@@ -130,19 +130,17 @@ function MultiplayPage() {
     console.log("round", json);
     setStatus(json.status);
     setRound(json.round);
-    
+
     if (json.data.sentences != undefined) {
-      setPlayInfo(
-      {
+      setPlayInfo({
         url: `https://www.youtube.com/watch?v=${json.data.youtubeId}`, //처음에 초기화 해줘야함.
         startTime: json.data.sentences[0].startTime,
-        endTime: json.data.sentences[json.data.sentences.length-1].endTime,
+        endTime: json.data.sentences[json.data.sentences.length - 1].endTime,
         speed: 1,
         onPlay: 0,
-      }
-    );
+      });
     }
-    
+
     switch (json.status) {
       case "ROUNDSTART":
         setModalOpen(true);
@@ -155,18 +153,18 @@ function MultiplayPage() {
             beforeLyric: json.data.beforeLyric,
             title: json.data.trackTitle,
             youtubeId: json.data.youtubeId,
-            startTime: json.data.sentences[0].startTime,
-            endTime: json.data.sentences[json.data.sentences.length-1].endTime,
+            startTime: 1,
+            endTime: 2,
+          });
+          setRoom((prev) => {
+            return { ...prev, hint: parseInt(json.data.selectedHint) };
           });
         }
 
-        if (json.round == 3) {
-          setModalOpen(false);
-        }
         break;
       case "MUSICSTART":
         setModalOpen(false);
-        if(track != undefined) setTime(track?.endTime - track?.startTime);
+        if (track != undefined) setTime(track?.endTime - track?.startTime);
         break;
       case "INPUTSTART":
         setModalOpen(false);
@@ -180,6 +178,8 @@ function MultiplayPage() {
         setModalOpen(true);
         setTime(0);
         break;
+      case "HINTRESULT":
+        setHintResult(json.data);
     }
   };
 
@@ -191,7 +191,6 @@ function MultiplayPage() {
   const [roundConnect, roundDisconnect] = useStomp(roundClient, `round/${multiId}`, roundCallback);
   const [timeConnect, timeDiscconnect] = useStomp(timeClient, `time/${multiId}`, timeCallback);
 
-  
   useEffect(() => {
     if (modalOpen) {
       dialog.current?.showModal();
@@ -204,7 +203,6 @@ function MultiplayPage() {
     }
   }, [modalOpen]);
 
-
   return (
     <>
       <div className="hidden">
@@ -216,9 +214,9 @@ function MultiplayPage() {
             Round {round}/<span className="text-white">3</span>
           </p>
           <div className="flex flex-col gap-4 justify-self-start">
-            {room?.currentUser.map((user) => {
+            {/* {room?.currentUser.map((user) => {
               return <UserProfile key={user.userId} user={user} classes={"w-10 h-10"} />;
-            })}
+            })} */}
           </div>
           {status == "INPUTSTART" ? (
             <Timer ref={dialog} roundTime={time} status={status} leftTime={leftTime} onModalOpen={handleModalOpen} />
@@ -232,7 +230,9 @@ function MultiplayPage() {
             <div className="bg-gradient-to-r from-secondary-400 to-purple-500 rounded-full p-px text-center">
               <div className="bg-gray-800 py-1 rounded-full">{track && track.beforeLyric}</div>
             </div>
-            <div className="h-full flex flex-col gap-4 justify-center">{quiz && <MultiInputArea quiz={quiz} />}</div>
+            <div className="h-full flex flex-col gap-4 justify-center">
+              {quiz && <MultiInputArea quiz={quiz} hintResult={hintResult} />}
+            </div>
             <div className="justify-self-end bg-gradient-to-r from-secondary-400 to-purple-500 rounded-full p-px text-center">
               <div className="bg-gray-800 py-1 rounded-full">{track && track.afterLyric}</div>
             </div>
@@ -246,33 +246,31 @@ function MultiplayPage() {
           <MemoArea />
         </section>
       </div>
-      {modalOpen && (
-        <Modal ref={dialog}>
-          <Timeout time={time as number}>
-            {status == "ROUNDSTART" && round != 3 && (
-              <p>
-                {time}초 뒤 게임 시작과 함께
-                <br />
-                문제 구간의 음악이 재생됩니다!
-              </p>
-            )}
-            {status == "ROUNDSTART" && round == 3 && <Hint hint={room.hint} />}
-            {status == "INPUTEND" && (
-              <>
-                <p className="text-secondary-400 font-bold text-3xl">답변이 제출되었습니다</p>
-                <p className="mt-6 mb-12 font-bold text-xl">{time}초 후, 이번 라운드의 결과가 공개됩니다</p>
-              </>
-            )}
-            {status == "ROUNDEND" && (
-              <>
-                <p>라운드 결과 들어갈곳</p>
-              </>
-            )}
-          </Timeout>
-          {/* <Success /> */}
-          {/* <Fail /> */}
-        </Modal>
-      )}
+      <Modal ref={dialog}>
+        <Timeout time={time as number}>
+          {status == "ROUNDSTART" && round != 3 && (
+            <p>
+              {time}초 뒤 게임 시작과 함께
+              <br />
+              문제 구간의 음악이 재생됩니다!
+            </p>
+          )}
+          {status == "ROUNDSTART" && round == 3 && <Hint hint={room?.hint} />}
+          {status == "INPUTEND" && (
+            <>
+              <p className="text-secondary-400 font-bold text-3xl">답변이 제출되었습니다</p>
+              <p className="mt-6 mb-12 font-bold text-xl">{time}초 후, 이번 라운드의 결과가 공개됩니다</p>
+            </>
+          )}
+          {status == "ROUNDEND" && (
+            <>
+              <p>라운드 결과 들어갈곳</p>
+            </>
+          )}
+        </Timeout>
+        {/* <Success /> */}
+        {/* <Fail /> */}
+      </Modal>
     </>
   );
 }

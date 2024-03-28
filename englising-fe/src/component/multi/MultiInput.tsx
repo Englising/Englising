@@ -7,13 +7,15 @@ type InputProps = {
   answer: Alphabet;
   index: number;
   changedAnswer?: Alphabet | undefined;
+  hintResult?: Alphabet[] | number;
   onInputChange: (val: Alphabet) => void;
 };
 
-function MultiInput({ answer, index, changedAnswer, onInputChange }: InputProps) {
+function MultiInput({ answer, index, changedAnswer, hintResult, onInputChange }: InputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEmpty, setIsEmpty] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   function isHangeul(char: string) {
     const reg = /[^0-9a-zA-Z]/g;
@@ -56,6 +58,18 @@ function MultiInput({ answer, index, changedAnswer, onInputChange }: InputProps)
   }
 
   useEffect(() => {
+    if (hintResult && typeof hintResult != "number") {
+      for (const hint of hintResult) {
+        if (answer.alphabetIndex == hint.alphabetIndex) {
+          setIsOpen(true);
+          inputRef.current.value = answer.alphabet;
+          break;
+        }
+      }
+    }
+  }, [hintResult]);
+
+  useEffect(() => {
     if (inputRef.current && changedAnswer && index === changedAnswer.alphabetIndex) {
       inputRef.current.value = changedAnswer.alphabet;
       if (inputRef.current.value.length > 0) {
@@ -72,19 +86,20 @@ function MultiInput({ answer, index, changedAnswer, onInputChange }: InputProps)
     <>
       <div className={`flex flex-col justify-center ${tooltipOpen ? "relative" : ""}`}>
         <label className="min-h-5 text-center text-sm">{answer.alphabetIndex > 0 ? answer.alphabetIndex : ""}</label>
-        {answer.alphabetIndex > 0 ? (
-          <input
-            type="text"
-            className={`w-9 p-2 font-bold text-xl text-black text-center rounded-lg focus:outline-none ${isEmpty ? "bg-gray-500" : "bg-secondary-100"}`}
-            onChange={handleInputChange}
-            ref={inputRef}
-          />
-        ) : (
+        {answer.alphabetIndex <= 0 ? (
           <input
             type="text"
             className={`w-3 py-2 bg-transparent font-bold text-xl text-center rounded-lg focus:outline-none ${styles.symbol}`}
             readOnly
             value={answer.alphabet}
+          />
+        ) : (
+          <input
+            type="text"
+            className={`w-9 p-2 font-bold text-xl text-black text-center rounded-lg focus:outline-none ${isEmpty ? "bg-gray-500" : "bg-secondary-100"} ${isOpen && "bg-purple-200"}`}
+            onChange={handleInputChange}
+            readOnly={isOpen}
+            ref={inputRef}
           />
         )}
         {tooltipOpen && <Tooltip>영어, 숫자만 입력할 수 있습니다</Tooltip>}
