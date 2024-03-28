@@ -1,3 +1,4 @@
+import random
 from typing import List
 
 import numpy as np
@@ -21,14 +22,19 @@ def __recommend_words__(all_track_words:List[TrackWord], level, liked_words:List
     # 단어의 난이도 판단
     # 최근 플레이 한 단어와 유사도 판단, 유사하지 않도록 함
     played_avg_vector = np.mean([__get_word_vector__(word.en_text) for word in recently_played_words], axis=0)
+    played_avg_scalar = np.mean(played_avg_vector)
     liked_avg_vector = np.mean([__get_word_vector__(word.en_text) for word in liked_words], axis=0)
+    liked_avg_scalar = np.mean(liked_avg_vector)
     recommended_words = []
     for word in all_track_words:
         word_vector = __get_word_vector__(word.origin_word)
-        score = (1 - __cosine_similarity__(word_vector, played_avg_vector)) + __cosine_similarity__(word_vector, liked_avg_vector)
+        word_scalar = np.mean(word_vector)
+
+        score = (1 - __cosine_similarity__(word_vector, played_avg_scalar)) + __cosine_similarity__(word_vector, liked_avg_scalar)
         difficulty_socre = 1 - abs(__evaluate_difficulty__(word.origin_word) - level)
         total_score = score + difficulty_socre
         recommended_words.append((word, total_score))
+
     recommended_words.sort(key=lambda x: x[1], reverse=True)
     return recommended_words
 
@@ -43,20 +49,19 @@ def __select_words_from_recommended__(level, recommended_words):
         if word.origin_word not in seen_words:
             seen_words.add(word.origin_word)
             unique_recommended_words.append((word, score))
-
-    if len(unique_recommended_words) < len(recommended_words):
+    if len(unique_recommended_words) < final_count*2:
         for word, score in recommended_words:
             if word not in unique_recommended_words:
                 unique_recommended_words.append(word)
             if len(unique_recommended_words) >= len(recommended_words):
                 break
-
+    random.shuffle(unique_recommended_words)
     final_recommendations = unique_recommended_words[:final_count]
     return [word for word, score in final_recommendations]
 
 
 def __get_word_vector__(word: str):
-    return fast_text_model[word]
+    return np.mean(fast_text_model[word], axis=0)
 
 
 def __cosine_similarity__(vec1, vec2):

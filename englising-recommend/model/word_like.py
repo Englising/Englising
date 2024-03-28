@@ -1,9 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, TIMESTAMP, Boolean
 from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from model.base import Base
 
 
 class WordLike(Base):
