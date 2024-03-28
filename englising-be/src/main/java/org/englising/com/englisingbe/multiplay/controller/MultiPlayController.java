@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
+import org.englising.com.englisingbe.auth.dto.CustomUserDetails;
 import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
 import org.englising.com.englisingbe.global.util.Genre;
 import org.englising.com.englisingbe.global.util.ResponseMessage;
@@ -25,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -115,14 +117,15 @@ public class MultiPlayController {
             mediaType = "application/json"
         )
     )
-    public ResponseEntity getMultiPlayById(@PathVariable Long multiplayId) {
+    public ResponseEntity getMultiPlayById(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long multiplayId) {
+        System.out.println("userDetails = " + userDetails);
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
                 DefaultResponseDto.<MultiPlayDetailResponseDto>builder()
                     .status(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getCode())
                     .message(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getMessage())
-                    .data(multiPlayService.getMultiPlayById(multiplayId, 474L))
+                    .data(multiPlayService.getMultiPlayById(multiplayId, Long.parseLong(userDetails.getUsername())))
                     .build()
             );
     }

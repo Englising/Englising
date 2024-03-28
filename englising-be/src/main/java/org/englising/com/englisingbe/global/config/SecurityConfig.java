@@ -81,6 +81,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(CrossOriginAllowedUrls.CORS_ALLOWED));
+        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5173")); //todo.수정
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");

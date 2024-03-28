@@ -75,7 +75,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = SinglePlayResponseDto.class)
             )
     )
-    public ResponseEntity startSinglePlay(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody SinglePlayRequestDto startDto){
+    public ResponseEntity startSinglePlay( @RequestBody SinglePlayRequestDto startDto){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
@@ -86,6 +86,8 @@ public class SinglePlayController {
                                 .build()
                 );
     }
+
+    // todo. 모두 @AuthenticationPrincipal CustomUserDetails userDetails 추가하기!!!!
 
     @PostMapping("/word-check")
     @Operation(
@@ -101,7 +103,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = WordCheckResponseDto.class)
             )
     )
-    public ResponseEntity checkSinglePlayWord(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody WordCheckRequestDto wordCheckRequestDto){
+    public ResponseEntity checkSinglePlayWord(@RequestBody WordCheckRequestDto wordCheckRequestDto){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
@@ -127,7 +129,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = SinglePlayResponseDto.class)
             )
     )
-    public ResponseEntity getSingleplayResult(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody Long singlePlayId){
+    public ResponseEntity getSingleplayResult(@RequestBody Long singlePlayId){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
@@ -153,7 +155,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = TimeResponseDto.class)
             )
     )
-    public ResponseEntity getLyricStartTimes(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long trackId){
+    public ResponseEntity getLyricStartTimes(@PathVariable Long trackId){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
