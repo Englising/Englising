@@ -16,7 +16,6 @@ class TrackWord(Base):
     created_at = Column(TIMESTAMP, default=func.now())
     updated_at = Column(TIMESTAMP, onupdate=func.now())
 
-    # Define relationships
     track = relationship("Track", back_populates="track_words")
     lyric = relationship("Lyric", back_populates="track_words")
     word = relationship("Word", back_populates="track_words")
