@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import { getSinglePlayData } from "../util/SinglePlayAPI";
 import Lyrics from "../component/single/Lyrics";
 import MusicPlayer from "../component/single/MusicPlayer";
 import FooterVar from "../component/single/FooterVar";
-import { singleData } from "../component/single/example"
 // 싱글데이터를 가져올 수 있는 api를 설계
 
 export interface PlayInfo {
@@ -40,18 +41,33 @@ export interface Word {
 }
 
 export interface SingleData {
-    status: number;
-    message: string;
-    data: {
-        singleplay_id: number;
-        lyrics: Lyric[];
-        words: Word[];
-        total_word_cnt: number;
-        right_word_cnt: number;
-    };
+    lyrics: Lyric[];
+    rightWordCnt: number;
+    singlePlayId: number;
+    totalWordCnt: number;
+    words: Word[];
 }
 
 const SinglePage = () => {
+    const { trackId, level } = useParams<{
+        trackId: string,
+        level: string,
+    }>();
+
+    
+    const { state } = useLocation();
+    const { img } = state;
+
+    const [bgImg, setBgImg] = useState<string>("");
+
+    const [singleData, setSingleData] = useState<SingleData>({
+        lyrics: [],
+        rightWordCnt: 0,
+        singlePlayId: 0,
+        totalWordCnt: 0,
+        words: []
+    });
+
     const [playInfo, setPlayInfo] = useState<PlayInfo>({
         idx: 0,
         isBlank: false,
@@ -66,7 +82,7 @@ const SinglePage = () => {
     });
 
     const [progressInfo, setProgressInfo] = useState<ProgressInfo>({
-        totalWord: singleData.data.total_word_cnt, // 나중에 axios로 받아올 것
+        totalWord: 0, // 나중에 axios로 받아올 것
         rightWord: 0,
         hintNum: 3,
     });
@@ -83,14 +99,16 @@ const SinglePage = () => {
     }
 
     const onSetInfoIdx = (currIdx: number): void => {
-        const lyric = singleData.data.lyrics[currIdx];
-        setPlayInfo({
+        const lyric = singleData?.lyrics[currIdx];
+        if (lyric != undefined) {
+            setPlayInfo({
             idx: currIdx,
             isBlank: lyric.isBlank,
             startTime: lyric.startTime,
             endTime: lyric.endTime,
             toggleNext: playInfo.toggleNext // 계속 재생상태
         })
+        }
     }
 
     const onSetProgressInfo = (type: string, data: number = 1): void => {
@@ -114,27 +132,65 @@ const SinglePage = () => {
         });
     }
 
-    const onSkip = async ():Promise<void> => {
-        const lyric = singleData.data.lyrics[playInfo.idx+1];
-        onSetInfo(playInfo.idx+1, lyric.isBlank, lyric.startTime, lyric.endTime);
+    const onSetIsBlank = (sentenceIdx: number): void => {
+        let temp = singleData;
+        temp.lyrics[sentenceIdx].isBlank = false;
+
+        setSingleData({
+            ...temp
+        });
     }
 
-    //동적으로 url 구성, className에 들어가야함
-    const url = `bg-[url('src/assets/bam.PNG')] bg-cover bg-center h-screen w-screen p-0 m-0`;
+    const onSkip = (): void => {
+        const lyric = singleData?.lyrics[playInfo.idx + 1];
+        if (lyric != undefined) {
+            onSetInfo(playInfo.idx+1, lyric.isBlank, lyric.startTime, lyric.endTime);
+        }
+    }
+
+    useEffect(() => {
+
+        const data = {
+            "trackId": parseInt(trackId || "0"),
+            "level": parseInt(level || "1")
+        }
+
+      
+        const getData = async () => {
+            try {
+                const singleData = await getSinglePlayData(data);
+                setSingleData(singleData.data);
+            } catch (error) {
+                console.error('Error fetching data:', error)
+            }
+        }
+        setBgImg(`bg-[url('${img}')] bg-cover bg-center h-screen w-screen p-0 m-0`);
+        getData();
+        console.log("호출!!!!!")
+    },[])
+
+    useEffect(() => {
+        setProgressInfo({
+            totalWord: singleData?.totalWordCnt, // 나중에 axios로 받아올 것
+            rightWord: 0,
+            hintNum: 3,            
+        });
+    }, [singleData])
+
 
 return (
-        <div className={url}>            
+        <div className={bgImg}>            
             <div className="h-svh w-screen flex flex-col bg-black bg-opacity-80 items-center">
                 <div className="h-[90%] w-9/12 flex">
                     <div className="w-2/5 h-full items-center">
-                        <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} /> 
+                    <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo}/> 
                     </div>
                     <div className="w-3/5 flex items-center justify-center">
-                        <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
+                        <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} onSetIsBlank = {onSetIsBlank} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
                     </div>
                 </div>
                 <div className="w-full h-[10%] bg-black flex justify-center">
-                    <FooterVar onSetAnswer = {onSetAnswer} onSkip = {onSkip}/>
+                <FooterVar onSetAnswer={onSetAnswer} onSkip={onSkip} idx={playInfo.idx} />
                 </div>
                 </div>
         </div>
