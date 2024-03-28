@@ -25,13 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -127,6 +121,24 @@ public class MultiPlayController {
             );
     }
 
+    @DeleteMapping("/{multiplayId}")
+    @Operation(
+            summary = "멀티플레이 시작 요청",
+            description = "멀티플레이 게임 진행 시작을 요청합니다."
+    )
+    @Parameters({
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
+    })
+    public ResponseEntity leaveMultiPlayGame(@PathVariable Long multiplayId) {
+        multiPlayService.leaveGame(multiplayId, 474L);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(DefaultResponseDto.<String>builder()
+                        .status(HttpStatus.OK.value())
+                        .message("게임을 떠났습니다.")
+                        .build());
+    }
+
     @GetMapping("/{multiplayId}/game")
     @Operation(
             summary = "멀티플레이 시작 요청",
@@ -144,31 +156,32 @@ public class MultiPlayController {
                         .message("게임을 성공적으로 시작했습니다.")
                         .build());
     }
-
-    @GetMapping("/{multiplayId}/result")
-    @Operation(
-        summary = "멀티플레이 종료 및 결과",
-        description = "멀티플레이 게임 최종 결과를 반환합니다."
-    )
-    @Parameters({
-        @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
-    })
-    public ResponseEntity getMultiPlayResult(@PathVariable Long multiplayId) {
-        Boolean result = multiPlayService.getMultiPlayResult(multiplayId);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(
-                DefaultResponseDto.<Boolean>builder()
-                    .status(ResponseMessage.MULTIPLAY_RESULT_SUCCESS.getCode())
-                    .message(ResponseMessage.MULTIPLAY_RESULT_SUCCESS.getMessage())
-                    .data(result)
-                    .build()
-            );
-    }
+//TODO
+// 메서드 삭제
+//    @GetMapping("/{multiplayId}/result")
+//    @Operation(
+//        summary = "멀티플레이 종료 및 결과",
+//        description = "멀티플레이 게임 최종 결과를 반환합니다."
+//    )
+//    @Parameters({
+//        @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
+//    })
+//    public ResponseEntity getMultiPlayResult(@PathVariable Long multiplayId) {
+//        Boolean result = multiPlayService.getMultiPlayResult(multiplayId);
+//        return ResponseEntity
+//            .status(HttpStatus.OK)
+//            .body(
+//                DefaultResponseDto.<Boolean>builder()
+//                    .status(ResponseMessage.MULTIPLAY_RESULT_SUCCESS.getCode())
+//                    .message(ResponseMessage.MULTIPLAY_RESULT_SUCCESS.getMessage())
+//                    .data(result)
+//                    .build()
+//            );
+//    }
 
     @GetMapping("/image")
     @Operation(
-            summary = "멀티플레이 방 생성 이미지 생성",
+            summary = "멀티플레이 방 이미지 생성",
             description = "랜덤한 멀티플레이 방 이미지를 반환합니다."
     )
     @Parameters({

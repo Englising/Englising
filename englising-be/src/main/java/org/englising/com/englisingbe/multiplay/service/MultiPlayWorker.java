@@ -63,7 +63,9 @@ public class MultiPlayWorker {
                                         .youtubeId(multiPlayGame.getTrack().getYoutubeId())
                                         .selectedHint(multiPlayGame.getSelectedHint())
                                         .beforeLyric(multiPlayGame.getBeforeLyric())
+                                        .beforeLyricStartTime(multiPlayGame.getBeforeLyricStartTime())
                                         .afterLyric(multiPlayGame.getAfterLyric())
+                                        .afterLyricEndTime(multiPlayGame.getAfterLyricEndTime())
                                         .sentences(multiPlayGame.getSentences())
                                         .build())
                                 .build());
