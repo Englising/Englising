@@ -15,6 +15,7 @@ import { Quiz } from "../component/multi/MultiInputArea";
 import Hint from "../component/multi/modalContent/Hint/Hint.js";
 import useStomp from "../hooks/useStomp";
 import { getMultiplayInfo } from "../util/multiAxios";
+import MultiMusicPlayer from "../component/multi/MultiMusicPlayer.js";
 
 export interface User {
   userId: number;
@@ -22,11 +23,21 @@ export interface User {
   nickname: string;
 }
 
+export interface PlayInfo {
+  url: string;
+  startTime: number;
+  endTime: number;
+  speed: number;
+  onPlay: number;
+}
+
 type Track = {
   afterLyric: string;
   beforeLyric: string;
   title: string;
   youtubeId: string;
+  startTime: number;
+  endTime: number;
 };
 
 type Room = {
@@ -52,6 +63,46 @@ function MultiplayPage() {
   const handleModalOpen = () => {
     setModalOpen(!modalOpen);
   };
+
+  const [playInfo, setPlayInfo] = useState<PlayInfo>({
+    url: "", //처음에 초기화 해줘야함.
+    startTime: -1,
+    endTime: -1,
+    speed: 1,
+    onPlay: 0,
+  });
+
+
+  const basicPlay = () => {
+    // 특정시간에 도달하면 playInfo 값 넣어주기 (url, startTime, endTime, speed)
+    setPlayInfo({
+      ...playInfo,
+      speed: 1,
+      onPlay: (playInfo.onPlay + 1) % 2,
+    });
+  };
+
+  // const fastPlay = () => {
+  //   // 특정시간에 도달하면 playInfo 값 넣어주기 (url, startTime, endTime, speed)
+  //   setPlayInfo({
+  //     ...playInfo,
+  //     startTime: 60,
+  //     endTime: 65,
+  //     speed: 2,
+  //     onPlay: (playInfo.onPlay + 1) % 2,
+  //   });
+  // };
+
+  // const slowPlay = () => {
+  //   // 특정시간에 도달하면 playInfo 값 넣어주기 (url, startTime, endTime, speed)
+  //   setPlayInfo({
+  //     ...playInfo,
+  //     startTime: 60,
+  //     endTime: 65,
+  //     speed: 0.7,
+  //     onPlay: (playInfo.onPlay + 1) % 2,
+  //   });
+  // };
 
   useEffect(() => {
     roundConnect();
@@ -79,6 +130,19 @@ function MultiplayPage() {
     console.log("round", json);
     setStatus(json.status);
     setRound(json.round);
+    
+    if (json.data.sentences != undefined) {
+      setPlayInfo(
+      {
+        url: `https://www.youtube.com/watch?v=${json.data.youtubeId}`, //처음에 초기화 해줘야함.
+        startTime: json.data.sentences[0].startTime,
+        endTime: json.data.sentences[json.data.sentences.length-1].endTime,
+        speed: 1,
+        onPlay: 0,
+      }
+    );
+    }
+    
     switch (json.status) {
       case "ROUNDSTART":
         setModalOpen(true);
@@ -91,6 +155,8 @@ function MultiplayPage() {
             beforeLyric: json.data.beforeLyric,
             title: json.data.trackTitle,
             youtubeId: json.data.youtubeId,
+            startTime: json.data.sentences[0].startTime,
+            endTime: json.data.sentences[json.data.sentences.length-1].endTime,
           });
         }
 
@@ -100,6 +166,7 @@ function MultiplayPage() {
         break;
       case "MUSICSTART":
         setModalOpen(false);
+        if(track != undefined) setTime(track?.endTime - track?.startTime);
         break;
       case "INPUTSTART":
         setModalOpen(false);
@@ -124,20 +191,25 @@ function MultiplayPage() {
   const [roundConnect, roundDisconnect] = useStomp(roundClient, `round/${multiId}`, roundCallback);
   const [timeConnect, timeDiscconnect] = useStomp(timeClient, `time/${multiId}`, timeCallback);
 
+  
   useEffect(() => {
     if (modalOpen) {
       dialog.current?.showModal();
     } else {
       dialog.current?.close();
     }
+
+    if (!modalOpen && status == "MUSICSTART") {
+      basicPlay();
+    }
   }, [modalOpen]);
 
-  useEffect(() => {
-    console.log(status, time);
-  }, [status]);
 
   return (
     <>
+      <div className="hidden">
+        <MultiMusicPlayer playInfo={playInfo} />
+      </div>
       <div className="h-screen p-8 flex gap-10 bg-gray-800 text-white">
         <section className="shrink-0 grid grid-rows-[0.5fr_7fr_2fr] gap-4 justify-items-center">
           <p className="text-3xl font-bold text-secondary-400">

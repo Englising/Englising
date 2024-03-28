@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const IndexPage = () => {
+
     const navigate = useNavigate();
     const handleKakaoLogin = () => {
         window.location.href = "https://j10a106.p.ssafy.io/api/oauth2/authorization/kakao"
@@ -12,6 +13,10 @@ const IndexPage = () => {
 
     const guestLogin = async() => {
         axios.post("https://j10a106.p.ssafy.io/api/auth/guest")
+        .then((response) => {
+            // 유저아이디 받아서 로컬에 저장
+            localStorage.setItem("userId", response.data.data.userId.toString());
+        })
         console.log("로그인 성공")
         navigate("/englising/selectSingle1");
     }
