@@ -35,12 +35,12 @@ public class SinglePlayController {
 
     @GetMapping("/playlist")
     @Operation(
-            summary = "싱글플레이가 가능한 노래의 플레이리스트 조회",
+            summary = "사용자가 좋아요 했거나 싱글플레이 진행 전적이 있는 노래의 리스트 조회",
             description = "type 파라미터로 플레이리스트의 종류를 보내주세요. 페이지네이션이 적용되어 있습니다"
     )
     @Parameters({
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
-            @Parameter(name = "type", description = "플레이리스트 종류 : RECOMMEND(추천된), LIKE(좋아요 한), RECENT(최근 플레이 한)", in = ParameterIn.QUERY),
+            @Parameter(name = "type", description = "플레이리스트 종류 : LIKE(좋아요 한), RECENT(최근 플레이 한)", in = ParameterIn.QUERY),
             @Parameter(name = "page", description = "페이지 번호", in = ParameterIn.QUERY),
             @Parameter(name = "size", description = "(선택적) 페이지당 컨텐츠 개수, 기본 10", in = ParameterIn.QUERY)
     })
@@ -50,7 +50,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = PlayListDto.class)
             )
     )
-    public ResponseEntity getPlaylists(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(defaultValue = "pop") PlayListType type, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size){
+    public ResponseEntity getPlaylists(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(defaultValue = "like") PlayListType type, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
@@ -64,8 +64,8 @@ public class SinglePlayController {
 
     @GetMapping("/playlist/recommend")
     @Operation(
-        summary = "싱글플레이가 가능한 노래의 플레이리스트 조회",
-        description = "type 파라미터로 플레이리스트의 종류를 보내주세요. 페이지네이션이 적용되어 있습니다"
+        summary = "사용자의 추천 플레이리스트 조회",
+        description = "사용자에 따른 18개의 추천 플레이리스트를 반환합니다."
     )
     @Parameters({
         @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE)
