@@ -97,7 +97,7 @@ public class MultiPlayController {
                 DefaultResponseDto.<Long>builder()
                     .status(ResponseMessage.MULTIPLAY_CREATE_SUCCESS.getCode())
                     .message(ResponseMessage.MULTIPLAY_CREATE_SUCCESS.getMessage())
-                    .data(multiPlayService.createMultiPlay(requestDto, 1L))
+                    .data(multiPlayService.createMultiPlay(requestDto, 474L))
                     .build()
             );
     }
@@ -122,7 +122,7 @@ public class MultiPlayController {
                 DefaultResponseDto.<MultiPlayDetailResponseDto>builder()
                     .status(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getCode())
                     .message(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getMessage())
-                    .data(multiPlayService.getMultiPlayById(multiplayId, 1L))
+                    .data(multiPlayService.getMultiPlayById(multiplayId, 474L))
                     .build()
             );
     }
@@ -136,7 +136,7 @@ public class MultiPlayController {
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
     })
     public ResponseEntity startMultiPlayGame(@PathVariable Long multiplayId) {
-        multiPlayService.startGame(multiplayId, 1L);
+        multiPlayService.startGame(multiplayId, 474L);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(DefaultResponseDto.<String>builder()
