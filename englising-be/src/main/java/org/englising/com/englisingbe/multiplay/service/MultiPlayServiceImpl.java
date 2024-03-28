@@ -79,13 +79,20 @@ public class MultiPlayServiceImpl {
         // Redis에 게임 사용자 업데이트
         boolean result = redisService.addNewUserToMultiPlayGame(multiPlayId, user);
         // 다른 참여자들에게 입장 알림
-        if(result){
-            messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
-                    ParticipantDto.builder()
-                            .kind("enter")
-                            .user(user)
-                            .build());
-        }
+        //TODO 주석 해제
+//        if(result){
+//            messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
+//                    ParticipantDto.builder()
+//                            .kind("enter")
+//                            .user(user)
+//                            .build());
+//        }
+        //TODO : 삭제
+        messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
+                ParticipantDto.builder()
+                        .kind("enter")
+                        .user(user)
+                        .build());
         // MultiPlay 게임 방 정보 반환
         MultiPlayGame multiPlayGame = redisService.getMultiPlayGameById(multiPlayId);
         return MultiPlayDetailResponseDto.builder()
@@ -113,13 +120,20 @@ public class MultiPlayServiceImpl {
     public void leaveGame(Long multiPlayId, Long userId){
         MultiPlayUser user = MultiPlayUser.getMultiPlayUserFromUser(userService.getUserById(userId));
         boolean result = redisService.deleteUserToMultiPlayGame(multiPlayId, user);
-        if(result){
-            messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
-                    ParticipantDto.builder()
-                            .kind("leave")
-                            .user(user)
-                            .build());
-        }
+        //TODO : 주석 해제
+//        if(result){
+//            messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
+//                    ParticipantDto.builder()
+//                            .kind("leave")
+//                            .user(user)
+//                            .build());
+//        }
+        //TODO : 삭제
+        messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
+                ParticipantDto.builder()
+                        .kind("leave")
+                        .user(user)
+                        .build());
     }
 
     public Boolean getMultiPlayResult(Long multiplayId) {
@@ -151,7 +165,8 @@ public class MultiPlayServiceImpl {
                 .afterLyricEndTime(afterLyric.getEndTime())
                 .sentences(sentences)
                 .answerAlphabets(multiPlaySetterService.getAnswerInputMapFromMultiPlaySentenceList(sentences, true))
-                .selectedHint(Math.toIntExact(multiPlayHintRepository.findRandom().getMultiplayHintId()))
+//                .selectedHint(Math.toIntExact(multiPlayHintRepository.findRandom().getMultiplayHintId()))
+                .selectedHint(4)
                 .managerUserId(userId)
                 .users(new ArrayList<>())
                 .round(1)
