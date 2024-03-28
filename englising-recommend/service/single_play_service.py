@@ -9,7 +9,6 @@ from model import Lyric
 
 session = Session()
 
-
 def get_lyrics_from_track_id(track_id: int) -> List[LyricDto]:
     lyrics = lyric_crud.get_lyrics_by_track_id(session, track_id)
     return list(map(get_lyric_into_words, lyrics))
