@@ -31,7 +31,6 @@ const SelectSinglePage: React.FC = () => {
         .then((Response) => {
             console.log(Response.data)
             setPlayList(Response.data.data.playList);
-            console.log(playList);
         })
         .catch((error) => {
             console.error('Error fetching playlist:', error);
