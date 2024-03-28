@@ -9,24 +9,22 @@ interface Props {
 
 const MultiMusicPlayer = ({ playInfo }: Props) => {
   const { url, startTime, endTime, speed, onPlay } = playInfo;
-  const [playing, setPlaying] = useState<boolean>(false);
+  const [playing, setPlaying] = useState<boolean>(true);
+  const [muted, setMuted] = useState<boolean>(true);
   const player = useRef<ReactPlayer | null>(null);
 
+
+  
   useEffect(() => {
     if (startTime == -1) return;
     player.current?.seekTo(startTime);
-    if (!playing) setPlaying(true);
+    setMuted(false);
+
   }, [onPlay]);
 
   const handleProgress = (e: OnProgressProps) => {
-    if (e.playedSeconds > endTime - 0.01) {
-      if (playing) setPlaying(false);
-    }
-  };
-
-  const handleOnPause = () => {
-    if (playing) {
-      setPlaying(false);
+    if (e.playedSeconds > endTime) {
+        setMuted(true);
     }
   };
 
@@ -37,11 +35,12 @@ const MultiMusicPlayer = ({ playInfo }: Props) => {
           url={url}
           ref={player}
           playing={playing} // 재생여부
+          muted={muted}
+          loop={true}
           controls={true}
           playbackRate={speed}
           progressInterval={100}
           onProgress={(e) => handleProgress(e)}
-          onPause={handleOnPause}
         />
       </div>
     </>

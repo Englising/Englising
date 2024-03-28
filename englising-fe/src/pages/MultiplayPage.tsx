@@ -65,19 +65,18 @@ function MultiplayPage() {
   };
 
   const [playInfo, setPlayInfo] = useState<PlayInfo>({
-    url: "https://www.youtube.com/watch?v=EVJjmMW7eII", //처음에 초기화 해줘야함.
+    url: "", //처음에 초기화 해줘야함.
     startTime: -1,
     endTime: -1,
     speed: 1,
     onPlay: 0,
   });
 
+
   const basicPlay = () => {
     // 특정시간에 도달하면 playInfo 값 넣어주기 (url, startTime, endTime, speed)
     setPlayInfo({
       ...playInfo,
-      startTime: 1, // 실제 데이터
-      endTime: 5,
       speed: 1,
       onPlay: (playInfo.onPlay + 1) % 2,
     });
@@ -131,6 +130,19 @@ function MultiplayPage() {
     console.log("round", json);
     setStatus(json.status);
     setRound(json.round);
+    
+    if (json.data.sentences != undefined) {
+      setPlayInfo(
+      {
+        url: `https://www.youtube.com/watch?v=${json.data.youtubeId}`, //처음에 초기화 해줘야함.
+        startTime: json.data.sentences[0].startTime,
+        endTime: json.data.sentences[json.data.sentences.length-1].endTime,
+        speed: 1,
+        onPlay: 0,
+      }
+    );
+    }
+    
     switch (json.status) {
       case "ROUNDSTART":
         setModalOpen(true);
@@ -143,8 +155,8 @@ function MultiplayPage() {
             beforeLyric: json.data.beforeLyric,
             title: json.data.trackTitle,
             youtubeId: json.data.youtubeId,
-            startTime: 1,
-            endTime: 5,
+            startTime: json.data.sentences[0].startTime,
+            endTime: json.data.sentences[json.data.sentences.length-1].endTime,
           });
         }
 
@@ -154,7 +166,7 @@ function MultiplayPage() {
         break;
       case "MUSICSTART":
         setModalOpen(false);
-        setTime(4);
+        if(track != undefined) setTime(track?.endTime - track?.startTime);
         break;
       case "INPUTSTART":
         setModalOpen(false);
@@ -179,6 +191,7 @@ function MultiplayPage() {
   const [roundConnect, roundDisconnect] = useStomp(roundClient, `round/${multiId}`, roundCallback);
   const [timeConnect, timeDiscconnect] = useStomp(timeClient, `time/${multiId}`, timeCallback);
 
+  
   useEffect(() => {
     if (modalOpen) {
       dialog.current?.showModal();
@@ -187,10 +200,10 @@ function MultiplayPage() {
     }
 
     if (!modalOpen && status == "MUSICSTART") {
-      alert("잘들어옴!");
       basicPlay();
     }
   }, [modalOpen]);
+
 
   return (
     <>
