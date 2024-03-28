@@ -38,6 +38,9 @@ public class TrackWord {
     @Column(name = "origin_word")
     private String originWord;
 
+    @Column(name = "importance")
+    private Float importance;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private Timestamp createdAt;
