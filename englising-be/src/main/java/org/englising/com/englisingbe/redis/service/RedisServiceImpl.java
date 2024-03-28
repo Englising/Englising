@@ -51,12 +51,13 @@ public class RedisServiceImpl {
             users = new ArrayList<>();
             game.setUsers(users);
         }
-        boolean userExists = users.stream()
-                .anyMatch(existingUser -> existingUser.getUserId().equals(user.getUserId()));
-
-        if (userExists) {
-            throw new GlobalException(ErrorHttpStatus.USER_ALREADY_EXISTS);
-        }
+        //TODO 기존 참여중인 유저 확인 코드 주석 해제
+//        boolean userExists = users.stream()
+//                .anyMatch(existingUser -> existingUser.getUserId().equals(user.getUserId()));
+//
+//        if (userExists) {
+//            throw new GlobalException(ErrorHttpStatus.USER_ALREADY_EXISTS);
+//        }
         users.add(user);
         saveMultiPlayGame(game);
     }
