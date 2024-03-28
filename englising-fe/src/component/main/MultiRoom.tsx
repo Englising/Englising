@@ -26,9 +26,6 @@ const Multiroom: React.FC<MultiroomProps> = ({
     const [showPasswordModal, setShowPasswordModal] = useState(false);
 
     const handleEnterRoom = () => {
-        console.log(roomName)
-        console.log(password)
-        console.log(roomId);
         if (isSecret) {
             setShowPasswordModal(true);
         } else {
@@ -39,7 +36,7 @@ const Multiroom: React.FC<MultiroomProps> = ({
 
     return (
         <div className='relative'>
-            <div className='relative text-white bg-primary-800/50 w-52 relative rounded-lg hover:opacity-50 relative'>
+            <div className='relative text-white bg-primary-800/50 w-52 rounded-lg hover:opacity-50 relative'>
                 <img src={multiPlayImgUrl} alt={roomName} className='w-52 h-48 rounded-t-lg '/>
                 <div className='flex flex-row'>
                     <div className='pt-2 pl-2'>
