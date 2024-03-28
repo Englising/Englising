@@ -1,6 +1,7 @@
 package org.englising.com.englisingbe.singleplay.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.englising.com.englisingbe.global.dto.PaginationDto;
 import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
 import org.englising.com.englisingbe.global.exception.GlobalException;
@@ -57,7 +58,7 @@ public class SinglePlayServiceImpl {
                 return getRecentTracks(page, size, userId);
             }
             case recommend -> {
-                return getRecommendedTracks(page, size, userId);
+//                return getRecommendedTracks(page, size, userId);
             }
         }
         return null;
@@ -174,10 +175,9 @@ public class SinglePlayServiceImpl {
         return getPlayListDtoFromPageAndList(getTrackResponseDtoFromTrackAlbumArtist(userId,tracks), singlePlays);
     }
 
-    private PlayListDto getRecommendedTracks(Integer page, Integer size, Long userId){
-        // TODO FastAPI를 통해 추천 플레이리스트 가져오는 로직 구현
-        List<TrackResponseDto> recommendedTracks = recommendApiService.getRecommendTrackByUserId(userId);
-        return getLikedTracks(page, size, userId);
+    public List<TrackResponseDto> getRecommendedTracks(Long userId){
+        List<Long> tracks = recommendApiService.getRecommendTrackByUserId(userId);
+        return getTrackResponseDtoFromTrackAlbumArtist(userId, trackService.getTrackAlbumArtistsByTrackIds(tracks));
     }
 
     private List<TrackResponseDto> getTrackResponseDtoFromTrackAlbumArtist(Long userId, List<TrackAlbumArtistDto> trackAlbumArtistDtos){

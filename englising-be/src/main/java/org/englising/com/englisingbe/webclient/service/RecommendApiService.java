@@ -23,11 +23,11 @@ public class RecommendApiService {
         return mono.block(); // 여기에서 block() 호출
     }
 
-    public List<TrackResponseDto> getRecommendTrackByUserId(Long userId) {
-        Mono<List<TrackResponseDto>> mono = webClient.get()
+    public List<Long> getRecommendTrackByUserId(Long userId) {
+        Mono<List<Long>> mono = webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/singleplay/recommend/{userId}").build(userId))
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<TrackResponseDto>>() {});
+                .bodyToMono(new ParameterizedTypeReference<List<Long>>() {});
         return mono.block();
     }
 }
