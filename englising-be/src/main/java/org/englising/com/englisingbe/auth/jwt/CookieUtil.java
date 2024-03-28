@@ -2,11 +2,13 @@ package org.englising.com.englisingbe.auth.jwt;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
 import org.englising.com.englisingbe.global.exception.GlobalException;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,6 +29,30 @@ public class CookieUtil {
 
         return cookie;
     }
+
+    // sameSite"None"설정을 위한 cookie ... 개발용
+    public void addAccessCookie(HttpServletResponse response, String key, String value) {
+        ResponseCookie cookie = ResponseCookie.from(key, value)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .secure(true)
+                .maxAge(3600)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+    }
+
+    public void addRefreshCookie(HttpServletResponse response, String key, String value) {
+        ResponseCookie cookie = ResponseCookie.from(key, value)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .secure(true)
+                .maxAge(1209600)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+    }
+
 
     // refreshToken 쿠키 생성
     public Cookie createRefreshCookie(String key, String value) {
