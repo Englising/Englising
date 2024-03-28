@@ -12,9 +12,9 @@ import Fail from "../component/multi/modalContent/Fail";
 import HintRoulette from "../component/multi/modalContent/Hint/HintRoulette.js";
 import MultiInputArea from "../component/multi/MultiInputArea";
 import { Quiz } from "../component/multi/MultiInputArea";
-import useStomp from "../hooks/useStomp.js";
-import { getMultiplayInfo } from "../util/multiAxios.js";
 import Hint from "../component/multi/modalContent/Hint/Hint.js";
+import useStomp from "../hooks/useStomp";
+import { getMultiplayInfo } from "../util/multiAxios";
 
 export interface User {
   userId: number;
@@ -58,14 +58,15 @@ function MultiplayPage() {
     timeConnect();
 
     // 참여 게임 정보 받기
-    // getMultiplayInfo(multiId as string)
-    //   .then((res) => {
-    //     setRoom({
-    //       currentUser: res.data.data.currentUser,
-    //       name: res.data.data.roomName,
-    //     });
-    //   })
-    //   .catch((e) => console.log(e));
+    getMultiplayInfo(multiId as string)
+      .then((res) => {
+        setRoom({
+          currentUser: res.data.data.currentUser,
+          name: res.data.data.roomName,
+          hint: res.data.data.selectedHint,
+        });
+      })
+      .catch((e) => console.log(e));
 
     return () => {
       roundDisconnect();
@@ -175,30 +176,27 @@ function MultiplayPage() {
       </div>
       {modalOpen && (
         <Modal ref={dialog}>
-          {round == 3 && status == "ROUNDSTART" ? (
-            <Hint />
-          ) : (
-            <Timeout time={time as number}>
-              {status == "ROUNDSTART" && (
-                <p>
-                  {time}초 뒤 게임 시작과 함께
-                  <br />
-                  문제 구간의 음악이 재생됩니다!
-                </p>
-              )}
-              {status == "INPUTEND" && (
-                <>
-                  <p className="text-secondary-400 font-bold text-3xl">답변이 제출되었습니다</p>
-                  <p className="mt-6 mb-12 font-bold text-xl">{time}초 후, 이번 라운드의 결과가 공개됩니다</p>
-                </>
-              )}
-              {status == "ROUNDEND" && (
-                <>
-                  <p>라운드 결과 들어갈곳</p>
-                </>
-              )}
-            </Timeout>
-          )}
+          <Timeout time={time as number}>
+            {status == "ROUNDSTART" && round != 3 && (
+              <p>
+                {time}초 뒤 게임 시작과 함께
+                <br />
+                문제 구간의 음악이 재생됩니다!
+              </p>
+            )}
+            {status == "ROUNDSTART" && round == 3 && <Hint hint={room.hint} />}
+            {status == "INPUTEND" && (
+              <>
+                <p className="text-secondary-400 font-bold text-3xl">답변이 제출되었습니다</p>
+                <p className="mt-6 mb-12 font-bold text-xl">{time}초 후, 이번 라운드의 결과가 공개됩니다</p>
+              </>
+            )}
+            {status == "ROUNDEND" && (
+              <>
+                <p>라운드 결과 들어갈곳</p>
+              </>
+            )}
+          </Timeout>
           {/* <Success /> */}
           {/* <Fail /> */}
         </Modal>
