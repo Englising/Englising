@@ -53,12 +53,9 @@ const SinglePage = () => {
         trackId: string,
         level: string,
     }>();
-
     
     const { state } = useLocation();
     const { img } = state;
-
-    const [bgImg, setBgImg] = useState<string>("");
 
     const [singleData, setSingleData] = useState<SingleData>({
         lyrics: [],
@@ -164,9 +161,7 @@ const SinglePage = () => {
                 console.error('Error fetching data:', error)
             }
         }
-        setBgImg(`bg-[url('${img}')] bg-cover bg-center h-screen w-screen p-0 m-0`);
         getData();
-        console.log("호출!!!!!")
     },[])
 
     useEffect(() => {
@@ -179,7 +174,7 @@ const SinglePage = () => {
 
 
 return (
-        <div className={bgImg}>            
+        <div className="bg-cover bg-center h-screen w-screen p-0 m-0" style={{ backgroundImage: `url(${img})` }}>            
             <div className="h-svh w-screen flex flex-col bg-black bg-opacity-80 items-center">
                 <div className="h-[90%] w-9/12 flex">
                     <div className="w-2/5 h-full items-center">
