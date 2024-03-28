@@ -58,7 +58,7 @@ public class SinglePlayController {
                         DefaultResponseDto.<PlayListDto>builder()
                                 .status(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getCode())
                                 .message(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getMessage())
-                                .data(singlePlayService.getPlayList(type, page, size, Long.parseLong(userDetails.getUsername())))
+                                .data(singlePlayService.getPlayList(type, page, size, 1L))
                                 .build()
                 );
     }
