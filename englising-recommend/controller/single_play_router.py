@@ -10,4 +10,3 @@ single_play_router = APIRouter(
 @single_play_router.get("/game/{track_id}")
 async def get_single_play_game(track_id: int):
     return single_play_service.get_lyrics_from_track_id(track_id)
-
