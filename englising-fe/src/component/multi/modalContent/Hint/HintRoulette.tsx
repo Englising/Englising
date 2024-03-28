@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-function HintRoulette() {
+function HintRoulette({ hint }: { hint: number }) {
   const backgroundRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function HintRoulette() {
         idx = 0;
         cnt++;
       }
-      if (cnt == 5 && idx == 3) {
+      if (cnt == 5 && idx == hint) {
         clearInterval(interval);
       }
     }, 70);
