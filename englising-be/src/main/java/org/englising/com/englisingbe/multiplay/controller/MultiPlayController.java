@@ -43,39 +43,28 @@ public class MultiPlayController {
     private final MultiPlayServiceImpl multiPlayService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    //TODO delete---------------------------------------------
-    private final MultiPlaySetterService multiPlaySetterService;
-    @GetMapping("/test")
-    public ResponseEntity testingLyric(){
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(multiPlaySetterService.getMultiPlaySentenceListFromTrack(158L));
-    }//---------------------------------------------------------
-
     @GetMapping("/rooms")
     @Operation(
         summary = "멀티플레이 대기방 리스트 조회",
-        description = "genre 파라미터로 멀티플레이 방 장르를 보내주세요. 페이지네이션은 아직입니다."
+        description = "genre 파라미터로 멀티플레이 방 장르를 보내주세요."
     )
     @Parameters({
         @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
-        @Parameter(name = "genre", description = "멀티플레이 방 장르"),
-        @Parameter(name = "page", description = "페이지 번호", in = ParameterIn.QUERY),
-        @Parameter(name = "size", description = "(선택적) 페이지당 컨텐츠 개수, 기본 10", in = ParameterIn.QUERY)
+        @Parameter(name = "genre", description = "멀티플레이 방 장르(all, dance, rnb, rock, pop)")
     })
     @ApiResponse(responseCode = "200", description = "Successful operation",
         content = @Content(
             mediaType = "application/json"
         )
     )
-    public ResponseEntity getMultiPlayList(@RequestParam(required = false) Genre genre, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size){
+    public ResponseEntity getMultiPlayList(@RequestParam(required = false) Genre genre){
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
                 DefaultResponseDto.<List<MultiPlayListResponseDto>>builder()
                     .status(ResponseMessage.MULTIPLAY_LIST_SUCCESS.getCode())
                     .message(ResponseMessage.MULTIPLAY_LIST_SUCCESS.getMessage())
-                    .data(multiPlayService.getMultiPlayWaitingList(genre, page, size))
+                    .data(multiPlayService.getMultiPlayWaitingList(genre))
                     .build()
             );
     }
@@ -119,7 +108,6 @@ public class MultiPlayController {
         )
     )
     public ResponseEntity getMultiPlayById(@PathVariable Long multiplayId) {
-//        System.out.println("userDetails = " + userDetails);
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
@@ -133,8 +121,8 @@ public class MultiPlayController {
 
     @DeleteMapping("/{multiplayId}")
     @Operation(
-            summary = "멀티플레이 시작 요청",
-            description = "멀티플레이 게임 진행 시작을 요청합니다."
+            summary = "멀티플레이 대기방에서 이용자가 떠남 요청",
+            description = "멀티플레이 대기방에 참여중인 이용자가 대기방을 나갈 때 요청합니다."
     )
     @Parameters({
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
@@ -152,7 +140,7 @@ public class MultiPlayController {
     @GetMapping("/{multiplayId}/game")
     @Operation(
             summary = "멀티플레이 시작 요청",
-            description = "멀티플레이 게임 진행 시작을 요청합니다."
+            description = "멀티플레이 게임 진행 시작을 요청합니다. 방장만 가능합니다."
     )
     @Parameters({
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
@@ -166,28 +154,6 @@ public class MultiPlayController {
                         .message("게임을 성공적으로 시작했습니다.")
                         .build());
     }
-//TODO
-// 메서드 삭제
-//    @GetMapping("/{multiplayId}/result")
-//    @Operation(
-//        summary = "멀티플레이 종료 및 결과",
-//        description = "멀티플레이 게임 최종 결과를 반환합니다."
-//    )
-//    @Parameters({
-//        @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
-//    })
-//    public ResponseEntity getMultiPlayResult(@PathVariable Long multiplayId) {
-//        Boolean result = multiPlayService.getMultiPlayResult(multiplayId);
-//        return ResponseEntity
-//            .status(HttpStatus.OK)
-//            .body(
-//                DefaultResponseDto.<Boolean>builder()
-//                    .status(ResponseMessage.MULTIPLAY_RESULT_SUCCESS.getCode())
-//                    .message(ResponseMessage.MULTIPLAY_RESULT_SUCCESS.getMessage())
-//                    .data(result)
-//                    .build()
-//            );
-//    }
 
     @GetMapping("/image")
     @Operation(

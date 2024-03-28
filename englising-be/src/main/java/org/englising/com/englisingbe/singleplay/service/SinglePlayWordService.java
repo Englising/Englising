@@ -93,4 +93,5 @@ public class SinglePlayWordService {
                 .min(Comparator.comparing(LyricDto::getLyricId))
                 .get().getLyricId();
     }
+
 }
