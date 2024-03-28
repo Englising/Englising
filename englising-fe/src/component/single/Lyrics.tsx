@@ -5,39 +5,46 @@ import HintModal from "./HintModal.tsx";
 interface Props {
     onSetInfo(currIdx: number, blank: boolean, start: number, end: number): void,
     onSetProgressInfo(type: string, data?: number): void,
+    onSetIsBlank(sentenceIdx: number): void
     playInfo: PlayInfo,
-    singleData: SingleData,
+    singleData: SingleData|undefined,
     answerInfo: AnswerInfo,
 }
+const blankSort = (a:Word, b:Word) => {
+    if (a.sentenceIndex == b.sentenceIndex) {
+        return a.wordIndex - b.wordIndex;
+    } else {
+        return a.sentenceIndex - b.sentenceIndex;
+    }
+}
 
-const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData }: Props) => {
+const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playInfo, singleData }: Props) => {
     { /* 현재 문장, 제출 답안정보 */ }
     const {idx} = playInfo;
     const { answer, toggleSubmit } = answerInfo;
     
     {/* 가사 및 빈칸 Data */}
-    const [lyrics, setLyrics] = useState<Lyric[]>([]);
-    const [blankWord, setBlankWord] = useState<Word[]>([]);
+    const [lyrics, setLyrics] = useState<Lyric[] | undefined>([]);
+    const [blankWord, setBlankWord] = useState<Word[] | undefined>([]);
 
     {/* HTML 조작 */ }
     const lyricsRef = useRef<(HTMLDivElement | null)[]>([]);
     const blanksRef = useRef<(HTMLSpanElement | null)[]>([]);
-    const [preBlank, setPreBlank] = useState<number>(0);
-    const [currBlank, setCurrBlank] = useState<number>(0);
 
     {/* 힌트 */ }
     const [showModal, setShowModal] = useState<boolean>(false);
     const [hintWord, setHintWord] = useState<string>("");
     const [hintNum, setHintNum] = useState<number>(3);
     
-    // aixos 호출로 데이터 받기 -> Single Page에게 위임///////////////////
     useEffect(() => {
-        const lyricsData:Lyric[] = singleData.data.lyrics;
-        const blankData:Word[] = singleData.data.words;
-        setLyrics([...lyricsData]);
-        setBlankWord([...blankData]);
-    },[])
-    /////////////////////////////////////////////
+        const lyricsData:Lyric[] | undefined = singleData?.lyrics;
+        const blankData:Word[] | undefined = singleData?.words.sort(blankSort);
+        if (lyricsData != undefined && blankData != undefined) {
+            setLyrics([...lyricsData]);
+            setBlankWord([...blankData]);
+        }
+        console.log(blankData,"잘 정렬 됐는가?")
+    },[singleData])
 
     // FootVar에서 답안이 입력되었을 때, 실행되는 hook
     useEffect(() => {
@@ -71,34 +78,49 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
                 return sentenceIdx == `${idx}` && isSolve == '1'; 
             }) ?? null;
         }
+
+        if (targetBlank == null) return;
         
         // 빈칸에 들어갈 정답 가져오기
-        const solution = targetBlank?.textContent;
+        
+        const solutionIdx:string = targetBlank?.dataset.index || "0";
+        let solution:string = "";
+        if (lyrics != undefined ) {
+            solution = lyrics[idx].lyric[parseInt(solutionIdx)];
+        }
 
-        if(answer == solution){
+
+        if(answer.toLowerCase() == solution.toLowerCase()){
             if (targetBlank) {
                 // 정답시 스타일변경
                 targetBlank.dataset.solve = "2";
                 targetBlank.className = "text-[#6DD66D] font-bold"
-                
+                targetBlank.textContent = solution;
+
                 //정답시 맞은 단어 개수 변경
                 onSetProgressInfo("rightWord",);
             }
 
-            // 문장에 정답을 모두 맞췄을때, SinglePage Data 자체를 바꿔줌 (여긴 더이상 빈칸이 없어!)
+             // 문장에 정답을 모두 맞췄을때, SinglePage Data 자체를 바꿔줌 (여긴 더이상 빈칸이 없어!)
             if(blankNum == 1 && incorrectNum == 0){
-                lyrics[idx].isBlank = !lyrics[idx].isBlank;
+                onSetIsBlank(idx);
             }
+
         }else {
             if (targetBlank) {
+                let wrongAnswer = answer;
+                if (wrongAnswer.length > solution?.length) {
+                    wrongAnswer = wrongAnswer.slice(0, solution?.length) + "..";
+                }
                 // 오답시 스타일변경
                 targetBlank.dataset.solve = "1";
-                targetBlank.className="mx-2 bg-[#FF4646] rounded-lg text-white bg-opacity-60 text-opacity-0"
+                targetBlank.className = "rounded-lg text-[#FF4646] font-bold"
+                targetBlank.textContent = wrongAnswer;
             }
         }
         // 마지막 빈칸을 등록했을때 or 마지막 오답이 수정되었을때 넘어감
-        if(blankNum == 1 || incorrectNum <= 1 && blankNum == 0){ 
-            handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime);
+        if (blankNum == 1 || incorrectNum <= 1 && blankNum == 0) {
+            if(lyrics != undefined) handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime);
         }
         
         //targetBlank?.classList.remove('backdrop-blur', 'border', 'border-secondary-500');
@@ -106,7 +128,6 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
     
     // 현재 답안이 입력 될 빈칸을 표시해주는 hook
     useEffect(() => {
-        console.log("실행")
         // 빈칸의 dom을 가져오기
         let targetBlank = blanksRef.current.find(el => {
             const sentenceIdx = el?.dataset.sentence;
@@ -126,12 +147,12 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
 
         // 현재 문장에 답이 입력될 빈칸에 효과주기.
         const wordIdx = targetBlank?.dataset.word;
-        targetBlank?.classList.add('border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
+        targetBlank?.classList.add('px-3', 'border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
         targetBlank?.classList.replace('bg-opacity-60', 'bg-opacity-20');
         blanksRef.current.map(el => {
             const idx = el?.dataset.word;
             if (wordIdx != idx) {
-                el?.classList.remove('border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
+                el?.classList.remove('px-3', 'border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
                 el?.classList.replace('bg-opacity-20', 'bg-opacity-60');
             }
         });
@@ -198,39 +219,42 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
     }
 
     return(
-        <div className="w-[95%] h-[90%] flex flex-col items-center py-10 px-20 box-border text-center overflow-y-scroll select-none">
+        <div className="w-full h-[90%] flex flex-col items-center py-10 px-20 box-border text-center overflow-y-scroll select-none">
             {showModal ? (<div className="relative">
                 <HintModal hintWord={hintWord} hintNum={hintNum} onUse={onUse} onCancel={onCancel} />
             </div>) : (<></>)}
-            {lyrics.map((lyric, i) => {
+            {lyrics?.map((lyric, i) => {
                 return(
                     <div 
                     key={i} 
                     className={idx == i ? 
-                        `w-[90%] min-h-[15%] text-[1.4em] flex justify-center items-center bg-black/50 rounded-xl text-white` : 
-                        `w-[90%] min-h-[15%] text-[1em] flex justify-center items-center text-primary-300`} 
+                        `w-full min-h-[15%] text-[1.4em] flex justify-center items-center bg-black/50 rounded-xl text-white` : 
+                        `w-full min-h-[15%] text-[1em] flex justify-center items-center text-primary-300`} 
                     ref={(el) => lyricsRef.current[i] = el} 
                     onClick={() => 
                     handleLyricsClick(i, lyric.isBlank, lyric.startTime, lyric.endTime)}>
-                        <div>
-                        {lyric.lyric.map((word, j) => {
+                        <div className="flex">
+                            {lyric.lyric.map((word, j) => {
+                            if(word == " ") return <div>&nbsp;</div>
                             let isBlank:boolean = false;
                             let blankIdx:number = 0;
 
-                            blankWord.forEach((blank, blnakIdx) => {
-                                if(word == blank.word && i == blank.sentenceIndex && j == blank.wordIndex){
+                            blankWord?.forEach((blank, blankId) => {
+                                //console.log("단어 idx:", blank.sentenceIndex, "result:", word.toLowerCase(), blank.word.toLowerCase());
+                                if(word.toLowerCase().includes(blank.word.toLowerCase())  && i == blank.sentenceIndex && j == blank.wordIndex){
                                     isBlank = true; 
-                                    blankIdx = blnakIdx; //이거 고유 인덱스인지 확인
+                                    blankIdx = blankId; 
                                 }
                             })
                             //만약 해당 단어가 빈칸이 필요하다면 -> isBlank 속성 값 결정
                             //data-isSolve: 0=미해결, 1=오답, 2=정답
                             return (
                                 isBlank ? 
-                                    (<span 
+                                    (<div 
                                         key={j} 
                                         className={"mx-2 bg-white rounded-lg text-white bg-opacity-60 text-opacity-0"}
                                         ref={(el) => blanksRef.current[blankIdx] = el}
+                                        data-index={j}
                                         data-sentence={i}
                                         data-word={blankIdx}
                                         data-solve="0"
@@ -244,8 +268,8 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
                                             }}
                                     > 
                                         {word}
-                                    </span>)
-                                : (<span key={j}> {word} </span>)
+                                    </div>)
+                                : (<div key={j}> {word} </div>)
                             );
                         })}
                         </div>
