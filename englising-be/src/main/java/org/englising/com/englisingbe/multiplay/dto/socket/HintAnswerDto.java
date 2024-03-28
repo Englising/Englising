@@ -8,6 +8,6 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class HintAnswerDto {
-    private int index;
-    private String answer;
+    private int alphabetIndex;
+    private String alphabet;
 }
