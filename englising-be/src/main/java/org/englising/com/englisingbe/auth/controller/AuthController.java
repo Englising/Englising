@@ -35,10 +35,13 @@ public class AuthController {
 
         JwtResponseDto jwtResponseDto = authService.guest();
 
-        Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
-        Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
-        response.addCookie(accessCookie);
-        response.addCookie(refreshCookie);
+//        Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
+//        Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
+//        response.addCookie(accessCookie);
+//        response.addCookie(refreshCookie);
+
+        cookieUtil.addAccessCookie(response, "Authorization", jwtResponseDto.getAccessToken());
+        cookieUtil.addRefreshCookie(response, "Authorization-refresh", jwtResponseDto.getRefreshToken());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
