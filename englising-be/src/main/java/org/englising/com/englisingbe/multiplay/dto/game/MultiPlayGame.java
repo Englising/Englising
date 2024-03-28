@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.englising.com.englisingbe.global.util.Genre;
 import org.englising.com.englisingbe.global.util.MultiPlayStatus;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import org.englising.com.englisingbe.music.entity.Lyric;
@@ -27,7 +28,10 @@ public class MultiPlayGame {
     private String multiplayImgUrl;
 
     private String beforeLyric;
+    private BigDecimal beforeLyricStartTime;
     private String afterLyric;
+    private BigDecimal afterLyricEndTime;
+
     private List<MultiPlaySentence> sentences;
     private Map<Integer, String> answerAlphabets;
     private int selectedHint;
