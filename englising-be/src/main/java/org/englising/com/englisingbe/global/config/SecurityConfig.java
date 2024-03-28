@@ -50,7 +50,8 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable) // Form 로그인 방식 disable
                 .httpBasic(AbstractHttpConfigurer::disable) //httpBasic 인증 방식 disable
                 .authorizeHttpRequests(requests -> // 경로별 인가 작업
-                        requests.requestMatchers(SecurityAllowedUrls.NO_CHECK_URL).permitAll()
+                        requests.requestMatchers(HttpMethod.GET,SecurityAllowedUrls.NO_CHECK_URL).permitAll()
+                                .requestMatchers(HttpMethod.POST, SecurityAllowedUrls.NO_CHECK_URL).permitAll()
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .anyRequest().authenticated()
                 )
