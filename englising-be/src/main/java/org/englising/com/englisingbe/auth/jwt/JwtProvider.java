@@ -172,37 +172,6 @@ public class JwtProvider {
 //        return false;
 //    }
 
-    // AccessToken + RefreshToken 헤더에 넣기 todo. 삭제
-//    public void setAccessAndRefreshToken (HttpServletResponse response, String accessToken, String refreshToken) {
-//        response.setStatus(HttpServletResponse.SC_OK);
-//
-//        response.setHeader(accessHeader, accessToken);
-//        response.setHeader(refreshHeader, refreshToken);
-//        log.info("Access Token, Refresh Token 헤더 설정 완료", accessToken, refreshToken);
-//    }
-//
-//    // AccessToken 헤더에 넣기
-//    public void setAccessToken(HttpServletResponse response, String accessToken) {
-//        response.setStatus(HttpServletResponse.SC_OK);
-//
-//        response.setHeader(accessHeader, accessToken);
-//        log.info("AccessToken 헤더 설정 완료 ", accessToken);
-//    }
-
-    /** todo. 삭제
-     * 헤더에서 순수 Token 추출
-     */
-//    public Optional<String> extractAccessTokenFromHeader(HttpServletRequest request) {
-//        return Optional.ofNullable(request.getHeader(accessHeader))
-//                .filter(token -> token.startsWith("Bearer "))
-//                .map(token -> token.replace("Bearer ", ""));
-//    }
-//
-//    public Optional<String> extractRefreshTokenFromHeader(HttpServletRequest request) {
-//        return Optional.ofNullable(request.getHeader(refreshHeader))
-//                .filter(token -> token.startsWith("Bearer "))
-//                .map(token -> token.replace("Bearer ", ""));
-//    }
 
 //      RefreshToken DB 저장 (업데이트) -> todo. Redis로 수정
 //    public void updateRefreshToken(String email, String refreshToken) {

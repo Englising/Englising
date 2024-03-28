@@ -29,9 +29,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final ProfileImageRepository imageRepository;
     private final ProfileColorRepository profileColorRepository;
-//    todo. private final S3Service s3Service; s3 이미지 처리
 
-    // UserId로 User 반환
     public User getUserById(Long userId) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new GlobalException(ErrorHttpStatus.USER_NOT_FOUND));
@@ -47,16 +45,11 @@ public class UserService {
 
     public void updateProfile(Long userId, ProfileDto profileDto) {
         User user = getUserById(userId);
-
         boolean isExist = userRepository.existsByNicknameAndUserIdNot(profileDto.getNickname(), userId);
-//        boolean isExist = userRepository.existsByNickname(profileDto.getNickname());
-
         if(isExist) {
             throw new GlobalException(ErrorHttpStatus.USER_NICKNAME_DUPLICATED);
         }
 
-        // todo. s3에서 프로필 이미지 삭제
-        //  후 새로운 이미지 등록
         user.updateUser(profileDto.getNickname(), profileDto.getColor(), profileDto.getProfileImg());
     }
 
@@ -83,9 +76,11 @@ public class UserService {
         int animalsIdx = (int) (Math.random() * animals.size());
         String ani = animals.get(animalsIdx);
 
-        String uuid = UUID.randomUUID().toString();
-
-        String nickname = adj + ani + uuid;
+        String nickname = adj + ani;
+        int nickCnt = userRepository.countByNicknameStartingWith(nickname);
+        if (nickCnt > 0) {
+            return nickname + (nickCnt + 1);
+        }
 
         return nickname;
     }
@@ -109,8 +104,4 @@ public class UserService {
         return profileColorRepository.findById(colorId)
                 .get().getProfileColor();
     }
-
-
-
-
 }

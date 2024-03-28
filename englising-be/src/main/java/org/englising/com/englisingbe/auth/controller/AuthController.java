@@ -6,6 +6,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.englising.com.englisingbe.auth.dto.AuthResponseMessage;
+import org.englising.com.englisingbe.auth.dto.LoginResponseDto;
 import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
 import org.englising.com.englisingbe.auth.jwt.CookieUtil;
 import org.englising.com.englisingbe.auth.jwt.JwtResponseDto;
@@ -38,10 +40,14 @@ public class AuthController {
         response.addCookie(accessCookie);
         response.addCookie(refreshCookie);
 
-        // ResponseEntity에 헤더와 본문 설정
+//        cookieUtil.addAccessCookie(response, "Authorization", jwtResponseDto.getAccessToken());
+//        cookieUtil.addRefreshCookie(response, "Authorization-refresh", jwtResponseDto.getRefreshToken());
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new DefaultResponseDto<>(200, "토큰 발급이 완료되었습니다.", jwtResponseDto));
+                .body(new DefaultResponseDto<>(AuthResponseMessage.AUTH_GUESTLOGIN_MESSAGE.getCode(),
+                        AuthResponseMessage.AUTH_GUESTLOGIN_MESSAGE.getMessage(),
+                        jwtResponseDto));
     }
 
 
@@ -52,10 +58,14 @@ public class AuthController {
     )
     public ResponseEntity<DefaultResponseDto<?>> getUserId(HttpServletRequest request) {
 
-        Long userId = authService.getUserID(request);
+        LoginResponseDto loginResponseDto = LoginResponseDto.builder()
+                .userId(authService.getUserID(request))
+                .build();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new DefaultResponseDto<>(200, "회원 아이디를 가져왔습니다", userId));
+                .body(new DefaultResponseDto<>(AuthResponseMessage.AUTH_USERID_MESSAGE.getCode(),
+                        AuthResponseMessage.AUTH_USERID_MESSAGE.getMessage(),
+                        loginResponseDto));
     }
 }

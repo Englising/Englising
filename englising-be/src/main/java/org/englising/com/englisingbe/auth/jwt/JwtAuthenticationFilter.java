@@ -65,7 +65,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.writeValue(response.getWriter(), ErrorHttpStatus.UNAUTHORIZED_REFRESH_TOKEN);
-
                 return;
 
             } else {
@@ -78,6 +77,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
                     response.addCookie(accessCookie);
                     response.addCookie(refreshCookie);
+
+//                    cookieUtil.addAccessCookie(response, "Authorization", jwtResponseDto.getAccessToken());
+//                    cookieUtil.addRefreshCookie(response, "Authorization-refresh", jwtResponseDto.getRefreshToken());
 
                     response.setContentType("application/json");
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -106,12 +108,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 }
 
-
-//                //response Body
-//                PrintWriter writer = response.getWriter();
-//                writer.print("refresh Token invalid."); //todo. json형식으로 변경
-//
-//                // response status code
-//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
 
