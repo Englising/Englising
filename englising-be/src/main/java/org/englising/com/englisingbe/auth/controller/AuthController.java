@@ -26,7 +26,6 @@ public class AuthController {
     private final CookieUtil cookieUtil;
 
     @PostMapping("/guest")
-    // API 상세 정보 기술
     @Operation(
             summary = "게스트 로그인",
             description = "게스트로 로그인합니다"
@@ -35,13 +34,13 @@ public class AuthController {
 
         JwtResponseDto jwtResponseDto = authService.guest();
 
-        Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
-        Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
-        response.addCookie(accessCookie);
-        response.addCookie(refreshCookie);
+//        Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
+//        Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
+//        response.addCookie(accessCookie);
+//        response.addCookie(refreshCookie);
 
-//        cookieUtil.addAccessCookie(response, "Authorization", jwtResponseDto.getAccessToken());
-//        cookieUtil.addRefreshCookie(response, "Authorization-refresh", jwtResponseDto.getRefreshToken());
+        cookieUtil.addAccessCookie(response, "Authorization", jwtResponseDto.getAccessToken());
+        cookieUtil.addRefreshCookie(response, "Authorization-refresh", jwtResponseDto.getRefreshToken());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
