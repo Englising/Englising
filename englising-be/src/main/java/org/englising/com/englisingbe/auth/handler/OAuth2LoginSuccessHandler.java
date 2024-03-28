@@ -54,13 +54,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 // 유저 정보 기반으로 토큰 생성
                 JwtResponseDto jwtResponseDto = jwtProvider.createTokens(authentication, user.getUserId());
 
-//                 AccessToken 쿠키로 설정
                 Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
-
-                //refreshToken 쿠키도 설정하고 응답에 쿠키 추가
                 Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
-
-                // 응답에 쿠키 추가
                 response.addCookie(accessCookie);
                 response.addCookie(refreshCookie);
 
