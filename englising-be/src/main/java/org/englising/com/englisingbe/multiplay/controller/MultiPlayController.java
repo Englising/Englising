@@ -118,15 +118,15 @@ public class MultiPlayController {
             mediaType = "application/json"
         )
     )
-    public ResponseEntity getMultiPlayById(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long multiplayId) {
-        System.out.println("userDetails = " + userDetails);
+    public ResponseEntity getMultiPlayById(@PathVariable Long multiplayId) {
+//        System.out.println("userDetails = " + userDetails);
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
                 DefaultResponseDto.<MultiPlayDetailResponseDto>builder()
                     .status(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getCode())
                     .message(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getMessage())
-                    .data(multiPlayService.getMultiPlayById(multiplayId, Long.parseLong(userDetails.getUsername())))
+                    .data(multiPlayService.getMultiPlayById(multiplayId, 474L))
                     .build()
             );
     }
