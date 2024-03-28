@@ -18,30 +18,30 @@ import org.springframework.stereotype.Component;
 public class CookieUtil {
 
     // accessToken 쿠키 생성
-    public Cookie createAccessCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(3600);
-        cookie.setPath("/");
-        cookie.setSecure(false); // todo. true로 변경
-//        cookie.setSecure(true);
-//        cookie.setDomain(".localhost");
-        cookie.setHttpOnly(true);
-
-        return cookie;
-    }
-
-    // refreshToken 쿠키 생성
-    public Cookie createRefreshCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(1209600);
-        cookie.setPath("/");
-        cookie.setSecure(false);
-//        cookie.setDomain(".localhost"); //todo. 삭제
-//        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-
-        return cookie;
-    }
+//    public Cookie createAccessCookie(String key, String value) {
+//        Cookie cookie = new Cookie(key, value);
+//        cookie.setMaxAge(3600);
+//        cookie.setPath("/");
+//        cookie.setSecure(false); // todo. true로 변경
+////        cookie.setSecure(true);
+////        cookie.setDomain(".localhost");
+//        cookie.setHttpOnly(true);
+//
+//        return cookie;
+//    }
+//
+//    // refreshToken 쿠키 생성
+//    public Cookie createRefreshCookie(String key, String value) {
+//        Cookie cookie = new Cookie(key, value);
+//        cookie.setMaxAge(1209600);
+//        cookie.setPath("/");
+//        cookie.setSecure(false);
+////        cookie.setDomain(".localhost"); //todo. 삭제
+////        cookie.setSecure(true);
+//        cookie.setHttpOnly(true);
+//
+//        return cookie;
+//    }
 
     // sameSite"None"설정을 위한 cookie ... 개발용
     public void addAccessCookie(HttpServletResponse response, String key, String value) {
@@ -49,10 +49,10 @@ public class CookieUtil {
                 .path("/")
                 .sameSite("None")
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .maxAge(3600)
                 .build();
-        response.addHeader("Set-Cookie", cookie.toString());
+        response.setHeader("Set-Cookie", cookie.toString());
     }
 
     public void addRefreshCookie(HttpServletResponse response, String key, String value) {
@@ -60,10 +60,10 @@ public class CookieUtil {
                 .path("/")
                 .sameSite("None")
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .maxAge(1209600)
                 .build();
-        response.addHeader("Set-Cookie", cookie.toString());
+        response.addHeader("Set-Cookie", cookie.toString()); // setHeader 이후 추가할 때 addHeader
     }
 
 
