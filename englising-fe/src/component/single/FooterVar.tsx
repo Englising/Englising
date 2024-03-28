@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
     onSetAnswer(answer: string): void;
-    onSkip(): void
+    onSkip(): void;
+    idx: number;
 }
 
-const FooterVar = ({onSetAnswer, onSkip}:Props) => {
+const FooterVar = ({onSetAnswer, onSkip, idx}:Props) => {
     const [answer, setAnswer] = useState<string>("");
+    const inputRef = useRef<HTMLInputElement | null>(null);
 
     const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAnswer(e.target.value);
@@ -35,6 +37,11 @@ const FooterVar = ({onSetAnswer, onSkip}:Props) => {
     const handleExitClick = () => {
 
     }
+
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, [idx])
+    
     return (
         <div className="w-full h-full flex items-center justify-evenly ">
             <div className="w-1/3 flex pl-10 box-border text-white">
@@ -52,6 +59,7 @@ const FooterVar = ({onSetAnswer, onSkip}:Props) => {
             <div className="w-2/3 flex justify-center items-center">
                 <div className="h-[3em] mr-[3em] flex items-center p-1 rounded-lg bg-gradient-to-r from-[white] via-[#00ffff] to-[#3F4685] ">
                     <input 
+                        ref={inputRef}
                         className="h-[2.5em] w-[20em] text-[1em] pl-[1.25em] rounded-lg bg-black text-white"
                         placeholder="빈칸에 들어갈 단어를 작성해주세요."
                         value={answer}
