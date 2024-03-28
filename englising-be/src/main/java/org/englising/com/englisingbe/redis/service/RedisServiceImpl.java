@@ -44,22 +44,39 @@ public class RedisServiceImpl {
                 .toList();
     }
 
-    public void addNewUserToMultiPlayGame(Long multiPlayId, MultiPlayUser user) {
+    public boolean addNewUserToMultiPlayGame(Long multiPlayId, MultiPlayUser user) {
+        boolean result = false;
         MultiPlayGame game = getMultiPlayGameById(multiPlayId);
         List<MultiPlayUser> users = game.getUsers();
         if (users == null) {
             users = new ArrayList<>();
             game.setUsers(users);
         }
-        //TODO 기존 참여중인 유저 확인 코드 주석 해제
+        //TODO 기존 참여중인 유저 확인 코드 주석 해제 (아래 if문 변경)
 //        boolean userExists = users.stream()
 //                .anyMatch(existingUser -> existingUser.getUserId().equals(user.getUserId()));
 //
 //        if (userExists) {
 //            throw new GlobalException(ErrorHttpStatus.USER_ALREADY_EXISTS);
 //        }
-        users.add(user);
+        if(!users.contains(user)){
+            users.add(user);
+            result = true;
+        }
         saveMultiPlayGame(game);
+        return result;
+    }
+
+    public boolean deleteUserToMultiPlayGame(Long multiPlayId, MultiPlayUser user) {
+        boolean result = false;
+        MultiPlayGame game = getMultiPlayGameById(multiPlayId);
+        List<MultiPlayUser> users = game.getUsers();
+        if(game.getUsers().contains(user)){
+            game.getUsers().remove(user);
+            result = true;
+        }
+        saveMultiPlayGame(game);
+        return result;
     }
 
     public MultiPlayGame updateRoundStatus(Long multiPlayId, int round, MultiPlayStatus status){
