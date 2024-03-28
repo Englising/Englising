@@ -11,6 +11,3 @@ def get_all_tracks(session: Session) -> List[Track]:
         .filter(Track.genre != None) \
         .filter(Track.lyric_status == 'DONE') \
         .distinct().all()
-
-
-print(len(get_all_tracks(Session())))
