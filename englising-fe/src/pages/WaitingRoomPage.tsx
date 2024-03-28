@@ -4,7 +4,6 @@ import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import useStomp from "../hooks/useStomp";
 import { Client, IMessage } from "@stomp/stompjs";
-import { Route } from 'react-router-dom';
 
 interface User {
     userId : number;
@@ -27,6 +26,7 @@ interface Room {
 
 const WaitingRoomPage: React.FC = () => {
     const [multiroom, setMultiRoom] = useState<Room | undefined>();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [userId, setUserId] = useState<number>(0);
     const params = useParams().multiId;
     const client = useRef<Client>();
@@ -75,6 +75,11 @@ const WaitingRoomPage: React.FC = () => {
 
         return () => disconnect();
     },[]);
+
+    const leaveRoom = ():void => {
+        axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`)
+    }
+
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 ">
             <div className='flex flex-col w-full'>
@@ -120,12 +125,15 @@ const WaitingRoomPage: React.FC = () => {
 
                 <div className='flex flex-row justify-center pt-10'>
                     {/* 방장이면 이거 표시되게 */}
-                    {(userId === multiroom?.managerUserId) && <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'>
-                        <Route path ="/multiPlay/:multiId">게임시작</Route>
+                    {/* {(userId === multiroom?.managerUserId) && */}
+                    <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'> 
+                        <p>
+                        <Link to = {`/multiPlay/${multiroom?.multiPlayId}`}> 게임시작 </Link>
+                        </p>
                     </button> 
-                    }
-                    <button className='text-black bg-red-400 w-48 h-12 rounded-lg text-sm hover:opacity-50'>
-                        <Link to ="/englising/selectSingle1">나가기</Link>
+                    {/* } */}
+                    <button onClick={leaveRoom} className='text-black bg-red-400 w-48 h-12 rounded-lg text-sm hover:opacity-50'>
+                        <Link to ="/englising/selectMulti">나가기</Link>
                     </button>
                 </div>
                     
