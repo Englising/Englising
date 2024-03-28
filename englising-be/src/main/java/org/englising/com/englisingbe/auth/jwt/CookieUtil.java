@@ -49,7 +49,7 @@ public class CookieUtil {
                 .path("/")
                 .sameSite("None")
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .maxAge(3600)
                 .build();
         response.setHeader("Set-Cookie", cookie.toString());
@@ -60,7 +60,7 @@ public class CookieUtil {
                 .path("/")
                 .sameSite("None")
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .maxAge(1209600)
                 .build();
         response.addHeader("Set-Cookie", cookie.toString()); // setHeader 이후 추가할 때 addHeader
