@@ -51,13 +51,14 @@ public class SinglePlayController {
             )
     )
     public ResponseEntity getPlaylists(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(defaultValue = "pop") PlayListType type, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size){
+        log.error(userDetails.toString());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
                         DefaultResponseDto.<PlayListDto>builder()
                                 .status(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getCode())
                                 .message(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getMessage())
-                                .data(singlePlayService.getPlayList(type, page, size, 1L))
+                                .data(singlePlayService.getPlayList(type, page, size, Long.parseLong(userDetails.getUsername())))
                                 .build()
                 );
     }
