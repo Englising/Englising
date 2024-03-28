@@ -15,10 +15,12 @@ import org.englising.com.englisingbe.multiplay.dto.game.MultiPlayUser;
 import org.englising.com.englisingbe.multiplay.dto.request.MultiPlayRequestDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayDetailResponseDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayListResponseDto;
+import org.englising.com.englisingbe.multiplay.dto.socket.ParticipantDto;
 import org.englising.com.englisingbe.multiplay.entity.MultiPlay;
 import org.englising.com.englisingbe.multiplay.repository.MultiPlayHintRepository;
 import org.englising.com.englisingbe.multiplay.repository.MultiPlayImgRepository;
 import org.englising.com.englisingbe.multiplay.repository.MultiPlayRepository;
+import org.englising.com.englisingbe.music.entity.Lyric;
 import org.englising.com.englisingbe.music.service.LyricServiceImpl;
 import org.englising.com.englisingbe.music.service.TrackServiceImpl;
 import org.englising.com.englisingbe.redis.service.RedisServiceImpl;
@@ -75,9 +77,15 @@ public class MultiPlayServiceImpl {
     public MultiPlayDetailResponseDto getMultiPlayById(Long multiPlayId, Long userId) {
         MultiPlayUser user = MultiPlayUser.getMultiPlayUserFromUser(userService.getUserById(userId));
         // Redis에 게임 사용자 업데이트
-        redisService.addNewUserToMultiPlayGame(multiPlayId, user);
+        boolean result = redisService.addNewUserToMultiPlayGame(multiPlayId, user);
         // 다른 참여자들에게 입장 알림
-        messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(), user);
+        if(result){
+            messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
+                    ParticipantDto.builder()
+                            .kind("enter")
+                            .user(user)
+                            .build());
+        }
         // MultiPlay 게임 방 정보 반환
         MultiPlayGame multiPlayGame = redisService.getMultiPlayGameById(multiPlayId);
         return MultiPlayDetailResponseDto.builder()
@@ -102,6 +110,18 @@ public class MultiPlayServiceImpl {
         worker.sendRoundStartAlert();
     }
 
+    public void leaveGame(Long multiPlayId, Long userId){
+        MultiPlayUser user = MultiPlayUser.getMultiPlayUserFromUser(userService.getUserById(userId));
+        boolean result = redisService.deleteUserToMultiPlayGame(multiPlayId, user);
+        if(result){
+            messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
+                    ParticipantDto.builder()
+                            .kind("leave")
+                            .user(user)
+                            .build());
+        }
+    }
+
     public Boolean getMultiPlayResult(Long multiplayId) {
         return multiPlayRepository.findByMultiplayId(multiplayId).getIsSecret();
     }
@@ -114,8 +134,8 @@ public class MultiPlayServiceImpl {
         List<MultiPlaySentence> sentences = multiPlaySetterService.getMultiPlaySentenceListFromTrack(multiPlay.getTrack().getTrackId());
         long startLyricId = lyricService.getLyricIdByStartTimeAndTrackId(multiPlay.getTrack().getTrackId(), sentences.get(0).getStartTime());
         long endLyricId = lyricService.getLyricIdByStartTimeAndTrackId(multiPlay.getTrack().getTrackId(), sentences.get(sentences.size()-1).getStartTime());
-        String beforeLyric = lyricService.getLyricByLyricId(startLyricId-1).getEnText();
-        String afterLyric = lyricService.getLyricByLyricId(endLyricId+1).getEnText();
+        Lyric beforeLyric = lyricService.getLyricByLyricId(startLyricId-1);
+        Lyric afterLyric = lyricService.getLyricByLyricId(endLyricId+1);
         return MultiPlayGame.builder()
                 .multiPlayId(multiPlay.getMultiplayId())
                 .track(multiPlay.getTrack())
@@ -125,8 +145,10 @@ public class MultiPlayServiceImpl {
                 .isSecret(multiPlay.getIsSecret())
                 .roomPw(multiPlay.getRoomPw())
                 .multiplayImgUrl(multiPlay.getMultiPlayImgUrl())
-                .beforeLyric(beforeLyric)
-                .afterLyric(afterLyric)
+                .beforeLyric(beforeLyric.getEnText())
+                .beforeLyricStartTime(beforeLyric.getStartTime())
+                .afterLyric(afterLyric.getEnText())
+                .afterLyricEndTime(afterLyric.getEndTime())
                 .sentences(sentences)
                 .answerAlphabets(multiPlaySetterService.getAnswerInputMapFromMultiPlaySentenceList(sentences, true))
                 .selectedHint(Math.toIntExact(multiPlayHintRepository.findRandom().getMultiplayHintId()))
