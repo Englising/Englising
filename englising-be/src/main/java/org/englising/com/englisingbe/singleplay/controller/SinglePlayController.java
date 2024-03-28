@@ -51,7 +51,6 @@ public class SinglePlayController {
             )
     )
     public ResponseEntity getPlaylists(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(defaultValue = "pop") PlayListType type, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size){
-        log.error(userDetails.toString());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
