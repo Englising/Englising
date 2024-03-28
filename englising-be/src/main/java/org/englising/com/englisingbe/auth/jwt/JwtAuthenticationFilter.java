@@ -73,10 +73,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     Long userId = jwtProvider.getUserId(refreshToken).orElse(null);
                     JwtResponseDto jwtResponseDto = jwtProvider.createTokens(jwtProvider.getAuthentication(refreshToken), userId);
 
-                    Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
-                    Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
-                    response.addCookie(accessCookie);
-                    response.addCookie(refreshCookie);
+//                    Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
+//                    Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
+//                    response.addCookie(accessCookie);
+//                    response.addCookie(refreshCookie);
+
+                    cookieUtil.addAccessCookie(response, "Authorization", jwtResponseDto.getAccessToken());
+                    cookieUtil.addRefreshCookie(response, "Authorization-refresh", jwtResponseDto.getRefreshToken());
 
                     response.setContentType("application/json");
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -105,12 +108,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 }
 
-
-//                //response Body
-//                PrintWriter writer = response.getWriter();
-//                writer.print("refresh Token invalid."); //todo. json형식으로 변경
-//
-//                // response status code
-//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
 

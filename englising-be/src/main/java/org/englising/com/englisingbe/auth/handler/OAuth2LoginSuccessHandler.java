@@ -55,14 +55,18 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 JwtResponseDto jwtResponseDto = jwtProvider.createTokens(authentication, user.getUserId());
 
                 // AccessToken 쿠키로 설정
-                Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
+//                Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
+//
+//                //refreshToken 쿠키도 설정하고 응답에 쿠키 추가
+//                Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
+//
+//                // 응답에 쿠키 추가
+//                response.addCookie(accessCookie);
+//                response.addCookie(refreshCookie);
 
-                //refreshToken 쿠키도 설정하고 응답에 쿠키 추가
-                Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
+                cookieUtil.addAccessCookie(response, "Authorization", jwtResponseDto.getAccessToken());
+                cookieUtil.addRefreshCookie(response, "Authorization-refresh", jwtResponseDto.getRefreshToken());
 
-                // 응답에 쿠키 추가
-                response.addCookie(accessCookie);
-                response.addCookie(refreshCookie);
                 response.sendRedirect("https://j10a106.p.ssafy.io/englising/selectSingle1");
 //                response.sendRedirect("http://localhost:5173/englising/selectSingle1");
             } else {
