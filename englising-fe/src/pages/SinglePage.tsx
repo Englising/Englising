@@ -132,7 +132,16 @@ const SinglePage = () => {
         });
     }
 
-    const onSkip = async ():Promise<void> => {
+    const onSetIsBlank = (sentenceIdx: number): void => {
+        let temp = singleData;
+        temp.lyrics[sentenceIdx].isBlank = false;
+
+        setSingleData({
+            ...temp
+        });
+    }
+
+    const onSkip = (): void => {
         const lyric = singleData?.lyrics[playInfo.idx + 1];
         if (lyric != undefined) {
             onSetInfo(playInfo.idx+1, lyric.isBlank, lyric.startTime, lyric.endTime);
@@ -157,6 +166,7 @@ const SinglePage = () => {
         }
         setBgImg(`bg-[url('${img}')] bg-cover bg-center h-screen w-screen p-0 m-0`);
         getData();
+        console.log("호출!!!!!")
     },[])
 
     useEffect(() => {
@@ -176,7 +186,7 @@ return (
                     <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo}/> 
                     </div>
                     <div className="w-3/5 flex items-center justify-center">
-                        <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
+                        <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} onSetIsBlank = {onSetIsBlank} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
                     </div>
                 </div>
                 <div className="w-full h-[10%] bg-black flex justify-center">

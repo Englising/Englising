@@ -5,6 +5,7 @@ import HintModal from "./HintModal.tsx";
 interface Props {
     onSetInfo(currIdx: number, blank: boolean, start: number, end: number): void,
     onSetProgressInfo(type: string, data?: number): void,
+    onSetIsBlank(sentenceIdx: number): void
     playInfo: PlayInfo,
     singleData: SingleData|undefined,
     answerInfo: AnswerInfo,
@@ -17,7 +18,7 @@ const blankSort = (a:Word, b:Word) => {
     }
 }
 
-const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData }: Props) => {
+const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playInfo, singleData }: Props) => {
     { /* 현재 문장, 제출 답안정보 */ }
     const {idx} = playInfo;
     const { answer, toggleSubmit } = answerInfo;
@@ -100,16 +101,11 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, answerInfo, playInfo, singleData
                 onSetProgressInfo("rightWord",);
             }
 
-            // 문장에 정답을 모두 맞췄을때, SinglePage Data 자체를 바꿔줌 (여긴 더이상 빈칸이 없어!)
+             // 문장에 정답을 모두 맞췄을때, SinglePage Data 자체를 바꿔줌 (여긴 더이상 빈칸이 없어!)
             if(blankNum == 1 && incorrectNum == 0){
-                if (lyrics != undefined) {
-                    const temp: Lyric[] = { ...lyrics }
-                    temp[idx].isBlank = !temp[idx].isBlank;
-                    setLyrics({
-                        ...temp
-                    });
-                }
+                onSetIsBlank(idx);
             }
+
         }else {
             if (targetBlank) {
                 let wrongAnswer = answer;
