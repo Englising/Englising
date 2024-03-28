@@ -19,7 +19,7 @@ export type Alphabet = {
   alphabet: string;
 };
 
-const MultiInputArea = ({ quiz }: { quiz: Quiz[] }) => {
+const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alphabet[] }) => {
   const client = useRef<Client>();
   const { multiId } = useParams();
   const [changedAnswer, setChangedAnswer] = useState<Alphabet | undefined>();
@@ -72,6 +72,7 @@ const MultiInputArea = ({ quiz }: { quiz: Quiz[] }) => {
                         answer={alphabet}
                         onInputChange={handleInputChange}
                         changedAnswer={changedAnswer}
+                        hintResult={hintResult}
                       />
                     );
                   })}
