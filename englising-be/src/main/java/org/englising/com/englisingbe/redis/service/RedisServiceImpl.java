@@ -33,10 +33,17 @@ public class RedisServiceImpl {
         return Optional.empty();
     }
 
-    public List<MultiPlayGame> getWaitingMultiPlayGames(Genre genre, Integer page, Integer size) {
+    public List<MultiPlayGame> getWaitingMultiPlayGames(Genre genre) {
         List<Object> games = redisTemplate.opsForValue().multiGet(
                 redisTemplate.keys(gamePrefix+"*")
         );
+        if (genre.equals(Genre.all)){
+            return games.stream()
+                    .filter(MultiPlayGame.class::isInstance)
+                    .map(MultiPlayGame.class::cast)
+                    .filter(game -> game.getStatus() == MultiPlayStatus.WAITING)
+                    .toList();
+        }
         return games.stream()
                 .filter(MultiPlayGame.class::isInstance)
                 .map(MultiPlayGame.class::cast)

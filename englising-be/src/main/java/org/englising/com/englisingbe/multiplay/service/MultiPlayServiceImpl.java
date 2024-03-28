@@ -57,8 +57,8 @@ public class MultiPlayServiceImpl {
         return multiPlay.getMultiplayId();
     }
 
-    public List<MultiPlayListResponseDto> getMultiPlayWaitingList(Genre genre, Integer page, Integer size){
-        List<MultiPlayGame> waitingGameList = redisService.getWaitingMultiPlayGames(genre, page, size);
+    public List<MultiPlayListResponseDto> getMultiPlayWaitingList(Genre genre){
+        List<MultiPlayGame> waitingGameList = redisService.getWaitingMultiPlayGames(genre);
         return waitingGameList.stream()
                 .map(multiPlayGame -> {
                     return MultiPlayListResponseDto.builder()
