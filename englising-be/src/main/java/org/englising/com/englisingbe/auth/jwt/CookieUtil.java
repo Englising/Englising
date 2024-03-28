@@ -44,27 +44,27 @@ public class CookieUtil {
     }
 
     // sameSite"None"설정을 위한 cookie ... 개발용
-//    public void addAccessCookie(HttpServletResponse response, String key, String value) {
-//        ResponseCookie cookie = ResponseCookie.from(key, value)
-//                .path("/")
-//                .sameSite("None")
-//                .httpOnly(true)
-//                .secure(false)
-//                .maxAge(3600)
-//                .build();
-//        response.addHeader("Set-Cookie", cookie.toString());
-//    }
-//
-//    public void addRefreshCookie(HttpServletResponse response, String key, String value) {
-//        ResponseCookie cookie = ResponseCookie.from(key, value)
-//                .path("/")
-//                .sameSite("None")
-//                .httpOnly(true)
-//                .secure(false)
-//                .maxAge(1209600)
-//                .build();
-//        response.addHeader("Set-Cookie", cookie.toString());
-//    }
+    public void addAccessCookie(HttpServletResponse response, String key, String value) {
+        ResponseCookie cookie = ResponseCookie.from(key, value)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .secure(false)
+                .maxAge(3600)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+    }
+
+    public void addRefreshCookie(HttpServletResponse response, String key, String value) {
+        ResponseCookie cookie = ResponseCookie.from(key, value)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .secure(false)
+                .maxAge(1209600)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+    }
 
 
 
