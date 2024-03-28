@@ -81,7 +81,7 @@ const SinglePage = () => {
     const [progressInfo, setProgressInfo] = useState<ProgressInfo>({
         totalWord: 0, // 나중에 axios로 받아올 것
         rightWord: 0,
-        hintNum: 3,
+        hintNum: 0,
     });
 
 
@@ -110,6 +110,7 @@ const SinglePage = () => {
 
     const onSetProgressInfo = (type: string, data: number = 1): void => {
         if (type == "rightWord") {
+            alert(data)
             setProgressInfo({
                 ...progressInfo,
                 rightWord: progressInfo.rightWord + data
@@ -138,10 +139,10 @@ const SinglePage = () => {
         });
     }
 
-    const onSkip = (): void => {
-        const lyric = singleData?.lyrics[playInfo.idx + 1];
+    const onLyricMove = (index: number): void => {
+        const lyric = singleData?.lyrics[index];
         if (lyric != undefined) {
-            onSetInfo(playInfo.idx+1, lyric.isBlank, lyric.startTime, lyric.endTime);
+            onSetInfo(index, lyric.isBlank, lyric.startTime, lyric.endTime);
         }
     }
 
@@ -157,21 +158,17 @@ const SinglePage = () => {
             try {
                 const singleData = await getSinglePlayData(data);
                 setSingleData(singleData.data);
+                setProgressInfo({
+                    totalWord: singleData.data.totalWordCnt, // 나중에 axios로 받아올 것
+                    rightWord: 0,
+                    hintNum: 3,            
+                });
             } catch (error) {
                 console.error('Error fetching data:', error)
             }
         }
         getData();
     },[])
-
-    useEffect(() => {
-        setProgressInfo({
-            totalWord: singleData?.totalWordCnt, // 나중에 axios로 받아올 것
-            rightWord: 0,
-            hintNum: 3,            
-        });
-    }, [singleData])
-
 
 return (
         <div className="bg-cover bg-center h-screen w-screen p-0 m-0" style={{ backgroundImage: `url(${img})` }}>            
@@ -185,7 +182,7 @@ return (
                     </div>
                 </div>
                 <div className="w-full h-[10%] bg-black flex justify-center">
-                <FooterVar onSetAnswer={onSetAnswer} onSkip={onSkip} idx={playInfo.idx} />
+                <FooterVar onSetAnswer={onSetAnswer} onLyricMove={onLyricMove} idx={playInfo.idx} />
                 </div>
                 </div>
         </div>

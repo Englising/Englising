@@ -47,7 +47,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
     const [percentage, setPercentage] = useState<number>(0);
 
     {/** playButton */}
-    const [togglePlay, setTogglePlay] = useState<boolean>(true);
+    const [togglePlayButton, setTogglePlayButton] = useState<boolean>(true);
 
     
     const handleProgress = (e: OnProgressProps) => {
@@ -63,7 +63,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
     }
 
     const handlePuase = () => {
-        setTogglePlay(true);
+        setTogglePlayButton(true);
     }
     
     {/** 전체 playTime 받아오는 이벤트함수 */}
@@ -73,7 +73,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
 
     {/** 재생 / 일시정지 */ }
     const handlePlayClick = () => {
-        setTogglePlay(false);
+        setTogglePlayButton(false);
         setPlaying(true);
         
         if (isBlank) {
@@ -84,7 +84,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
     }
 
     const handlePauseClick = () => {
-        setTogglePlay(true);
+        setTogglePlayButton(true);
         setPlaying(false);
     }
 
@@ -97,15 +97,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
         setVolume(0);
     }
 
-    // 특정 구간 가사를 누를 때 발생하는 이벤트
-    useEffect(() => {
-        setTogglePlay(false);
-        setPlaying(true);
-        player.current?.seekTo(startTime);
-    },[toggleNext])
-
-    // 힌트창이 켜졌을때 노래 일시중지
-    //
+     //
     useEffect(() => {
         const getData = async () => {
             if (trackId != undefined) {
@@ -115,6 +107,16 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
         }
         getData();
     }, [])
+    
+    // 특정 구간 가사를 누를 때 발생하는 이벤트
+    useEffect(() => {
+        setTogglePlayButton(false);
+        setPlaying(true);
+        player.current?.seekTo(startTime);
+    },[toggleNext])
+
+    // 힌트창이 켜졌을때 노래 일시중지
+
 
     useEffect(() => {
         setPercentage((rightWord / totalWord) * 100);
@@ -164,7 +166,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
                     {/* 음원 Progress Bar */ }
                     <div className="flex items-center justify-center my-1">
                         <div className="w-[10%]">
-                            {togglePlay ? 
+                            {togglePlayButton ? 
                                 <img className="h-3.5 mr-2 cursor-pointer" src={`/src/assets/play.png`} onClick={handlePlayClick}></img> :
                                 <img className="h-3.5 mr-2 cursor-pointer" src={`/src/assets/pause.png`} onClick={handlePauseClick}></img>
                             }
