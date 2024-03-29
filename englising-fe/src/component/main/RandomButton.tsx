@@ -6,7 +6,7 @@ const RandomButton = () => {
     <button>
         <div className="rounded-full bg-secondary-500 w-9 h-9 flex items-center justify-center">
         <svg
-            xmlns="http://www.w3.org/2000/svg"
+            xmlns="https://www.w3.org/2000/svg"
             width="22"
             height="22"
             viewBox="0 1 22 24"
