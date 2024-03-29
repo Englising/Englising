@@ -24,11 +24,11 @@ const WordListPage = () => {
     const [selectedButton, setSelectedButton] = useState<string>(''); // 선택된 버튼 상태
 
     useEffect(() => {
-        axios.get(`https://j10a106.p.ssafy.io/api/word/list?type=like&page=0&size=20`)
+        axios.get(`https://j10a106.p.ssafy.io/api/word/list?type=like&page=0&size=20`, {withCredentials:true})
             .then((response) => {
                 // 응답 받아서 리스트에 넣기
                 setWordList(response.data.data.wordResponseDto);
-                setSelectedButton("like");
+                setSelectedButton("played");
                 console.log('단어목록 가져오기 성공');
             })
             .catch((error) => {
@@ -53,7 +53,7 @@ const WordListPage = () => {
 
     const WordButton: React.FC<WordButtonProps> = ({ buttonText, apiEndpoint, onClick, selected }) => {
         return (
-            <button className={`text-black ${selected ? 'bg-secondary-500' : 'bg-primary-500'} w-24 h-7 rounded-full text-sm hover:opacity-50`} onClick={() => onClick(apiEndpoint)}>
+            <button className={`text-black ${selected ? 'bg-secondary-500' : 'bg-primary-500'} w-40 h-10 rounded-full text-sm hover:opacity-50`} onClick={() => onClick(apiEndpoint)}>
                 {buttonText}
             </button>
         );
@@ -80,9 +80,8 @@ const WordListPage = () => {
             <div className='flex flex-col pt-20 pl-6'>
                 <h1 className='text-white font-bold text-xl w-48 pb-12'>단어장</h1>
                 <div className='flex flex-row gap-6 pb-12'>
-                    <WordButton buttonText="북마크 한 단어" apiEndpoint="like" onClick={handleClick} selected={selectedButton === "like"} />
                     <WordButton buttonText="기출 단어" apiEndpoint="played"  onClick={handleClick} selected={selectedButton === "played"} />
-                    <WordButton buttonText="찾아본 단어" apiEndpoint="searched" onClick={handleClick} selected={selectedButton === "searched"} />
+                    <WordButton buttonText="북마크 한 단어" apiEndpoint="like" onClick={handleClick} selected={selectedButton === "like"} />
                 </div>
                 <div className="grid grid-cols-2 gap-10 overflow-y-auto pr-24">
                     {wordList && wordList.length > 0 ? ( // wordList 배열이 비어있지 않은 경우에만 map 함수 호출

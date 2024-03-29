@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import axios from 'axios';
 interface InputPasswordProps {
     onClose: () => void;
     correctPassword: number;
@@ -12,7 +12,17 @@ const InputPassword: React.FC<InputPasswordProps> = ({ onClose, correctPassword,
     const handleSubmit = () => {
         if (password === correctPassword) {
             onClose(); // 비밀번호가 일치하면 모달을 닫음
-            window.location.href = `/waitroom/${roomId}`;
+            axios.post(`https://j10a106.p.ssafy.io/api/multiplay/${roomId}/game`, {withCredentials:true})
+            .then(() => {
+                window.location.href = `/waitroom/${roomId}`;
+            })
+            .catch((error) => {
+                if (error.response && error.response.request.status === 404) {
+                    alert("참여할 수 없는 방입니다.");
+                } else {
+                    console.error('참여 실패', error);
+                }
+            });
         } else {
             alert('비밀번호가 올바르지 않습니다.'); // 비밀번호가 일치하지 않으면 에러 메시지 설정
         }

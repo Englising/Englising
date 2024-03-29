@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 // import { Link } from 'react-router-dom';
 import InputPassword from './InputPassword';
+import axios from 'axios';
 
 
 interface MultiroomProps {
@@ -30,7 +31,18 @@ const Multiroom: React.FC<MultiroomProps> = ({
             setShowPasswordModal(true);
         } else {
             // Navigate to the room without password check
-            window.location.href = `/waitroom/${roomId}`;
+            axios.post(`https://j10a106.p.ssafy.io/api/multiplay/${roomId}`,{}, {withCredentials:true})
+            .then(() => {
+                window.location.href = `/waitroom/${roomId}`;
+            })
+            .catch((error) => {
+                if (error.response && error.response.request.status === 404) {
+                    alert("참여할 수 없는 방입니다.");
+                } else {
+                    console.error('참여 실패', error);
+                }
+            });
+            
         }
     };
 
