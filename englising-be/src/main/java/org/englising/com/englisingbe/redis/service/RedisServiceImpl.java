@@ -52,7 +52,6 @@ public class RedisServiceImpl {
     }
 
     public boolean addNewUserToMultiPlayGame(Long multiPlayId, MultiPlayUser user) {
-        boolean result = false;
         MultiPlayGame game = getMultiPlayGameById(multiPlayId);
         List<MultiPlayUser> users = game.getUsers();
         if (users == null) {
@@ -65,21 +64,31 @@ public class RedisServiceImpl {
         if (userExists) {
             throw new GlobalException(ErrorHttpStatus.USER_ALREADY_EXISTS);
         }
+        game.getUsers().add(user);
         saveMultiPlayGame(game);
-        return result;
+        return true;
     }
 
     public boolean deleteUserToMultiPlayGame(Long multiPlayId, MultiPlayUser user) {
         boolean result = false;
         MultiPlayGame game = getMultiPlayGameById(multiPlayId);
         List<MultiPlayUser> users = game.getUsers();
-        if(game.getUsers().contains(user)){
-            game.getUsers().remove(user);
-            result = true;
+        MultiPlayUser userToRemove = null;
+        for (MultiPlayUser currentUser : users) {
+            if (currentUser.getUserId().equals(user.getUserId())) {
+                userToRemove = currentUser;
+                result = true;
+                break;
+            }
         }
+        if (userToRemove != null) {
+            users.remove(userToRemove);
+        }
+        game.setUsers(users);
         saveMultiPlayGame(game);
         return result;
     }
+
 
     public MultiPlayGame updateRoundStatus(Long multiPlayId, int round, MultiPlayStatus status){
         MultiPlayGame game = getMultiPlayGameById(multiPlayId);
