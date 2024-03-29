@@ -61,8 +61,8 @@ const Multiroom: React.FC<MultiroomProps> = ({
                         </div>}
                 </div>
             </div>
-            <div className='flex justify-center items-center rounded-full h-9 w-9 bg-white absolute right-2 top-44 text-xs text-center font-bold text-black'>
-                <p onClick={handleEnterRoom}>입장</p>
+            <div onClick={handleEnterRoom} className='flex justify-center items-center rounded-full h-9 w-9 bg-white absolute right-2 top-44 text-xs text-center font-bold text-black'>
+                입장
             </div>
             {/* 비밀번호 입력 모달 */}
             {showPasswordModal && (
