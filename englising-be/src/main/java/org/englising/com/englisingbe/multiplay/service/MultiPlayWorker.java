@@ -30,7 +30,7 @@ public class MultiPlayWorker {
     private RedisServiceImpl redisService;
     private MultiPlayGame multiPlayGame;
     private int bufferTime = 3000;
-    private int inputTime = 10000;
+    private int inputTime = 30000;
     private int timer = 3000;
     private int hintResultWaitTime = 6000;
     private int trackPlayTime;
