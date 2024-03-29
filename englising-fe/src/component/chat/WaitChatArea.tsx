@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { Client, IMessage } from "@stomp/stompjs";
-import ChatMessage from "./ChatMessage";
+import WaitChatMessage from "./WaitChatMessage";
 import useStomp from "../../hooks/useStomp";
 import styles from "../multi/Multi.module.css";
 
@@ -128,7 +128,7 @@ function ChatArea() {
                 }
 
                 return (
-                <ChatMessage
+                <WaitChatMessage
                     key={index}
                     user={{ userId: chat.userId, nickname: chat.nickname, profileImage: chat.profileImage }}
                     message={chat.message}
