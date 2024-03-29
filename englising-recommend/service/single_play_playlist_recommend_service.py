@@ -5,12 +5,13 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 from crud import track_crud as track_crud
-from database.mysql_manager import Session
+from database.mysql_manager import get_session
 
 
 def get_recommend_for_user_id(user_id, limit=18):
-    user_likes = track_crud.get_user_liked_track_ids(Session(), user_id)
-    user_played = track_crud.get_user_played_tracks(Session(), user_id)
+    with get_session() as session:
+        user_likes = track_crud.get_user_liked_track_ids(session, user_id)
+        user_played = track_crud.get_user_played_tracks(session, user_id)
     if user_likes is None or len(user_likes) == 0:
         return __get_popular_tracks__()
     else:
@@ -18,14 +19,16 @@ def get_recommend_for_user_id(user_id, limit=18):
 
 
 def __get_popular_tracks__(limit=18):
-    popular_tracks = track_crud.get_tracks_by_single_played_count_and_spotify_popularity(Session(), 60)
+    with get_session() as session:
+        popular_tracks = track_crud.get_tracks_by_single_played_count_and_spotify_popularity(session, 60)
     popular_track_ids = [track.track_id for track in popular_tracks]
     return random.sample(popular_track_ids, limit)
 
 
 def __get_recommended_tracks__(user_likes=[], user_played=[], limit=18):
     # Track Model로 DataFrame 생성
-    tracks = track_crud.get_all_tracks(Session())
+    with get_session() as session:
+        tracks = track_crud.get_all_tracks(session)
     track_data = [{
         'track_id': track.track_id,
         'feature_acousticness': track.feature_acousticness,
