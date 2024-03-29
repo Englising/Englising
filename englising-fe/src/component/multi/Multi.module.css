@@ -1,6 +1,7 @@
 @font-face {
-  font-family: "Hana_handwriting";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/naverfont_05@1.0/Hana_handwriting.woff") format("woff");
+  font-family: "TTHakgyoansimMonggeulmonggeulR";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_keris@1.0/TTHakgyoansimMonggeulmonggeulR.woff2")
+    format("woff2");
   font-weight: normal;
   font-style: normal;
 }
@@ -36,5 +37,5 @@ dialog::backdrop {
 }
 
 .symbol {
-  font-family: "Hana_handwriting";
+  font-family: "TTHakgyoansimMonggeulmonggeulR";
 }
