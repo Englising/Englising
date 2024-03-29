@@ -68,6 +68,7 @@ const SettingMulti = () => {
         } 
         else{
             console.log(roomInfo)
+            // 방 생성
             axios.post("https://j10a106.p.ssafy.io/api/multiplay",{
                 roomName: roomInfo.roomName, // 방 이름
                 maxUser: roomInfo.maxUser, // 최대 사용자 수
@@ -79,9 +80,23 @@ const SettingMulti = () => {
             }, {withCredentials:true})
             .then((Response) => {
                 roomInfo.roomId = Response.data.data;
+                console.log(roomInfo.roomId);
                 setRoomInfo({ ...roomInfo, roomId: roomInfo.roomId });
-                window.location.href = `/waitroom/${roomInfo.roomId}`;
+                // 방 참여
+                axios.post(`https://j10a106.p.ssafy.io/api/multiplay/${roomInfo.roomId}`,{}, 
+                {withCredentials : true})
+                .then(() => {
+                    window.location.href = `/waitroom/${roomInfo.roomId}`;
+                })
+                .catch((error) => {
+                    if (error.response && error.response.request.status === 404) {
+                        alert("참여할 수 없는 방입니다.");
+                    } else {
+                        console.error('참여 실패', error);
+                    }
+                });
             })
+
         }
     }
 
