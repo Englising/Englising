@@ -1,12 +1,12 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import RandomButton from '../component/main/RandomButton.tsx';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const SettingMulti = () => {
     const [roomImg, setRoomImg] = useState<string>("");
     const [isSecret, setIsSecret] = useState<boolean>(false);
-    const [multiId, setMultiId] = useState<number>(0);
+    // const [multiId, setMultiId] = useState<number>(0);
     
     //일단 이 페이지 들어오면 roomImg api로 요청해서 바꿈
     useEffect(() => {
@@ -73,15 +73,15 @@ const SettingMulti = () => {
                 maxUser: roomInfo.maxUser, // 최대 사용자 수
                 currentUser: roomInfo.currentUser, // 현재 사용자 수
                 isSecret: roomInfo.isSecret,
-                password: roomInfo.password,
+                roomPw: roomInfo.password,
                 multiPlayImgUrl: roomInfo.roomImg,
                 genre: roomInfo.genre,
             })
             .then((Response) => {
-                setMultiId(Response.data.data);
-                console.log(Response.data.data);
+                roomInfo.roomId = Response.data.data;
+                setRoomInfo({ ...roomInfo, roomId: roomInfo.roomId });
+                window.location.href = `/waitroom/${roomInfo.roomId}`;
             })
-            //request로 multiplayId 받아서 waitroom/multiplayId로 보내주기
         }
     }
 
@@ -141,12 +141,6 @@ const SettingMulti = () => {
                         {/* 장르 설정 */}
                         <div className='flex flex-row gap-2 pt-3'>
                         <button 
-                            className={`text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50 ${roomInfo.genre === 'rock' && 'bg-secondary-500 text-black border-0'}`} // hiphop 장르가 선택된 경우 스타일 적용
-                            onClick={() => handleGenreChange('rock')} // hiphop 버튼 클릭 시
-                        >
-                            ROCK
-                        </button>
-                        <button 
                             className={`text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50 ${roomInfo.genre === 'pop' && 'bg-secondary-500 text-black border-0'}`} // pop 장르가 선택된 경우 스타일 적용
                             onClick={() => handleGenreChange('pop')} // pop 버튼 클릭 시
                         >
@@ -157,6 +151,12 @@ const SettingMulti = () => {
                             onClick={() => handleGenreChange('rnb')} // rnb 버튼 클릭 시
                         >
                             R&B
+                        </button>
+                        <button 
+                            className={`text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50 ${roomInfo.genre === 'rock' && 'bg-secondary-500 text-black border-0'}`} // hiphop 장르가 선택된 경우 스타일 적용
+                            onClick={() => handleGenreChange('rock')} // hiphop 버튼 클릭 시
+                        >
+                            ROCK
                         </button>
                         <button 
                             className={`text-white border-2 border-primary-200 w-24 h-7 rounded-full text-sm hover:opacity-50 ${roomInfo.genre === 'dance' && 'bg-secondary-500 text-black border-0'}`} // dance 장르가 선택된 경우 스타일 적용
@@ -183,7 +183,7 @@ const SettingMulti = () => {
                         </div>
                         {/* 비밀번호 설정 */}
                         {roomInfo.isSecret ? <input
-                            type="text"
+                            type="number"
                             name="room_password"
                             className='w-64 h-10 pl-3 bg-secondary-100 rounded-lg placeholder:text-primary-700 text-black'
                             placeholder='비밀번호를 입력하시오 (4자릿수 숫자)'
@@ -195,7 +195,8 @@ const SettingMulti = () => {
                         <div className='pl-28 pt-8' onClick={finishSetting}>
                             <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'>
                                 <p>
-                                    <Link to ={`/waitroom/${multiId}`}>방 설정 완료</Link>
+                                    방 설정 완료
+                                    {/* <Link to ={`/waitroom/${multiId}`}>방 설정 완료</Link> */}
                                 </p>        
                             </button>
                         </div>

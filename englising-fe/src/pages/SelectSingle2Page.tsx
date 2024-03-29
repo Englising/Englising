@@ -27,11 +27,10 @@ const SelectSinglePage: React.FC = () => {
     const [playList, setPlayList] = useState<Music[]>([]);
 
     useEffect(() => {
-    axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist?type=like&page=0&size=20")
+    axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist?type=like&page=0&size=20", {withCredentials:true})
         .then((Response) => {
             console.log(Response.data)
             setPlayList(Response.data.data.playList);
-            console.log(playList);
         })
         .catch((error) => {
             console.error('Error fetching playlist:', error);

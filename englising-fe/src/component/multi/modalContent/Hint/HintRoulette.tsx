@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 
-function HintRoulette({ hint }: { hint: number }) {
+function HintRoulette({ hint, onRoulette }: { hint: number; onRoulette: () => void }) {
   const backgroundRef = useRef<HTMLDivElement>(null);
+  console.log("hint num:", hint);
 
   useEffect(() => {
     const width = Number(backgroundRef.current?.offsetWidth);
@@ -15,12 +16,18 @@ function HintRoulette({ hint }: { hint: number }) {
         backgroundRef.current.style.transform = `translate(${deltaWidth[idx]}px, ${deltaHeight[idx]}px)`;
       }
       idx++;
+
+      if (cnt == 5 && idx == hint) {
+        clearInterval(interval);
+
+        setTimeout(() => {
+          onRoulette();
+        }, 1000);
+      }
+
       if (idx == 4) {
         idx = 0;
         cnt++;
-      }
-      if (cnt == 5 && idx == hint) {
-        clearInterval(interval);
       }
     }, 70);
   }, []);
@@ -58,7 +65,18 @@ function HintRoulette({ hint }: { hint: number }) {
             <p className="text-secondary-400 text-6xl font-bold">× 2</p>
             <p className="text-sm">노래가 2배속으로 빠르게 재생됩니다</p>
           </div>
-          <div className="min-h-16 flex flex-col items-center justify-between p-4 border-e">
+          <div className="min-h-16 flex flex-col items-center gap-4 p-4 border-e">
+            <p className="text-lg font-bold">랜덤 위치 5개 공개</p>
+            <div className="flex gap-4 py-2 text-secondary-400 text-lg font-bold">
+              <p className="py-2 px-3 bg-gray-500 rounded-sm">A</p>
+              <p className="py-2 px-3 bg-gray-500 rounded-sm">B</p>
+              <p className="py-2 px-3 bg-gray-500 rounded-sm">C</p>
+              <p className="py-2 px-3 bg-gray-500 rounded-sm">D</p>
+              <p className="py-2 px-3 bg-gray-500 rounded-sm">E</p>
+            </div>
+            <p className="text-sm">랜덤으로 5개 칸의 정답이 공개됩니다</p>
+          </div>
+          <div className="min-h-16 flex flex-col items-center justify-between p-4">
             <p className="text-lg font-bold">오답 수</p>
             <div className="text-secondary-400 text-5xl font-bold">
               <svg
@@ -77,17 +95,6 @@ function HintRoulette({ hint }: { hint: number }) {
               </svg>
             </div>
             <p className="text-sm">이전 라운드에 제출한 답변의 오답 수가 공개됩니다</p>
-          </div>
-          <div className="min-h-16 flex flex-col items-center gap-4 p-4 ">
-            <p className="text-lg font-bold">랜덤 위치 5개 공개</p>
-            <div className="flex gap-4 py-2 text-secondary-400 text-lg font-bold">
-              <p className="py-2 px-3 bg-gray-500 rounded-sm">A</p>
-              <p className="py-2 px-3 bg-gray-500 rounded-sm">B</p>
-              <p className="py-2 px-3 bg-gray-500 rounded-sm">C</p>
-              <p className="py-2 px-3 bg-gray-500 rounded-sm">D</p>
-              <p className="py-2 px-3 bg-gray-500 rounded-sm">E</p>
-            </div>
-            <p className="text-sm">랜덤으로 5개 칸의 정답이 공개됩니다</p>
           </div>
         </div>
       </div>
