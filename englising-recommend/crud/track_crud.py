@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import desc, func
+from sqlalchemy import desc, func, and_
 
 from database.mysql_manager import Session
 from model import Track, Lyric
@@ -11,10 +11,10 @@ from model.track_like import TrackLike
 def get_all_tracks(session: Session) -> List[Track]:
     return session.query(Track) \
         .join(Track.track_words) \
-        .filter(Track.youtube_id != None) \
-        .filter(Track.genre != None) \
+        .filter(Track.youtube_id is not None and Track.youtube_id != 'NONE') \
+        .filter(Track.genre is not None) \
         .filter(Track.lyric_status == 'DONE') \
-        .filter(Track.lyrics.any(Lyric.kr_text != None)) \
+        .filter(Track.lyrics.any(Lyric.kr_text is not None)) \
         .all()
 
 
@@ -37,6 +37,12 @@ def get_tracks_by_single_played_count_and_spotify_popularity(session, limit=60):
 
     tracks = (session.query(Track)
               .outerjoin(singleplay_count_subquery, Track.track_id == singleplay_count_subquery.c.track_id)
-              .order_by(desc(Track.spotify_popularity), desc(singleplay_count_subquery.c.play_count)).all())
+              .filter(and_(Track.youtube_id != None, Track.youtube_id != 'NONE'))
+              .filter(Track.genre != None)
+              .filter(Track.lyric_status == 'DONE')
+              .filter(Track.lyrics.any(Lyric.kr_text != None))
+              .order_by(desc(Track.spotify_popularity), desc(singleplay_count_subquery.c.play_count))
+              .limit(limit)
+              .all())
 
-    return tracks[:limit]
+    return tracks
