@@ -1,6 +1,6 @@
 import React, { useState,  useRef, useEffect } from 'react';
 import WaitChatArea from '../component/chat/WaitChatArea'
-import { Link, useParams } from 'react-router-dom';
+import {useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import useStomp from "../hooks/useStomp";
 import { Client, IMessage } from "@stomp/stompjs";
@@ -30,7 +30,7 @@ const WaitingRoomPage: React.FC = () => {
     const [userId, setUserId] = useState<number>(0);
     const params = useParams().multiId;
     const client = useRef<Client>();
-    
+    const navigate = useNavigate();
 
     // useStomp 훅을 직접 함수 컴포넌트 내에서 호출
     const [connect, disconnect] =useStomp(client, `participant/${params}`, (message: IMessage) => {
@@ -63,7 +63,7 @@ const WaitingRoomPage: React.FC = () => {
     );
 
     useEffect(() => {
-        axios.get(`https://j10a106.p.ssafy.io/api/multiplay/${params}`)
+        axios.get(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
             .then((response) => {
                 setMultiRoom(response.data.data);
                 setUserId(parseInt(localStorage.getItem("userId") || "0"));
@@ -79,7 +79,8 @@ const WaitingRoomPage: React.FC = () => {
     },[]);
 
     const leaveRoom = ():void => {
-        axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`)
+        axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
+        navigate("/englising/selectMulti");
     }
 
     const startGame = ():void => {
@@ -138,7 +139,7 @@ const WaitingRoomPage: React.FC = () => {
                     </button> 
                     {/* } */}
                     <button onClick={leaveRoom} className='text-black bg-red-400 w-48 h-12 rounded-lg text-sm hover:opacity-50'>
-                        <Link to ="/englising/selectMulti">나가기</Link>
+                        나가기
                     </button>
                 </div>
                     
