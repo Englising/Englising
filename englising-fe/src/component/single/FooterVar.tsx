@@ -30,16 +30,9 @@ const FooterVar = ({onSetAnswer, onLyricMove, idx}:Props) => {
         }
     }
 
-    const handleDictionaryClick = () => {
-
-    }
-
-    const handleVocabularyClick = () => {
-
-    }
 
     const handleExitClick = () => {
-
+        // use 네비게이트로 내보내기, 기존에 받았던 데이터를 가지고
     }
 
     useEffect(() => {
@@ -49,14 +42,8 @@ const FooterVar = ({onSetAnswer, onLyricMove, idx}:Props) => {
     return (
         <div className="w-full h-full flex items-center justify-evenly ">
             <div className="w-1/3 flex pl-10 box-border text-white">
-                <div className="w-20" onClick={handleDictionaryClick}>
-                    사전
-                </div>
-                <div className="mx-10" onClick={handleVocabularyClick}>
-                    단어장
-                </div>
-                <div className="mx-10" onClick={handleExitClick}>
-                    종료하기
+                <div className="h-[2.5em] w-[5em] mr-[1em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col" onClick={handleExitClick}>
+                    <div> 종료하기 </div>
                 </div>
             </div>
 
