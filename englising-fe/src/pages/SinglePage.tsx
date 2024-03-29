@@ -177,13 +177,11 @@ const SinglePage = () => {
     },[])
 
 return (
-    <div className="bg-cover bg-center h-screen w-screen p-0 m-0" style={{ backgroundImage: `url(${img})` }}>        
-        <div className="h-svh w-screen flex flex-col bg-black bg-opacity-80 items-center">
-
-            {showStartModal ? (<div className="relative">
+    <div className="bg-cover bg-center h-screen w-screen p-0 m-0 relative z-10" style={{ backgroundImage: `url(${img})` }}>
+        <div className="h-svh w-screen flex flex-col bg-black bg-opacity-80 items-center select-none">
+            {showStartModal ? (<div className="relative z-10">
                 <StartModal onGameStart={onGameStart} />
             </div>) : (<></>)}
-
             <div className="h-[90%] w-9/12 flex">
                 <div className="w-2/5 h-full items-center">
                     <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} showStartModal={showStartModal} /> 

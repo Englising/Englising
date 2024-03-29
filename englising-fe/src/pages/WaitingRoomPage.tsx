@@ -44,10 +44,10 @@ const WaitingRoomPage: React.FC = () => {
                 setMultiRoom(prevState => {
                     if (!prevState) return prevState;
                     const updatedUsers = [...prevState.currentUser, {
-                        userId: userData.userId,
-                        nickname: userData.nickname,
-                        profileImg: userData.profileImg,
-                        color: userData.color
+                        userId: userData.user.userId,
+                        nickname: userData.user.nickname,
+                        profileImg: userData.user.profileImg,
+                        color: userData.user.color
                     }];
                     return {
                         ...prevState,
@@ -55,8 +55,15 @@ const WaitingRoomPage: React.FC = () => {
                     };
                 }); 
             } else if (state === 'leave') {
-                //나갈떄..
-                disconnect();
+                setMultiRoom(prevState => {
+                    if (!prevState) return prevState;
+                    const updatedUsers = prevState.currentUser.filter(user => user.userId !== userData.user.userId);
+                    return {
+                        ...prevState,
+                        currentUser: updatedUsers
+                    };
+                }); 
+                
             }
         }
     // }
@@ -66,13 +73,13 @@ const WaitingRoomPage: React.FC = () => {
         axios.get(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
             .then((response) => {
                 setMultiRoom(response.data.data);
+                console.log(response.data.data);
                 setUserId(parseInt(localStorage.getItem("userId") || "0"));
             });
     }, [params]); // params를 의존성 배열에 추가
 
     useEffect(()=>{
         console.log("연결 시도")
-        console.log(multiroom)
         connect();
 
         return () => disconnect();
@@ -81,6 +88,7 @@ const WaitingRoomPage: React.FC = () => {
     const leaveRoom = ():void => {
         axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
         navigate("/englising/selectMulti");
+        disconnect();
     }
 
     const startGame = ():void => {
