@@ -160,7 +160,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
         });
 
         if (blanksRef.current.length <= 0) setStartBlank(!startBlank);
-        
+
     }, [idx, toggleSubmit, startBlank])
 
     useEffect(() => {
