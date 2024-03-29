@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 
 interface Props {
     onSetAnswer(answer: string): void;
-    onSkip(): void;
+    onLyricMove(index: number): void;
     idx: number;
 }
 
-const FooterVar = ({onSetAnswer, onSkip, idx}:Props) => {
+const FooterVar = ({onSetAnswer, onLyricMove, idx}:Props) => {
     const [answer, setAnswer] = useState<string>("");
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -19,10 +19,14 @@ const FooterVar = ({onSetAnswer, onSkip, idx}:Props) => {
         setAnswer("");
     }
     
-    const handlePressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if(e.key == 'Enter'){
             onSetAnswer(answer);
             setAnswer("");  
+        } else if (e.key == 'ArrowUp') {
+            onLyricMove(idx - 1);
+        } else if (e.key == 'ArrowDown') {
+            onLyricMove(idx + 1);
         }
     }
 
@@ -64,7 +68,7 @@ const FooterVar = ({onSetAnswer, onSkip, idx}:Props) => {
                         placeholder="빈칸에 들어갈 단어를 작성해주세요."
                         value={answer}
                         onChange={(event) => {handleAnswerChange(event)}}
-                        onKeyDown={(event) => {handlePressEnter(event)}}
+                        onKeyDown={(event) => {handleKeyDown(event)}}
                     >
                     </input>
                 </div>
@@ -74,9 +78,8 @@ const FooterVar = ({onSetAnswer, onSkip, idx}:Props) => {
                     <div className="m-auto text-[1em]">입력</div>
                 </div>
                 <div 
-                    className="h-[2.5em] w-[5em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"
-                    onClick={onSkip}> 
-                    <div className="m-auto text-[1em]">SKIP</div>
+                    className="h-[2.5em] w-[5em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"> 
+                    <div className="m-auto text-[1em]">공사중</div>
                 </div>
             </div> 
         </div>

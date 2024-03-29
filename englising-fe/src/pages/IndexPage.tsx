@@ -12,7 +12,9 @@ const IndexPage = () => {
     }
 
     const guestLogin = async() => {
-        axios.post("https://j10a106.p.ssafy.io/api/auth/guest")
+        axios.post("https://j10a106.p.ssafy.io/api/auth/guest", {
+            withCredentials: true, // 이 옵션을 설정하여 쿠키와 인증 정보를 함께 보냄
+            })
         .then((response) => {
             // 유저아이디 받아서 로컬에 저장
             localStorage.setItem("userId", response.data.data.userId.toString());
