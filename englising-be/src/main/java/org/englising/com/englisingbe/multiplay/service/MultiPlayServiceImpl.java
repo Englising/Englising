@@ -45,7 +45,7 @@ public class MultiPlayServiceImpl {
 
     public Long createMultiPlay(MultiPlayRequestDto requestDto, Long userId) {
         MultiPlay multiPlay = multiPlayRepository
-                .save(MultiPlay.getMultiPlayFromMultiPlayRequestDto(requestDto, trackService.getTrackByTrackId(158L)));
+                .save(MultiPlay.getMultiPlayFromMultiPlayRequestDto(requestDto, trackService.getTrackByTrackId(158L))); //TODO 노래 선정 수정
         MultiPlayGame game = getMultiPlayGameFromMultiPlay(multiPlay, userId);
         // Redis에 Game 저장
         redisService.saveMultiPlayGame(game);
@@ -79,20 +79,13 @@ public class MultiPlayServiceImpl {
         // Redis에 게임 사용자 업데이트
         boolean result = redisService.addNewUserToMultiPlayGame(multiPlayId, user);
         // 다른 참여자들에게 입장 알림
-        //TODO 주석 해제
-//        if(result){
-//            messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
-//                    ParticipantDto.builder()
-//                            .kind("enter")
-//                            .user(user)
-//                            .build());
-//        }
-        //TODO : 삭제
-        messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
-                ParticipantDto.builder()
-                        .kind("enter")
-                        .user(user)
-                        .build());
+        if(result){
+            messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
+                    ParticipantDto.builder()
+                            .kind("enter")
+                            .user(user)
+                            .build());
+        }
         // MultiPlay 게임 방 정보 반환
         MultiPlayGame multiPlayGame = redisService.getMultiPlayGameById(multiPlayId);
         return MultiPlayDetailResponseDto.builder()
@@ -120,20 +113,13 @@ public class MultiPlayServiceImpl {
     public void leaveGame(Long multiPlayId, Long userId){
         MultiPlayUser user = MultiPlayUser.getMultiPlayUserFromUser(userService.getUserById(userId));
         boolean result = redisService.deleteUserToMultiPlayGame(multiPlayId, user);
-        //TODO : 주석 해제
-//        if(result){
-//            messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
-//                    ParticipantDto.builder()
-//                            .kind("leave")
-//                            .user(user)
-//                            .build());
-//        }
-        //TODO : 삭제
-        messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
-                ParticipantDto.builder()
-                        .kind("leave")
-                        .user(user)
-                        .build());
+        if(result){
+            messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
+                    ParticipantDto.builder()
+                            .kind("leave")
+                            .user(user)
+                            .build());
+        }
     }
 
     public Boolean getMultiPlayResult(Long multiplayId) {
