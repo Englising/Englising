@@ -84,7 +84,7 @@ const WaitingRoomPage: React.FC = () => {
     }
 
     const startGame = ():void => {
-        window.location.href = `/waitroom/${multiroom?.multiPlayId}`;
+        window.location.href = `/multiplay/${multiroom?.multiPlayId}`;
     }
 
 
