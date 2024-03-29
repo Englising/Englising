@@ -3,14 +3,14 @@ from typing import List
 from nltk.tokenize import word_tokenize
 
 import crud.lyric_crud as lyric_crud
-from database.mysql_manager import Session
+from database.mysql_manager import get_session
 from dto.lyric_dto import LyricDto
 from model import Lyric
 
-session = Session()
 
 def get_lyrics_from_track_id(track_id: int) -> List[LyricDto]:
-    lyrics = lyric_crud.get_lyrics_by_track_id(session, track_id)
+    with get_session() as session:
+        lyrics = lyric_crud.get_lyrics_by_track_id(session, track_id)
     return list(map(get_lyric_into_words, lyrics))
 
 

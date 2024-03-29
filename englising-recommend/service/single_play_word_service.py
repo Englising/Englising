@@ -2,17 +2,19 @@ import random
 from typing import List
 
 import numpy as np
+from database.mysql_manager import get_session
+
 import crud.word_crud as word_crud
-from database.mysql_manager import Session
 from config.fast_text_config import fast_text_model
 from model import TrackWord, Word
 
 
 def get_recommended_track_words(user_id: int, track_id: int, level: int) -> List[TrackWord]:
-    all_words = word_crud.get_all_track_words_by_track_id(Session(), track_id)
-    liked_words = word_crud.get_liked_words_by_user_id(Session(), user_id)
-    recently_played_words = word_crud.get_recently_played_words_by_user_id(Session(), user_id)
-    recommended_words = __recommend_words__(all_words, level, liked_words, recently_played_words)
+    with get_session() as session:
+        all_words = word_crud.get_all_track_words_by_track_id(session, track_id)
+        liked_words = word_crud.get_liked_words_by_user_id(session, user_id)
+        recently_played_words = word_crud.get_recently_played_words_by_user_id(session, user_id)
+        recommended_words = __recommend_words__(all_words, level, liked_words, recently_played_words)
     final_selected_words = __select_words_from_recommended__(level, recommended_words)
     return final_selected_words
 
