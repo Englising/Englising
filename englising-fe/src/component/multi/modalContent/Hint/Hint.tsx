@@ -2,6 +2,7 @@ import { useState } from "react";
 import HintRoulette from "./HintRoulette";
 import MusicHint from "./MusicHint";
 import CountHint from "./CountHint";
+import OpenHint from "./OpenHint";
 
 function Hint({ hint }: { hint: number }) {
   const [rouletteEnd, setRouletteEnd] = useState(false);
@@ -18,7 +19,7 @@ function Hint({ hint }: { hint: number }) {
     } else if (hint == 3) {
       return <CountHint count={3} />;
     } else {
-      return <p>알파벳 오픈</p>;
+      return <OpenHint />;
     }
   };
 
