@@ -38,10 +38,10 @@ public class TrackLikeController {
     public ResponseEntity<DefaultResponseDto<?>> likeTrack(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                           @RequestBody TrackLikeRequestDto trackLikeRequestDto) {
 
-//        Long userId = Long.parseLong(userDetails.getUsername());
-//        TrackLikeResponseDto trackLikeResponseDto = trackLikeService.likeTrack(trackLikeRequestDto.getTrackId(), userId);
+        Long userId = Long.parseLong(userDetails.getUsername());
+        TrackLikeResponseDto trackLikeResponseDto = trackLikeService.likeTrack(trackLikeRequestDto.getTrackId(), userId);
 
-        TrackLikeResponseDto trackLikeResponseDto = trackLikeService.likeTrack(trackLikeRequestDto.getTrackId(),1L);
+//        TrackLikeResponseDto trackLikeResponseDto = trackLikeService.likeTrack(trackLikeRequestDto.getTrackId(),1L);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

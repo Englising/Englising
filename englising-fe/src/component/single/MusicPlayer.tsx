@@ -11,11 +11,12 @@ interface Props {
     onSetInfoIdx(currIdx: number):void,
     playInfo: PlayInfo,
     progressInfo: ProgressInfo,
+    showStartModal: boolean
 }
 
 const hintStyle = "w-[1.5em] h-[1.5em] mx-[0.4em] rounded-full"
 
-const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
+const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Props ) => {
     // 현재 재생중인 가사 정보
     let { idx, isBlank, startTime, toggleNext } = playInfo
     
@@ -29,7 +30,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
 
     // 유튜브 아이디를 주는 axios 넣기//
     const url = `https://www.youtube.com/watch?v=${youtubeId}`;
-    const [playing, setPlaying] = useState<boolean>(true);
+    const [playing, setPlaying] = useState<boolean>(false);
     const [volume, setVolume] = useState<number>(0.5);
     const [played, setPlayed] = useState<number>(0.0); // 재생중인 구간의 비율(ratio)
     const [playedSeconds, setPlayedSeconds] = useState<number>(0); // 재생중인 구간의 시간(s)
@@ -47,7 +48,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
     const [percentage, setPercentage] = useState<number>(0);
 
     {/** playButton */}
-    const [togglePlay, setTogglePlay] = useState<boolean>(true);
+    const [togglePlayButton, setTogglePlayButton] = useState<boolean>(true);
 
     
     const handleProgress = (e: OnProgressProps) => {
@@ -61,9 +62,16 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
             }
         }
     }
+    const handlePlay = () => {
+        setTogglePlayButton(false);
+    }
 
     const handlePuase = () => {
-        setTogglePlay(true);
+        setTogglePlayButton(true);
+    }
+    
+    const handleError = () => {
+        setTogglePlayButton(true);
     }
     
     {/** 전체 playTime 받아오는 이벤트함수 */}
@@ -73,7 +81,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
 
     {/** 재생 / 일시정지 */ }
     const handlePlayClick = () => {
-        setTogglePlay(false);
+        setTogglePlayButton(false);
         setPlaying(true);
         
         if (isBlank) {
@@ -84,7 +92,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
     }
 
     const handlePauseClick = () => {
-        setTogglePlay(true);
+        setTogglePlayButton(true);
         setPlaying(false);
     }
 
@@ -97,15 +105,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
         setVolume(0);
     }
 
-    // 특정 구간 가사를 누를 때 발생하는 이벤트
-    useEffect(() => {
-        setTogglePlay(false);
-        setPlaying(true);
-        player.current?.seekTo(startTime);
-    },[toggleNext])
-
-    // 힌트창이 켜졌을때 노래 일시중지
-    //
+     //
     useEffect(() => {
         const getData = async () => {
             if (trackId != undefined) {
@@ -115,6 +115,22 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
         }
         getData();
     }, [])
+
+    useEffect(() => {
+        if (!showStartModal) {
+            setPlaying(true);
+        }
+    },[showStartModal])
+    
+    // 특정 구간 가사를 누를 때 발생하는 이벤트
+    useEffect(() => {
+        setTogglePlayButton(false);
+        setPlaying(true);
+        player.current?.seekTo(startTime);
+    },[toggleNext])
+
+    // 힌트창이 켜졌을때 노래 일시중지
+
 
     useEffect(() => {
         setPercentage((rightWord / totalWord) * 100);
@@ -134,8 +150,10 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
                     controls = {true} // 기본 control를 띄울 것인지 - 나중에 지울것
                     progressInterval = {100} // onProgress의 텀을 설정한다.
                     onProgress={(e) => { handleProgress(e) }}
+                    onPlay={handlePlay}
                     onPause={handlePuase}
                     onDuration={handleDuration}
+                    onError={handleError}
                     />
                 </div>
                 <div className="w-[55%] h-[55%] relative">
@@ -164,7 +182,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
                     {/* 음원 Progress Bar */ }
                     <div className="flex items-center justify-center my-1">
                         <div className="w-[10%]">
-                            {togglePlay ? 
+                            {togglePlayButton ? 
                                 <img className="h-3.5 mr-2 cursor-pointer" src={`/src/assets/play.png`} onClick={handlePlayClick}></img> :
                                 <img className="h-3.5 mr-2 cursor-pointer" src={`/src/assets/pause.png`} onClick={handlePauseClick}></img>
                             }
