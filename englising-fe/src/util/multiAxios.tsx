@@ -5,10 +5,6 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-const getMultiplayUsers = (multiplayId: string) => {
-  return instance.get(`/multiplay/${multiplayId}`);
-};
-
 const getMultiplayResult = (multiplayId: string) => {
   return instance.get(`/multiplay/${multiplayId}/result`);
 };
@@ -17,4 +13,4 @@ const getMultiplayInfo = (multiplayId: string) => {
   return instance.get(`/multiplay/${multiplayId}`);
 };
 
-export { getMultiplayUsers, getMultiplayResult, getMultiplayInfo };
+export { getMultiplayResult, getMultiplayInfo };
