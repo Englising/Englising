@@ -10,7 +10,7 @@ const SettingMulti = () => {
     
     //일단 이 페이지 들어오면 roomImg api로 요청해서 바꿈
     useEffect(() => {
-        axios.get("https://j10a106.p.ssafy.io/api/multiplay/image")
+        axios.get("https://j10a106.p.ssafy.io/api/multiplay/image", {withCredentials:true})
             .then((Response) => {
                 setRoomImg(Response.data.data);
                 setRoomInfo({ ...roomInfo, roomImg: Response.data.data});
@@ -18,7 +18,7 @@ const SettingMulti = () => {
     }, []);
 
     const changeRoomImg = async() => {
-        axios.get("https://j10a106.p.ssafy.io/api/multiplay/image")
+        axios.get("https://j10a106.p.ssafy.io/api/multiplay/image", {withCredentials:true})
             .then((Response) => {
                 setRoomImg(Response.data.data);
                 setRoomInfo({ ...roomInfo, roomImg: Response.data.data});
@@ -76,7 +76,7 @@ const SettingMulti = () => {
                 roomPw: roomInfo.password,
                 multiPlayImgUrl: roomInfo.roomImg,
                 genre: roomInfo.genre,
-            })
+            }, {withCredentials:true})
             .then((Response) => {
                 roomInfo.roomId = Response.data.data;
                 setRoomInfo({ ...roomInfo, roomId: roomInfo.roomId });
