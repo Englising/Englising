@@ -94,7 +94,32 @@ public class MultiPlayController {
             );
     }
 
-    @GetMapping("/{multiplayId}")
+    @GetMapping("/{multiPlayId}")
+    @Operation(
+            summary = "멀티플레이 방 정보 조회",
+            description = "현재 진행 중인 멀티플레이 방의 정보를 조회합니다."
+    )
+    @Parameters({
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
+    })
+    @ApiResponse(responseCode = "200", description = "Successful operation",
+            content = @Content(
+                    mediaType = "application/json"
+            )
+    )
+    public ResponseEntity getMultiPlayById(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long multiPlayId) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        DefaultResponseDto.<MultiPlayDetailResponseDto>builder()
+                                .status(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getCode())
+                                .message(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getMessage())
+                                .data(multiPlayService.getMultiPlayById(multiPlayId))
+                                .build()
+                );
+    }
+
+    @PostMapping("/{multiplayId}")
     @Operation(
         summary = "멀티플레이 방 참여",
         description = "멀티플레이 방 아이디로 해당 방을 조회 후 참여합니다."
@@ -107,14 +132,15 @@ public class MultiPlayController {
             mediaType = "application/json"
         )
     )
-    public ResponseEntity getMultiPlayById(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long multiplayId) {
+    public ResponseEntity enterMultiPlayById(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long multiplayId) {
+        multiPlayService.enterMultiPlay(multiplayId, Long.parseLong(userDetails.getUsername()));
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
-                DefaultResponseDto.<MultiPlayDetailResponseDto>builder()
+                DefaultResponseDto.<String>builder()
                     .status(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getCode())
                     .message(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getMessage())
-                    .data(multiPlayService.getMultiPlayById(multiplayId, Long.parseLong(userDetails.getUsername())))
+                    .data("멀티플레이에 성공적으로 참여했습니다.")
                     .build()
             );
     }
