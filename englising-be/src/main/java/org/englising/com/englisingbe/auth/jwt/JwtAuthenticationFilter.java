@@ -70,8 +70,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.writeValue(response.getWriter(), ErrorHttpStatus.UNAUTHORIZED_REFRESH_TOKEN);
-//                return;
-                filterChain.doFilter(request, response);
+                return;
+//                filterChain.doFilter(request, response);
             } else {
                 // refresh token이 유효한 경우
                 try {
@@ -92,8 +92,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     ObjectMapper objectMapper = new ObjectMapper();
                     objectMapper.writeValue(response.getWriter(), ErrorHttpStatus.UNAUTHORIZED_ACCESS_TOKEN);
-//                    return;
-                    filterChain.doFilter(request, response);
+                    return;
+//                    filterChain.doFilter(request, response);
 
                 } catch (Exception e) {
                     log.info("JwtAuthenticationFilter -> " + e.getMessage());
