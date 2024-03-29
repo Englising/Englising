@@ -59,16 +59,11 @@ public class RedisServiceImpl {
             users = new ArrayList<>();
             game.setUsers(users);
         }
-        //TODO 기존 참여중인 유저 확인 코드 주석 해제 (아래 if문 변경)
-//        boolean userExists = users.stream()
-//                .anyMatch(existingUser -> existingUser.getUserId().equals(user.getUserId()));
-//
-//        if (userExists) {
-//            throw new GlobalException(ErrorHttpStatus.USER_ALREADY_EXISTS);
-//        }
-        if(!users.contains(user)){
-            users.add(user);
-            result = true;
+        boolean userExists = users.stream()
+                .anyMatch(existingUser -> existingUser.getUserId().equals(user.getUserId()));
+
+        if (userExists) {
+            throw new GlobalException(ErrorHttpStatus.USER_ALREADY_EXISTS);
         }
         saveMultiPlayGame(game);
         return result;

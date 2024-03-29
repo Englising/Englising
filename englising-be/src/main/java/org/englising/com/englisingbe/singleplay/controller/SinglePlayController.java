@@ -57,7 +57,7 @@ public class SinglePlayController {
                         DefaultResponseDto.<PlayListDto>builder()
                                 .status(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getCode())
                                 .message(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getMessage())
-                                .data(singlePlayService.getPlayList(type, page, size, 1L))
+                                .data(singlePlayService.getPlayList(type, page, size, Long.parseLong(userDetails.getUsername())))
                                 .build()
                 );
     }
@@ -83,7 +83,7 @@ public class SinglePlayController {
                 DefaultResponseDto.<List<TrackResponseDto>>builder()
                     .status(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getCode())
                     .message(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getMessage())
-                    .data(singlePlayService.getRecommendedTracks(1L))
+                    .data(singlePlayService.getRecommendedTracks(Long.parseLong(userDetails.getUsername())))
                     .build()
             );
     }
@@ -102,14 +102,14 @@ public class SinglePlayController {
                     schema = @Schema(implementation = SinglePlayResponseDto.class)
             )
     )
-    public ResponseEntity startSinglePlay( @RequestBody SinglePlayRequestDto startDto){
+    public ResponseEntity startSinglePlay(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody SinglePlayRequestDto startDto){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
                         DefaultResponseDto.<SinglePlayResponseDto>builder()
                                 .status(HttpStatus.OK.value())
                                 .message("싱글플레이 게임 시작을 위한 정보를 가져왔습니다.")
-                                .data(singlePlayService.createSinglePlay(1L, 158L, 1))
+                                .data(singlePlayService.createSinglePlay(Long.parseLong(userDetails.getUsername()), startDto.getTrackId(), startDto.getLevel()))
                                 .build()
                 );
     }
@@ -130,7 +130,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = WordCheckResponseDto.class)
             )
     )
-    public ResponseEntity checkSinglePlayWord(@RequestBody WordCheckRequestDto wordCheckRequestDto){
+    public ResponseEntity checkSinglePlayWord(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody WordCheckRequestDto wordCheckRequestDto){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
@@ -156,7 +156,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = SinglePlayResponseDto.class)
             )
     )
-    public ResponseEntity getSingleplayResult(@RequestBody Long singlePlayId){
+    public ResponseEntity getSingleplayResult(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody Long singlePlayId){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(

@@ -198,11 +198,11 @@ public class SinglePlayServiceImpl {
             int total = 30+40+50;
             int rate = totalScore / total * 100;
             if(rate < 30){
-                score = 1;
+                score = 0;
             } else if (rate < 60) {
-                score = 2;
+                score = 1;
             } else {
-                score = 3;
+                score = 2;
             }
         }
         return score;

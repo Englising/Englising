@@ -25,7 +25,7 @@ public class SocketController {
     @MessageMapping("/answer/{multiPlayId}")
     @SendTo("/sub/answer/{multiPlayId}")
     public AnswerDto sendAnswer(@DestinationVariable Long multiPlayId, @RequestBody AnswerDto answerDto){
-        answerInputService.updateAnswer(multiPlayId, answerDto, 1L); //TODO userId 쿠키에서 가져오기
+        answerInputService.updateAnswer(multiPlayId, answerDto);
         return answerDto;
     }
 }
