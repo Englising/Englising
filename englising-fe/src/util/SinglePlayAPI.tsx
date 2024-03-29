@@ -12,7 +12,7 @@ export interface SinglePlayData {
 
 export const getSinglePlayData = async (data: SinglePlayData): Promise<any> => {
     try {
-        const response = await axios.post(`${BASE_URL}/singleplay`, data);
+        const response = await axios.post(`${BASE_URL}/singleplay`, data, {withCredentials:true});
         console.log(response, "Success getSinglePlayData");
         return response.data; 
     } catch (error) {
@@ -23,7 +23,7 @@ export const getSinglePlayData = async (data: SinglePlayData): Promise<any> => {
 
 export const getStartimeData =async (trackId:number): Promise<any> => {
     try {
-        const response = await axios.get(`${BASE_URL}/singleplay/track/${trackId}`);
+        const response = await axios.get(`${BASE_URL}/singleplay/track/${trackId}`, {withCredentials:true});
         console.log(response, "Success getStartimeData");
         return response.data; 
     } catch (error) {
