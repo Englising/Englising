@@ -53,26 +53,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 쿠키에서 accessToken 추출.
         String accessToken = cookieUtil.getAccessTokenFromCookie(request);
 
+        log.info("jwtauthfilter - accessToken 들어옴? " + accessToken);
+
         //accessToken이 null이거나 유효하지 않으면 refreshToken 확인
         if (accessToken == null || !jwtProvider.isTokenValid(accessToken)) {
             String refreshToken = cookieUtil.getRefreshTokenFromCookie(request);
+            log.info("jwtauthfilter - refreshToken 들어옴? " + refreshToken);
+
 
             // refreshToken null이거나 만료시 다음 필터로 넘기지 않고 에러 반환
             if (refreshToken == null || !jwtProvider.isTokenValid(refreshToken)) {
+                log.info("refreshToken 유효하지 않음 ");
 
                 response.setContentType("application/json");
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.writeValue(response.getWriter(), ErrorHttpStatus.UNAUTHORIZED_REFRESH_TOKEN);
-                return;
-
+//                return;
+                filterChain.doFilter(request, response);
             } else {
                 // refresh token이 유효한 경우
                 try {
                     Long userId = jwtProvider.getUserId(refreshToken).orElse(null);
                     JwtResponseDto jwtResponseDto = jwtProvider.createTokens(jwtProvider.getAuthentication(refreshToken), userId);
 
+                    log.info("refreshToken 유효 -> accessToekn 재발급");
 //                    Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
 //                    Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
 //                    response.addCookie(accessCookie);
@@ -86,7 +92,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     ObjectMapper objectMapper = new ObjectMapper();
                     objectMapper.writeValue(response.getWriter(), ErrorHttpStatus.UNAUTHORIZED_ACCESS_TOKEN);
-                    return;
+//                    return;
+                    filterChain.doFilter(request, response);
 
                 } catch (Exception e) {
                     log.info("JwtAuthenticationFilter -> " + e.getMessage());
