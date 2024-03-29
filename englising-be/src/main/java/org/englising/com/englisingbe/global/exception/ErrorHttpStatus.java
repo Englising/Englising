@@ -13,6 +13,7 @@ public enum ErrorHttpStatus {
     NO_MACHING_SINGLEPLAY(404, "일치하는 싱글플레이 게임이 없습니다"),
     NO_MATCHING_SINGLEPLAYWORD(404, "일치하는 플레이 단어가 없습니다"),
     NO_MATCHING_MULTIPLAYGAME(404, "일치하는 게임이 없습니다"),
+    FULL_MULTIPLAY_ROOM(404, "멀티플레이 게임의 정원이 이미 완료되었습니다"),
     USER_ALREADY_EXISTS(404, "이미 참여중인 유저입니다."),
     NO_MATCHING_LYRIC(404, "일치하는 가사가 없습니다"),
     USER_NOT_FOUND(403, "회원을 찾을 수 없습니다."),
