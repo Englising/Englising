@@ -26,10 +26,11 @@ const SelectSinglePage: React.FC = () => {
     const [playList, setPlayList] = useState<Music[]>([]);
 
     useEffect(() => {
-    axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist?type=recommend&page=0&size=1000")
+    axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist/recommend" , {
+        withCredentials: true, // 이 옵션을 설정하여 쿠키와 인증 정보를 함께 보냄
+        })
         .then((Response) => {
             setPlayList(Response.data.data);
-            console.log(playList);
         })
         .catch((error) => {
             console.error('Error fetching playlist:', error);

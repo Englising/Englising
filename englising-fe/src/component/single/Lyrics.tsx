@@ -32,7 +32,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
     const blanksRef = useRef<(HTMLSpanElement | null)[]>([]);
 
     {/* 힌트 */ }
-    const [showModal, setShowModal] = useState<boolean>(false);
+    const [showHintModal, setShowHintModal] = useState<boolean>(false);
     const [hintWord, setHintWord] = useState<string>("");
     const [hintNum, setHintNum] = useState<number>(3);
     
@@ -102,7 +102,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
             }
 
              // 문장에 정답을 모두 맞췄을때, SinglePage Data 자체를 바꿔줌 (여긴 더이상 빈칸이 없어!)
-            if(blankNum == 1 && incorrectNum == 0){
+            if(blankNum == 1 && incorrectNum == 0 || blankNum == 0 && incorrectNum == 1){
                 onSetIsBlank(idx);
             }
 
@@ -178,7 +178,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
     const handleHintClick = (e: React.MouseEvent, word: string): void => {
         e.stopPropagation();
         setHintWord(word);
-        setShowModal(true);
+        setShowHintModal(true);
     }
 
     const speak = (word: string): void => {
@@ -209,18 +209,18 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
     const onUse = (word: string) => { //힌트 사용 
         onSetProgressInfo("hintNum", hintNum - 1);
         setHintNum(hintNum - 1);
-        setShowModal(!showModal);
+        setShowHintModal(!showHintModal);
         //정답시 맞은 단어 개수 변경
         speak(word);
     }
 
     const onCancel = () => { //힌트 취소 -> 힌트 모두 소진시 onCancel만 쓸거임
-        setShowModal(!showModal);
+        setShowHintModal(!showHintModal);
     }
 
     return(
         <div className="w-full h-[90%] flex flex-col items-center py-10 px-20 box-border text-center overflow-y-scroll select-none">
-            {showModal ? (<div className="relative">
+            {showHintModal ? (<div className="relative">
                 <HintModal hintWord={hintWord} hintNum={hintNum} onUse={onUse} onCancel={onCancel} />
             </div>) : (<></>)}
             {lyrics?.map((lyric, i) => {

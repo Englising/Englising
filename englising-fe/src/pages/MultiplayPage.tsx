@@ -7,15 +7,15 @@ import MemoArea from "../component/multi/MemoArea";
 import Timer from "../component/multi/Timer";
 import Modal from "../component/multi/Modal";
 import Timeout from "../component/multi/modalContent/Timeout";
-import Success from "../component/multi/modalContent/Success";
-import Fail from "../component/multi/modalContent/Fail";
-import HintRoulette from "../component/multi/modalContent/Hint/HintRoulette.js";
 import MultiInputArea, { Alphabet } from "../component/multi/MultiInputArea";
 import { Quiz } from "../component/multi/MultiInputArea";
 import Hint from "../component/multi/modalContent/Hint/Hint.js";
+import MultiMusicPlayer from "../component/multi/MultiMusicPlayer.js";
+import Result from "../component/multi/modalContent/Result.js";
 import useStomp from "../hooks/useStomp";
 import { getMultiplayInfo } from "../util/multiAxios";
-import MultiMusicPlayer from "../component/multi/MultiMusicPlayer.js";
+import Success from "../component/multi/modalContent/Success.js";
+import Fail from "../component/multi/modalContent/Fail.js";
 
 export interface User {
   userId: number;
@@ -177,6 +177,7 @@ function MultiplayPage() {
       case "ROUNDEND":
         setModalOpen(true);
         setTime(0);
+        showHintModal(json.status, json.data);
         break;
       case "HINTRESULT":
         setHintResult(json.data);
@@ -190,6 +191,33 @@ function MultiplayPage() {
 
   const [roundConnect, roundDisconnect] = useStomp(roundClient, `round/${multiId}`, roundCallback);
   const [timeConnect, timeDiscconnect] = useStomp(timeClient, `time/${multiId}`, timeCallback);
+
+  const showHintModal = (status: string, result?: boolean, round?: number) => {
+    if (status == "ROUNDSTART") {
+      if (round == 3) {
+        return <Hint hint={room?.hint} />;
+      } else {
+        return (
+          <Timeout time={time}>
+            <p>
+              {time}초 뒤 게임 시작과 함께
+              <br />
+              문제 구간의 음악이 재생됩니다!
+            </p>
+          </Timeout>
+        );
+      }
+    } else if (status == "INPUTEND") {
+      return (
+        <Timeout time={time}>
+          <p className="text-secondary-400 font-bold text-3xl">답변이 제출되었습니다</p>
+          <p className="mt-6 mb-12 font-bold text-xl">{time}초 후, 이번 라운드의 결과가 공개됩니다</p>
+        </Timeout>
+      );
+    } else if (status == "ROUNDEND") {
+      <p>결과 라운드</p>;
+    }
+  };
 
   useEffect(() => {
     if (modalOpen) {
@@ -246,31 +274,7 @@ function MultiplayPage() {
           <MemoArea />
         </section>
       </div>
-      <Modal ref={dialog}>
-        <Timeout time={time as number}>
-          {status == "ROUNDSTART" && round != 3 && (
-            <p>
-              {time}초 뒤 게임 시작과 함께
-              <br />
-              문제 구간의 음악이 재생됩니다!
-            </p>
-          )}
-          {status == "ROUNDSTART" && round == 3 && <Hint hint={room?.hint} />}
-          {status == "INPUTEND" && (
-            <>
-              <p className="text-secondary-400 font-bold text-3xl">답변이 제출되었습니다</p>
-              <p className="mt-6 mb-12 font-bold text-xl">{time}초 후, 이번 라운드의 결과가 공개됩니다</p>
-            </>
-          )}
-          {status == "ROUNDEND" && (
-            <>
-              <p>라운드 결과 들어갈곳</p>
-            </>
-          )}
-        </Timeout>
-        {/* <Success /> */}
-        {/* <Fail /> */}
-      </Modal>
+      <Modal ref={dialog}>{modalOpen && showHintModal(status)}</Modal>
     </>
   );
 }
