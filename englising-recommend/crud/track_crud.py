@@ -3,18 +3,19 @@ from typing import List
 from sqlalchemy import desc, func
 
 from database.mysql_manager import Session
-from model import Track
+from model import Track, Lyric
 from model.single_play import Singleplay
 from model.track_like import TrackLike
 
 
 def get_all_tracks(session: Session) -> List[Track]:
-    return session.query(Track.title, Track.track_id, Track.spotify_id, Track.spotify_popularity, Track.feature_acousticness, Track.feature_danceability, Track.feature_energy) \
+    return session.query(Track) \
         .join(Track.track_words) \
         .filter(Track.youtube_id != None) \
         .filter(Track.genre != None) \
         .filter(Track.lyric_status == 'DONE') \
-        .distinct().all()
+        .filter(Track.lyrics.any(Lyric.kr_text != None)) \
+        .all()
 
 
 def get_user_liked_track_ids(session, user_id, limit=5):
