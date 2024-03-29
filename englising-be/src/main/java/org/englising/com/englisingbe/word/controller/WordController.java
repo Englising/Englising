@@ -38,8 +38,8 @@ public class WordController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam WordListType type, @RequestParam Integer page, @RequestParam Integer size) {
 
-//        WordListResponseDto wordListResponseDto = wordService.getWordList(type, page, size, userDetails.getUsername());
-        WordListResponseDto wordListResponseDto = wordService.getWordList(type, page, size, 1L);
+        WordListResponseDto wordListResponseDto = wordService.getWordList(type, page, size, Long.parseLong(userDetails.getUsername()));
+//        WordListResponseDto wordListResponseDto = wordService.getWordList(type, page, size, 1L);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -59,10 +59,10 @@ public class WordController {
     public ResponseEntity<DefaultResponseDto<?>> likeWord(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                           @RequestBody WordLikeRequestDto wordLikeRequestDto) {
 
-//        Long userId = Long.parseLong(userDetails.getUsername());
-//        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordLikeRequestDto.getWordId(), userId);
+        Long userId = Long.parseLong(userDetails.getUsername());
+        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordLikeRequestDto.getWordId(), userId);
 
-        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordLikeRequestDto.getWordId(), 1L);
+//        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordLikeRequestDto.getWordId(), 1L);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
