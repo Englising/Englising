@@ -82,14 +82,14 @@ public class MultiPlayController {
             mediaType = "application/json"
         )
     )
-    public ResponseEntity createMultiPlay(@RequestBody MultiPlayRequestDto requestDto) {
+    public ResponseEntity createMultiPlay(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody MultiPlayRequestDto requestDto) {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
                 DefaultResponseDto.<Long>builder()
                     .status(ResponseMessage.MULTIPLAY_CREATE_SUCCESS.getCode())
                     .message(ResponseMessage.MULTIPLAY_CREATE_SUCCESS.getMessage())
-                    .data(multiPlayService.createMultiPlay(requestDto, 474L))
+                    .data(multiPlayService.createMultiPlay(requestDto, Long.parseLong(userDetails.getUsername())))
                     .build()
             );
     }
@@ -107,14 +107,14 @@ public class MultiPlayController {
             mediaType = "application/json"
         )
     )
-    public ResponseEntity getMultiPlayById(@PathVariable Long multiplayId) {
+    public ResponseEntity getMultiPlayById(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long multiplayId) {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
                 DefaultResponseDto.<MultiPlayDetailResponseDto>builder()
                     .status(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getCode())
                     .message(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getMessage())
-                    .data(multiPlayService.getMultiPlayById(multiplayId, 474L))
+                    .data(multiPlayService.getMultiPlayById(multiplayId, Long.parseLong(userDetails.getUsername())))
                     .build()
             );
     }
@@ -127,8 +127,8 @@ public class MultiPlayController {
     @Parameters({
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
     })
-    public ResponseEntity leaveMultiPlayGame(@PathVariable Long multiplayId) {
-        multiPlayService.leaveGame(multiplayId, 474L);
+    public ResponseEntity leaveMultiPlayGame(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long multiplayId) {
+        multiPlayService.leaveGame(multiplayId, Long.parseLong(userDetails.getUsername()));
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(DefaultResponseDto.<String>builder()
@@ -145,8 +145,8 @@ public class MultiPlayController {
     @Parameters({
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
     })
-    public ResponseEntity startMultiPlayGame(@PathVariable Long multiplayId) {
-        multiPlayService.startGame(multiplayId, 474L);
+    public ResponseEntity startMultiPlayGame(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long multiplayId) {
+        multiPlayService.startGame(multiplayId, Long.parseLong(userDetails.getUsername()));
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(DefaultResponseDto.<String>builder()
