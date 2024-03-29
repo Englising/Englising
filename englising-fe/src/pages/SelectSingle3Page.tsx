@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LpPlayer from '../component/main/LpPlayer.tsx';
 import Singleroom from '../component/main/SingleRoom.tsx';
 import axios from 'axios';
+import SearchBar from '../component/main/SearchBar.tsx';
 
 interface Music {
     albumTitle: string;
@@ -27,7 +28,7 @@ const SelectSinglePage: React.FC = () => {
     const [playList, setPlayList] = useState<Music[]>([]);
 
     useEffect(() => {
-    axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist?type=recent&page=0&size=20")
+    axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist?type=recent&page=0&size=20", {withCredentials:true})
         .then((Response) => {
             setPlayList(Response.data.data.playList);
         })
@@ -58,20 +59,23 @@ const SelectSinglePage: React.FC = () => {
         const updatedPlaylist = [...playList];
         updatedPlaylist[index].is_like = !updatedPlaylist[index].is_like;
         setPlayList(updatedPlaylist);
+        axios.post('https://j10a106.p.ssafy.io/api/track/like', { trackId: playList[index].trackId })
+            .then(() => {
+                // 성공적으로 토글되면 liked 상태 변경
+                
+                console.log("like")
+            })
+            .catch(error => {
+                console.error('Error toggling like:', error);
+            });
+
     };
 
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 flex">
             {/*검색창*/}
             <div className='flex flex-col pt-10 pl-8 '>
-            <div className="h-11 w-3/5 rounded-lg bg-gradient-to-r from-[white] via-[#00ffff] to-[#3F4685] p-0.5 relative">
-                <div className="flex h-full w-full rounded-lg items-center bg-primary-950 back ">
-                    <div className="text-sm text-primary-200 font-thin pl-5 py-2 flex-1">플레이하고 싶은 노래를 검색해보세요!</div>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" className="w-6 h-6 absolute right-4 top-1/2 transform -translate-y-1/2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                    </svg>
-                </div>
-            </div>
+            <SearchBar></SearchBar>
 
             <div className='pt-5 flex flex-row h-5/6'>
                 {/* lp판 */}

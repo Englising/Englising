@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LpPlayer from '../component/main/LpPlayer.tsx';
 import Singleroom from '../component/main/SingleRoom.tsx';
 import axios from 'axios';
+import SearchBar from '../component/main/SearchBar.tsx';
 
 interface Music {
     albumTitle: string;
@@ -22,11 +23,11 @@ export interface SelectedMusic {
     youtubeId: string;
 }
 
-const SelectSinglePage: React.FC = () => {
+const SelectSingle1Page: React.FC = () => {
     const [playList, setPlayList] = useState<Music[]>([]);
 
     useEffect(() => {
-    axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist?type=recommend&page=0&size=1000" , {
+    axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist/recommend" , {
         withCredentials: true, // 이 옵션을 설정하여 쿠키와 인증 정보를 함께 보냄
         })
         .then((Response) => {
@@ -59,20 +60,23 @@ const SelectSinglePage: React.FC = () => {
         const updatedPlaylist = [...playList];
         updatedPlaylist[index].isLike = !updatedPlaylist[index].isLike;
         setPlayList(updatedPlaylist);
+        axios.post('https://j10a106.p.ssafy.io/api/track/like', { trackId: playList[index].trackId })
+            .then(() => {
+                // 성공적으로 토글되면 liked 상태 변경
+                
+                console.log("like")
+            })
+            .catch(error => {
+                console.error('Error toggling like:', error);
+            });
+
     };
 
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 flex">
             {/*검색창*/}
             <div className='flex flex-col pt-10 pl-8 '>
-            <div className="h-11 w-3/5 rounded-lg bg-gradient-to-r from-[white] via-[#00ffff] to-[#3F4685] p-0.5 relative">
-                <div className="flex h-full w-full rounded-lg items-center bg-primary-950 back ">
-                    <div className="text-sm text-primary-200 font-thin pl-5 py-2 flex-1">플레이하고 싶은 노래를 검색해보세요!</div>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" className="w-6 h-6 absolute right-4 top-1/2 transform -translate-y-1/2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                    </svg>
-                </div>
-            </div>
+            <SearchBar></SearchBar>
 
             <div className='pt-5 flex flex-row h-5/6'>
                 {/* lp판 */}
@@ -101,13 +105,13 @@ const SelectSinglePage: React.FC = () => {
                                 {/* 하트 아이콘 */}
                                 {item.isLike ? (
                                     <div onClick={() => toggleLike(index)} className='absolute top-0 left-0'>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FF69B4" className="w-6 h-6 absolute left-2 top-2 z-40">
+                                        <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FF69B4" className="w-6 h-6 absolute left-2 top-2 z-40">
                                         <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
                                         </svg>
                                     </div>
                                 ) : (
                                     <div onClick={() => toggleLike(index)} className='absolute top-0 left-0'>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 absolute left-2 top-2 z-40">
+                                        <svg xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 absolute left-2 top-2 z-40">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                                         </svg>
                                     </div>
@@ -127,4 +131,4 @@ const SelectSinglePage: React.FC = () => {
     );
 };
 
-export default SelectSinglePage;
+export default SelectSingle1Page;
