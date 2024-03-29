@@ -117,13 +117,14 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
     }, [])
 
     useEffect(() => {
-        if (!showStartModal) {
-            setPlaying(true);
-        }
+        if (showStartModal) return;
+        setPlaying(true);
+        onSetInfoIdx(0);
     },[showStartModal])
     
     // 특정 구간 가사를 누를 때 발생하는 이벤트
     useEffect(() => {
+        if (showStartModal) return;
         setTogglePlayButton(false);
         setPlaying(true);
         player.current?.seekTo(startTime);
