@@ -9,9 +9,9 @@ from model import TrackWord, Word
 
 
 def get_recommended_track_words(user_id: int, track_id: int, level: int) -> List[TrackWord]:
-    all_words = word_crud.get_all_track_words_by_track_id(Session(), 158)
-    liked_words = word_crud.get_liked_words_by_user_id(Session(), 1)
-    recently_played_words = word_crud.get_recently_played_words_by_user_id(Session(), 1)
+    all_words = word_crud.get_all_track_words_by_track_id(Session(), track_id)
+    liked_words = word_crud.get_liked_words_by_user_id(Session(), user_id)
+    recently_played_words = word_crud.get_recently_played_words_by_user_id(Session(), user_id)
     recommended_words = __recommend_words__(all_words, level, liked_words, recently_played_words)
     final_selected_words = __select_words_from_recommended__(level, recommended_words)
     return final_selected_words
