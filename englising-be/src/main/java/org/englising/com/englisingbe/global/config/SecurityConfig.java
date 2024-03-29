@@ -10,6 +10,7 @@ import org.englising.com.englisingbe.auth.handler.OAuth2LoginSuccessHandler;
 import org.englising.com.englisingbe.auth.jwt.JwtProvider;
 import org.englising.com.englisingbe.auth.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -82,7 +83,11 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(CrossOriginAllowedUrls.CORS_ALLOWED));
-        configuration.addAllowedMethod("*");
+//        configuration.addAllowedMethod("*");
+        configuration.addAllowedMethod("GET");
+        configuration.addAllowedMethod("PUT");
+        configuration.addAllowedMethod("POST");
+        configuration.addAllowedMethod("DELETE");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");
         configuration.setAllowCredentials(true);
