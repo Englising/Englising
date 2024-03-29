@@ -35,6 +35,9 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
     const [showHintModal, setShowHintModal] = useState<boolean>(false);
     const [hintWord, setHintWord] = useState<string>("");
     const [hintNum, setHintNum] = useState<number>(3);
+
+    {/* 처음 시작할 때 빈칸 추적*/ }
+    const [startBlank, setStartBlank] = useState<boolean>(true);
     
     useEffect(() => {
         const lyricsData:Lyric[] | undefined = singleData?.lyrics;
@@ -43,7 +46,6 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
             setLyrics([...lyricsData]);
             setBlankWord([...blankData]);
         }
-        console.log(blankData,"잘 정렬 됐는가?")
     },[singleData])
 
     // FootVar에서 답안이 입력되었을 때, 실행되는 hook
@@ -157,7 +159,9 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
             }
         });
 
-    },[idx, toggleSubmit])
+        if (blanksRef.current.length <= 0) setStartBlank(!startBlank);
+        
+    }, [idx, toggleSubmit, startBlank])
 
     useEffect(() => {
         // 모든 가사 이동이 생길때 
@@ -219,7 +223,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
     }
 
     return(
-        <div className="w-full h-[90%] flex flex-col items-center py-10 px-20 box-border text-center overflow-y-scroll select-none">
+        <div className="w-full h-[90%] flex flex-col items-center py-10 px-20 box-border text-center overflow-y-scroll">
             {showHintModal ? (<div className="relative">
                 <HintModal hintWord={hintWord} hintNum={hintNum} onUse={onUse} onCancel={onCancel} />
             </div>) : (<></>)}
