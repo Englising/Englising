@@ -11,11 +11,12 @@ interface Props {
     onSetInfoIdx(currIdx: number):void,
     playInfo: PlayInfo,
     progressInfo: ProgressInfo,
+    showStartModal: boolean
 }
 
 const hintStyle = "w-[1.5em] h-[1.5em] mx-[0.4em] rounded-full"
 
-const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
+const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Props ) => {
     // 현재 재생중인 가사 정보
     let { idx, isBlank, startTime, toggleNext } = playInfo
     
@@ -29,7 +30,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
 
     // 유튜브 아이디를 주는 axios 넣기//
     const url = `https://www.youtube.com/watch?v=${youtubeId}`;
-    const [playing, setPlaying] = useState<boolean>(true);
+    const [playing, setPlaying] = useState<boolean>(false);
     const [volume, setVolume] = useState<number>(0.5);
     const [played, setPlayed] = useState<number>(0.0); // 재생중인 구간의 비율(ratio)
     const [playedSeconds, setPlayedSeconds] = useState<number>(0); // 재생중인 구간의 시간(s)
@@ -61,8 +62,15 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
             }
         }
     }
+    const handlePlay = () => {
+        setTogglePlayButton(false);
+    }
 
     const handlePuase = () => {
+        setTogglePlayButton(true);
+    }
+    
+    const handleError = () => {
         setTogglePlayButton(true);
     }
     
@@ -107,6 +115,12 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
         }
         getData();
     }, [])
+
+    useEffect(() => {
+        if (!showStartModal) {
+            setPlaying(true);
+        }
+    },[showStartModal])
     
     // 특정 구간 가사를 누를 때 발생하는 이벤트
     useEffect(() => {
@@ -136,8 +150,10 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo}:Props ) => {
                     controls = {true} // 기본 control를 띄울 것인지 - 나중에 지울것
                     progressInterval = {100} // onProgress의 텀을 설정한다.
                     onProgress={(e) => { handleProgress(e) }}
+                    onPlay={handlePlay}
                     onPause={handlePuase}
                     onDuration={handleDuration}
+                    onError={handleError}
                     />
                 </div>
                 <div className="w-[55%] h-[55%] relative">

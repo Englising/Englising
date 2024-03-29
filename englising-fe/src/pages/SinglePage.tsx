@@ -4,6 +4,7 @@ import { getSinglePlayData } from "../util/SinglePlayAPI";
 import Lyrics from "../component/single/Lyrics";
 import MusicPlayer from "../component/single/MusicPlayer";
 import FooterVar from "../component/single/FooterVar";
+import StartModal from "../component/single/StartModal";
 // 싱글데이터를 가져올 수 있는 api를 설계
 
 export interface PlayInfo {
@@ -49,13 +50,15 @@ export interface SingleData {
 }
 
 const SinglePage = () => {
+    const { state } = useLocation();
+    const { img } = state;
+
+    const [showStartModal, setShowStartModal] = useState<boolean>(true);
+
     const { trackId, level } = useParams<{
         trackId: string,
         level: string,
     }>();
-    
-    const { state } = useLocation();
-    const { img } = state;
 
     const [singleData, setSingleData] = useState<SingleData>({
         lyrics: [],
@@ -110,7 +113,6 @@ const SinglePage = () => {
 
     const onSetProgressInfo = (type: string, data: number = 1): void => {
         if (type == "rightWord") {
-            alert(data)
             setProgressInfo({
                 ...progressInfo,
                 rightWord: progressInfo.rightWord + data
@@ -146,6 +148,10 @@ const SinglePage = () => {
         }
     }
 
+    const onGameStart = (): void => {
+        setShowStartModal(false);
+    }
+
     useEffect(() => {
 
         const data = {
@@ -171,21 +177,26 @@ const SinglePage = () => {
     },[])
 
 return (
-        <div className="bg-cover bg-center h-screen w-screen p-0 m-0" style={{ backgroundImage: `url(${img})` }}>            
-            <div className="h-svh w-screen flex flex-col bg-black bg-opacity-80 items-center">
-                <div className="h-[90%] w-9/12 flex">
-                    <div className="w-2/5 h-full items-center">
-                    <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo}/> 
-                    </div>
-                    <div className="w-3/5 flex items-center justify-center">
-                        <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} onSetIsBlank = {onSetIsBlank} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
-                    </div>
+    <div className="bg-cover bg-center h-screen w-screen p-0 m-0" style={{ backgroundImage: `url(${img})` }}>        
+        <div className="h-svh w-screen flex flex-col bg-black bg-opacity-80 items-center">
+
+            {showStartModal ? (<div className="relative">
+                <StartModal onGameStart={onGameStart} />
+            </div>) : (<></>)}
+
+            <div className="h-[90%] w-9/12 flex">
+                <div className="w-2/5 h-full items-center">
+                    <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} showStartModal={showStartModal} /> 
                 </div>
-                <div className="w-full h-[10%] bg-black flex justify-center">
+                <div className="w-3/5 flex items-center justify-center">
+                    <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} onSetIsBlank = {onSetIsBlank} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
+                </div>
+            </div>
+            <div className="w-full h-[10%] bg-black flex justify-center">
                 <FooterVar onSetAnswer={onSetAnswer} onLyricMove={onLyricMove} idx={playInfo.idx} />
-                </div>
-                </div>
+            </div>
         </div>
+    </div>
     );
 };
 
