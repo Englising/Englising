@@ -6,6 +6,7 @@ import org.englising.com.englisingbe.global.dto.PaginationDto;
 import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
 import org.englising.com.englisingbe.global.exception.GlobalException;
 import org.englising.com.englisingbe.global.util.PlayListType;
+import org.englising.com.englisingbe.multiplay.dto.request.TrackWordFastApiDto;
 import org.englising.com.englisingbe.music.entity.Lyric;
 import org.englising.com.englisingbe.music.entity.Track;
 import org.englising.com.englisingbe.music.service.LyricServiceImpl;
@@ -24,11 +25,13 @@ import org.englising.com.englisingbe.music.service.TrackServiceImpl;
 import org.englising.com.englisingbe.user.service.UserService;
 import org.englising.com.englisingbe.webclient.service.RecommendApiService;
 import org.englising.com.englisingbe.word.entity.TrackWord;
+import org.englising.com.englisingbe.word.repository.TrackWordRepository;
 import org.englising.com.englisingbe.word.service.TrackWordService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -39,13 +42,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SinglePlayServiceImpl {
     private final TrackLikeServiceImpl trackLikeService;
-    private final TrackWordService trackWordService;
     private final TrackServiceImpl trackService;
     private final UserService userService;
     private final LyricServiceImpl lyricService;
 
     private final SinglePlayRepository singlePlayRepository;
     private final SinglePlayHintRepository singlePlayHintRepository;
+    private final TrackWordRepository trackWordRepository;
     private final SinglePlayWordService singlePlayWordService;
     private final RecommendApiService recommendApiService;
 
@@ -57,15 +60,16 @@ public class SinglePlayServiceImpl {
             case recent -> {
                 return getRecentTracks(page, size, userId);
             }
-            case recommend -> {
-//                return getRecommendedTracks(page, size, userId);
-            }
         }
         return null;
     }
 
+    public List<TrackResponseDto> getRecommendedTracks(Long userId){
+        List<Long> tracks = recommendApiService.getRecommendTrackByUserId(userId);
+        return getTrackResponseDtoFromTrackAlbumArtist(userId, trackService.getTrackAlbumArtistsByTrackIds(tracks));
+    }
+
     public SinglePlayResponseDto createSinglePlay(Long userId, Long trackId, Integer singlePlayLevelId){
-        // TODO
         // SinglePlay Repository에 Create
         SinglePlay singlePlay = singlePlayRepository.save(SinglePlay.builder()
                         .singlePlayHint(getSinglePlayHintById(singlePlayLevelId))
@@ -75,8 +79,8 @@ public class SinglePlayServiceImpl {
         // Lyric이 토큰 단위로 잘린 Dto 가져옴
         List<LyricDto> lyricWordSplitted = recommendApiService.getSplittedWordsOfLyricByTrackId(trackId);
         // 해당 Track의 Random Words 가져옴
-        //TODO : Random 아니게 변경
-        List<TrackWord> selectedWords = trackWordService.getRandomTrackWords(trackId);
+        List<TrackWord> selectedWords = recommendApiService.getSinglePlayGameWords(trackId, userId, singlePlayLevelId).stream()
+                .map(this::trackWordFastApiDtoToTrackWord).toList();
         // SinglePlay-Word에 저장
         List<SinglePlayWord> singlePlayWordList = singlePlayWordService.createSinglePlayWords(selectedWords, lyricWordSplitted, singlePlay);
         // Dto 생성
@@ -112,17 +116,18 @@ public class SinglePlayServiceImpl {
         SinglePlay singlePlay = getSinglePlayById(singlePlayId);
         // 해당 Track의 Lyrics 가져옴
         List<LyricDto> lyricWordSplitted = recommendApiService.getSplittedWordsOfLyricByTrackId(singlePlay.getTrack().getTrackId());
-        // SinglePlay-Word에 저장
+        // SinglePlay-Word 결과 조회
         List<SinglePlayWord> singlePlayWordList = singlePlayWordService.getAllSinglePlayWordsBySinglePlayId(singlePlayId);
+        int totalWordCnt = singlePlayWordList.size();
+        int rightWordCnt = (int) singlePlayWordList.stream().filter(SinglePlayWord::getIsRight).count();
+        singlePlayRepository.updateScoreAndCorrectRateById(singlePlayId, rightWordCnt, rightWordCnt / totalWordCnt * 100);
         // Dto 생성
         return SinglePlayResponseDto.builder()
                 .singlePlayId(singlePlay.getSinglePlayId())
                 .lyrics(getLyricDtoFromLyricList(lyricWordSplitted, singlePlayWordList))
                 .words(getWordDtoFromSinglePlayWord(singlePlayWordList))
-                .totalWordCnt(singlePlayWordList.size())
-                .rightWordCnt((int) singlePlayWordList.stream()
-                        .filter(SinglePlayWord::getIsRight)
-                        .count())
+                .totalWordCnt(totalWordCnt)
+                .rightWordCnt(rightWordCnt)
                 .build();
     }
 
@@ -152,7 +157,6 @@ public class SinglePlayServiceImpl {
                 .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MATCHING_HINT));
     }
 
-
     private PlayListDto getLikedTracks(Integer page, Integer size, Long userId){
         Page<TrackLike> trackLikes = trackLikeService.getLikedTrackResponseDtoByUserId(userId, page, size);
         List<TrackAlbumArtistDto> tracks = trackService.getTrackAlbumArtistsByTrackIds(trackLikes.getContent()
@@ -171,25 +175,37 @@ public class SinglePlayServiceImpl {
                 .stream()
                 .map(singlePlay -> {
                     return singlePlay.getTrack().getTrackId();
-        }).collect(Collectors.toList()));
+        }).toList());
         return getPlayListDtoFromPageAndList(getTrackResponseDtoFromTrackAlbumArtist(userId,tracks), singlePlays);
-    }
-
-    public List<TrackResponseDto> getRecommendedTracks(Long userId){
-        List<Long> tracks = recommendApiService.getRecommendTrackByUserId(userId);
-        return getTrackResponseDtoFromTrackAlbumArtist(userId, trackService.getTrackAlbumArtistsByTrackIds(tracks));
     }
 
     private List<TrackResponseDto> getTrackResponseDtoFromTrackAlbumArtist(Long userId, List<TrackAlbumArtistDto> trackAlbumArtistDtos){
         return trackAlbumArtistDtos
                 .stream()
-                .map(trackAlbumArtistDto -> {
-                    return TrackResponseDto.getTrackResponseFromTrackAlbumArtist(
+                .map(trackAlbumArtistDto ->
+                        TrackResponseDto.getTrackResponseFromTrackAlbumArtist(
                             trackAlbumArtistDto,
-                            0,
-                            trackLikeService.checkTrackLikeByUserId(userId, trackAlbumArtistDto.getTrack().getTrackId())
-                    );
-                }).toList();
+                            getTrackSinglePlayScore(userId, trackAlbumArtistDto.getTrack().getTrackId()),
+                            trackLikeService.checkTrackLikeByUserId(userId, trackAlbumArtistDto.getTrack().getTrackId()))
+                ).toList();
+    }
+
+    private int getTrackSinglePlayScore(Long userId, Long trackId){
+        int score = 0;
+        List<Integer> scores = singlePlayRepository.findMaxScoresByUserIdAndTrackIdGroupedByLevel(userId, trackId);
+        if(scores != null){
+            int totalScore = scores.stream().mapToInt(Integer::intValue).sum();
+            int total = 30+40+50;
+            int rate = totalScore / total * 100;
+            if(rate < 30){
+                score = 0;
+            } else if (rate < 60) {
+                score = 1;
+            } else {
+                score = 2;
+            }
+        }
+        return score;
     }
 
     private PlayListDto getPlayListDtoFromPageAndList(List<TrackResponseDto> data, Page<?> page){
@@ -210,19 +226,23 @@ public class SinglePlayServiceImpl {
                     lyric.setIsBlank(singlePlayWordList.stream()
                             .anyMatch(spw -> spw.getLyric().getLyricId().equals(lyric.getLyricId())));
                     return lyric;
-                }).collect(Collectors.toList());
+                }).toList();
     }
 
     private List<WordResponseDto> getWordDtoFromSinglePlayWord(List<SinglePlayWord> singlePlayWordList){
         return singlePlayWordList.stream()
-                .map(singlePlayWord -> {
-                    return WordResponseDto.builder()
+                .map(singlePlayWord ->
+                    WordResponseDto.builder()
                             .singleplayWordId(singlePlayWord.getSinglePlayWordId())
                             .sentenceIndex(singlePlayWord.getSentenceIndex())
                             .wordIndex(singlePlayWord.getWordIndex())
                             .word(singlePlayWord.getOriginWord())
                             .isRight(singlePlayWord.getIsRight())
-                            .build();
-                }).toList();
+                            .build()
+                ).toList();
+    }
+
+    private TrackWord trackWordFastApiDtoToTrackWord(TrackWordFastApiDto trackWordFastApiDto){
+        return trackWordRepository.findById(trackWordFastApiDto.getTrack_word_id()).get();
     }
 }

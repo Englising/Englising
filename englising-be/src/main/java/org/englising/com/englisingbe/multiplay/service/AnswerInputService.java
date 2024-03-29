@@ -15,7 +15,7 @@ public class AnswerInputService {
     private final RedisServiceImpl redisService;
     private final AnswerQueueService answerQueueService;
 
-    public void updateAnswer(Long multiPlayId, AnswerDto answerDto, Long userId){
+    public void updateAnswer(Long multiPlayId, AnswerDto answerDto){
         // AnswerMap의 존재 유무 확인
         if(!redisService.existsMultiPlayAnswerMap(multiPlayId)){
             throw new GlobalException(ErrorHttpStatus.NO_MATCHING_MULTIPLAYGAME);

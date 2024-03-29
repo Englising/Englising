@@ -3,7 +3,6 @@ package org.englising.com.englisingbe.singleplay.service;
 import lombok.RequiredArgsConstructor;
 import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
 import org.englising.com.englisingbe.global.exception.GlobalException;
-import org.englising.com.englisingbe.music.entity.Lyric;
 import org.englising.com.englisingbe.singleplay.dto.RightWordCntDto;
 import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.response.LyricDto;
@@ -24,7 +23,7 @@ public class SinglePlayWordService {
     private final SinglePlayWordRepository singlePlayWordRepository;
 
     public List<SinglePlayWord> createSinglePlayWords(List<TrackWord> selectedWords, List<LyricDto> lyrics, SinglePlay singlePlay){
-        List<SinglePlayWord> singlePlayWordList = new ArrayList<>(trackWordsToSinglePlayWords(selectedWords, lyrics, singlePlay)); // 변경 가능한 리스트로 변환
+        List<SinglePlayWord> singlePlayWordList = new ArrayList<>(trackWordsToSinglePlayWords(selectedWords, lyrics, singlePlay));
         Collections.sort(singlePlayWordList, new Comparator<SinglePlayWord>() {
             @Override
             public int compare(SinglePlayWord o1, SinglePlayWord o2) {
@@ -93,4 +92,5 @@ public class SinglePlayWordService {
                 .min(Comparator.comparing(LyricDto::getLyricId))
                 .get().getLyricId();
     }
+
 }
