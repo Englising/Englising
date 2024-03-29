@@ -14,10 +14,5 @@ RUN apt-get update \
 # NLTK 데이터 다운로드
 RUN python -m nltk.downloader punkt averaged_perceptron_tagger wordnet stopwords
 
-# FastText 모델 다운로드 및 압축 해제
-RUN wget https://dl.fbaipublicfiles.com/fasttext/vectors-english/wiki-news-300d-1M-subword.vec.zip \
-    && mkdir -p english-recommend/word_model \
-    && unzip wiki-news-300d-1M-subword.vec.zip -d english-recommend/word_model \
-    && rm wiki-news-300d-1M-subword.vec.zip
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8083"]
