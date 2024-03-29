@@ -58,12 +58,18 @@ public class RedisServiceImpl {
             users = new ArrayList<>();
             game.setUsers(users);
         }
+        // 이미 방 정원이 다 찬 경우
+        if(users.size() >= game.getMaxUser()){
+            return false;
+        }
+        // 방에 이미 참여 중인 사람인 경우
         boolean userExists = users.stream()
                 .anyMatch(existingUser -> existingUser.getUserId().equals(user.getUserId()));
 
         if (userExists) {
             throw new GlobalException(ErrorHttpStatus.USER_ALREADY_EXISTS);
         }
+        // 에러가 없을 경우 유저 추가 및 게임 상태 저장
         game.getUsers().add(user);
         saveMultiPlayGame(game);
         return true;
