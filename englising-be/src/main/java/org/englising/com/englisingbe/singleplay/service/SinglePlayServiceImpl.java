@@ -194,7 +194,15 @@ public class SinglePlayServiceImpl {
         int score = 0;
         List<Integer> scores = singlePlayRepository.findMaxScoresByUserIdAndTrackIdGroupedByLevel(userId, trackId);
         if(scores != null){
-            int totalScore = scores.stream().mapToInt(Integer::intValue).sum();
+            int totalScore = 0;
+            for (int i = 0; i < scores.size(); i++) {
+                if(scores.get(i) != null){
+                    totalScore += scores.get(i);
+                }
+            }
+            if(totalScore == 0){
+                return 0;
+            }
             int total = 30+40+50;
             int rate = totalScore / total * 100;
             if(rate < 30){
