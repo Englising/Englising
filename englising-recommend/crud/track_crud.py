@@ -11,7 +11,7 @@ from model.track_like import TrackLike
 def get_all_tracks(session: Session) -> List[Track]:
     return session.query(Track) \
         .join(Track.track_words) \
-        .filter(Track.youtube_id != None) \
+        .filter(Track.youtube_id is not None and Track.youtube_id != 'NONE') \
         .filter(Track.genre != None) \
         .filter(Track.lyric_status == 'DONE') \
         .filter(Track.lyrics.any(Lyric.kr_text != None)) \
@@ -40,3 +40,8 @@ def get_tracks_by_single_played_count_and_spotify_popularity(session, limit=60):
               .order_by(desc(Track.spotify_popularity), desc(singleplay_count_subquery.c.play_count)).all())
 
     return tracks[:limit]
+
+
+tracks = get_all_tracks(Session())
+for track in tracks:
+    print(track.youtube_id)
