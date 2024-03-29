@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Multiroom from '../component/main/MultiRoom.tsx';
+import MultiRoom from '../component/main/MultiRoom.tsx';
 import axios from 'axios';
 
 interface Room {
@@ -32,7 +32,6 @@ const SelectMultiPage: React.FC = () => {
                 // 응답 받아서 리스트에 넣기
                 setMultiRoom(response.data.data);
                 setSelectedButton("all");
-                console.log(response.data.data)
                 console.log('대기방 가져오기 성공');
             })
             .catch((error) => {
@@ -40,8 +39,6 @@ const SelectMultiPage: React.FC = () => {
                 console.error(`대기방 목록 가져오기 실패`, error);
             });
     }, []); 
-
-
 
     const handleClick = async (endpoint: string) => {
         try {
@@ -51,8 +48,6 @@ const SelectMultiPage: React.FC = () => {
             // 응답 받아서 리스트에 넣기
             setMultiRoom(response.data.data);
             setSelectedButton(endpoint);
-            console.log(response)
-            console.log('대기방 목록 가져오기 성공');
         } catch (error) {
             // 오류 처리
             console.error(`대기방 목록 가져오기 실패`, error);
@@ -91,7 +86,7 @@ const SelectMultiPage: React.FC = () => {
                             {multiroom && multiroom.length > 0 ? ( // multiroom 배열이 비어있지 않은 경우에만 map 함수 호출
                                 <div className='text-white grid grid-cols-4 gap-9 justify-items-start overflow-y-auto'>
                                     {multiroom.map((item) => (
-                                        <Multiroom key={item.multiPlayId} roomName={item.roomName} roomId={item.multiPlayId} maxUser={item.maxUser} currentUser={item.currentUser} multiPlayImgUrl={item.multiPlayImgUrl} isSecret={item.isSecret} genre={item.genre} password={item.password}/>
+                                        <MultiRoom key={item.multiPlayId} roomName={item.roomName} roomId={item.multiPlayId} maxUser={item.maxUser} currentUser={item.currentUser} multiPlayImgUrl={item.multiPlayImgUrl} isSecret={item.isSecret} genre={item.genre} password={item.password}/>
                                     ))}
                                 </div>
                             ) : (
