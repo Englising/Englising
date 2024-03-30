@@ -9,7 +9,7 @@ interface UserProfileProps {
 function UserProfile({ classes, user }: UserProfileProps) {
   return (
     <div className="flex items-center gap-4 text-lg">
-      <ProfileImage classes={classes} src={user.profileImage} />
+      <ProfileImage classes={classes} src={user.profileImg} color={user.color} />
       <p>{user.nickname}</p>
     </div>
   );
