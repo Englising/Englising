@@ -6,6 +6,9 @@ import html
 import urllib.parse
 from easygoogletranslate import EasyGoogleTranslate
 
+from log.englising_logger import log
+from log.log_info import LogList, LogKind
+
 class EasyGoogleTranslate:
     def __init__(self, source_language='auto', target_language='tr', timeout=5):
         self.source_language = source_language
@@ -14,6 +17,7 @@ class EasyGoogleTranslate:
         self.pattern = r'(?s)class="(?:t0|result-container)">(.*?)<'
 
     def make_request(self, target_language, source_language, text, timeout):
+        log(LogList.EASYGOOGLE.name, LogKind.INFO, "Starting Make Request: " + text)
         escaped_text = urllib.parse.quote(text.encode('utf8'))
         url = 'https://translate.google.com/m?tl=%s&sl=%s&q=%s'%(target_language, source_language, escaped_text)
         response = requests.get(url, timeout=timeout)
@@ -28,6 +32,7 @@ class EasyGoogleTranslate:
         return html.unescape(result[0])
 
     def translate(self, text, target_language='', source_language='', timeout=10):
+        log(LogList.EASYGOOGLE.name, LogKind.INFO, "Starting Job: " + text)
         if not target_language:
             target_language = self.target_language
         if not source_language:

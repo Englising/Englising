@@ -13,6 +13,7 @@ class LogList(Enum):
     SAVE = "SAVE"
     GOOGLE = "GOOGLE"
     TRANSLATE = "TRANSLATE"
+    EASYGOOGLE= "EASYGOOGLE"
 
 
 class LogKind:
