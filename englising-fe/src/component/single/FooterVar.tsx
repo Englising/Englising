@@ -60,12 +60,12 @@ const FooterVar = ({onSetAnswer, onLyricMove, idx}:Props) => {
                     </input>
                 </div>
                 <div 
-                className="h-[2.5em] w-[5em] mr-[1em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"
+                className="h-[2.5em] w-[5em] mr-[1em] rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"
                 onClick={handleAnswerSubmit}> 
                     <div className="m-auto text-[1em]">입력</div>
                 </div>
                 <div 
-                    className="h-[2.5em] w-[5em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"> 
+                    className="h-[2.5em] w-[5em] rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"> 
                     <div className="m-auto text-[1em]">공사중</div>
                 </div>
             </div> 
