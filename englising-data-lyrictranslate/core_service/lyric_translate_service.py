@@ -15,7 +15,6 @@ from model.lyric import Lyric
 # kr_text가 없는 Lyric의 track_id를 조회
 # track_id 단위로 List[Lyric]을 가져옴
 # Lyric 번역 입력 후 Lyric의 kr_text 업데이트
-
 # 만약 가사 중 한줄이라도 영어가 아닐 경우, Track의 is_english를 false로 업데이트
 
 class LyricTranslateWorker:
