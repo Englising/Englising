@@ -10,6 +10,7 @@ import { getMultiplayInfo } from "../../util/multiAxios";
 export type Chat = {
   userId: string;
   message: string;
+  mine: boolean;
 };
 
 function ChatArea() {
@@ -36,7 +37,6 @@ function ChatArea() {
     client.current.publish({
       destination: `/pub/chat/${multiId}`,
       body: JSON.stringify({
-        userId: user?.userId,
         message: inputRef.current?.value,
       }),
     });
@@ -80,9 +80,11 @@ function ChatArea() {
   }, []);
 
   return (
-    <section className="h-[447px] flex flex-col p-2 bg-primary-400 rounded-lg">
+    <section className="relative h-full flex flex-col p-2 bg-primary-400 rounded-lg">
       <p className="font-bold text-secondary-400 text-center">CHAT</p>
-      <div className={`flex flex-col grow gap-2 my-1 px-1 overflow-y-scroll text-sm ${styles.scrollbar}`}>
+      <div
+        className={`absolute w-full h-[calc(100%_-_100px)] left-0 bottom-14 flex flex-col grow gap-2 my-1 px-1 overflow-y-scroll text-sm ${styles.scrollbar}`}
+      >
         {chatList?.length > 0 &&
           chatList.map((chat, index) => {
             let profileVisible = false;
@@ -106,18 +108,12 @@ function ChatArea() {
             }
 
             return (
-              <ChatMessage
-                key={index}
-                chat={chat}
-                user={user}
-                profileVisible={profileVisible}
-                myMessage={chat.userId == user?.userId}
-              />
+              <ChatMessage key={index} chat={chat} user={user} profileVisible={profileVisible} myMessage={chat.mine} />
             );
           })}
         <div ref={chatEndRef}></div>
       </div>
-      <form className="bg-white rounded-lg p-2 flex" onSubmit={handleChatSubmit}>
+      <form className="flex mt-auto p-2 bg-white rounded-lg" onSubmit={handleChatSubmit}>
         <input
           className="grow text-gray-900 focus:outline-none"
           type="text"
