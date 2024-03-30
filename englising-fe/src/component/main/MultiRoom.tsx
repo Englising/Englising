@@ -37,9 +37,16 @@ const Multiroom: React.FC<MultiroomProps> = ({
                 window.location.href = `/waitroom/${roomId}`;
             })
             .catch((error) => {
-                if (error.response && error.response.request.status === 404) {
-                    alert("참여할 수 없는 방입니다.");
-                } else {
+                if (error.response && error.response.request.status === 442) {
+                    alert("이미 참여했던 방입니다.");
+                } 
+                if (error.response && error.response.request.status === 440) {
+                    alert("삭제된 방입니다.");
+                } 
+                if (error.response && error.response.request.status === 441) {
+                    alert("정원이 모두 찬 방입니다.");
+                }  
+                else {
                     console.error('참여 실패', error);
                 }
             });
