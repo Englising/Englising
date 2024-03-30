@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2924fc65-dde8-4dec-9c7e-b1f5a433e0fd" name="Changes" comment="✨feat-data: 유튜브 동영상 조회 크롤링 Worker">
+    <list default="true" id="2924fc65-dde8-4dec-9c7e-b1f5a433e0fd" name="Changes" comment="✨feat-be: 데이터 게더링 작성 중">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core_service/word_split_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/core_service/word_split_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crud/track_crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/crud/track_crud.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,7 +23,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="develop-data" />
+        <entry key="$PROJECT_DIR$/.." value="release-be" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -73,17 +71,16 @@
     "Python.soundchart_client.executor": "Run",
     "Python.spotify_client.executor": "Run",
     "Python.youtube_client.executor": "Run",
-    "Python.youtube_crawler.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature-data/word-parse",
+    "git-widget-placeholder": "develop-data",
     "last_opened_file_path": "C:/Users/SSAFY/Desktop/S10P22A106/englising-data/venv",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "settings.editor.selected.configurable": "vcs.Git",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -157,15 +154,7 @@
       <option name="project" value="LOCAL" />
       <updated>1710233781888</updated>
     </task>
-    <task id="LOCAL-00006" summary="✨feat-data: 유튜브 동영상 조회 크롤링 Worker">
-      <option name="closed" value="true" />
-      <created>1711464128061</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1711464128061</updated>
-    </task>
-    <option name="localTasksCounter" value="7" />
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -184,27 +173,22 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="✨feat-be: 데이터 게더링 작성 중" />
-    <MESSAGE value="✨feat-data: 유튜브 동영상 조회 크롤링 Worker" />
-    <option name="LAST_COMMIT_MESSAGE" value="✨feat-data: 유튜브 동영상 조회 크롤링 Worker" />
+    <option name="LAST_COMMIT_MESSAGE" value="✨feat-be: 데이터 게더링 작성 중" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/englising_data$loglist.coverage" NAME="loglist Coverage Results" MODIFIED="1709883017035" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/util" />
-    <SUITE FILE_PATH="coverage/englising_data$soundchart_client.coverage" NAME="soundchart_client Coverage Results" MODIFIED="1710114976564" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
-    <SUITE FILE_PATH="coverage/englising_data$artist_gather_service.coverage" NAME="artist_gather_service Coverage Results" MODIFIED="1710123307709" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
-    <SUITE FILE_PATH="coverage/englising_data$spotify_client.coverage" NAME="spotify_client Coverage Results" MODIFIED="1710231246087" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
-    <SUITE FILE_PATH="coverage/englising_data$lyric_crud.coverage" NAME="lyric_crud Coverage Results" MODIFIED="1711288978829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/crud" />
-    <SUITE FILE_PATH="coverage/englising_data$musix_client.coverage" NAME="musix_client Coverage Results" MODIFIED="1710069840800" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
-    <SUITE FILE_PATH="coverage/englising_data$album_gather_service.coverage" NAME="album_gather_service Coverage Results" MODIFIED="1710219430133" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
-    <SUITE FILE_PATH="coverage/englising_data$naver_dict_client.coverage" NAME="naver_dict_client Coverage Results" MODIFIED="1711285706766" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
-    <SUITE FILE_PATH="coverage/englising_data$logging_config.coverage" NAME="logging_config Coverage Results" MODIFIED="1709882946121" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
-    <SUITE FILE_PATH="coverage/englising_data$youtube_crawler.coverage" NAME="youtube_crawler Coverage Results" MODIFIED="1711465439027" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
+    <SUITE FILE_PATH="coverage/englising_data$spotify_client.coverage" NAME="spotify_client Coverage Results" MODIFIED="1710131933311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$papago_client.coverage" NAME="papago_client Coverage Results" MODIFIED="1710121257918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
-    <SUITE FILE_PATH="coverage/englising_data$main.coverage" NAME="main Coverage Results" MODIFIED="1711465686208" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/englising_data$log_format.coverage" NAME="log_format Coverage Results" MODIFIED="1709882440331" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
-    <SUITE FILE_PATH="coverage/englising_data$word_split_service.coverage" NAME="word_split_service Coverage Results" MODIFIED="1711438164094" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
-    <SUITE FILE_PATH="coverage/englising_data$job_dto.coverage" NAME="job_dto Coverage Results" MODIFIED="1710123304256" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/dto" />
+    <SUITE FILE_PATH="coverage/englising_data$musix_client.coverage" NAME="musix_client Coverage Results" MODIFIED="1710069840800" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$youtube_client.coverage" NAME="youtube_client Coverage Results" MODIFIED="1710065828626" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/englising_data$album.coverage" NAME="album Coverage Results" MODIFIED="1710220793304" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model" />
+    <SUITE FILE_PATH="coverage/englising_data$main.coverage" NAME="main Coverage Results" MODIFIED="1710808324135" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/englising_data$google_trans_client.coverage" NAME="google_trans_client Coverage Results" MODIFIED="1710229590505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
+    <SUITE FILE_PATH="coverage/englising_data$album_gather_service.coverage" NAME="album_gather_service Coverage Results" MODIFIED="1710123336899" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
+    <SUITE FILE_PATH="coverage/englising_data$artist_gather_service.coverage" NAME="artist_gather_service Coverage Results" MODIFIED="1710123307709" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core_service" />
+    <SUITE FILE_PATH="coverage/englising_data$logging_config.coverage" NAME="logging_config Coverage Results" MODIFIED="1709882946121" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/englising_data$log_format.coverage" NAME="log_format Coverage Results" MODIFIED="1709882440331" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/englising_data$loglist.coverage" NAME="loglist Coverage Results" MODIFIED="1709883017035" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/util" />
+    <SUITE FILE_PATH="coverage/englising_data$soundchart_client.coverage" NAME="soundchart_client Coverage Results" MODIFIED="1710114976564" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
+    <SUITE FILE_PATH="coverage/englising_data$job_dto.coverage" NAME="job_dto Coverage Results" MODIFIED="1710123304256" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/dto" />
   </component>
 </project>
