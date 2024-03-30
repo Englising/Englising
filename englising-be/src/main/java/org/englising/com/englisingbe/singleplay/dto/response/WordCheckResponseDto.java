@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WordCheckResponseDto {
-    public WordResponseDto word;
-    public Integer totalWordCnt;
-    public Integer rightWordCnt;
+    private WordResponseDto word;
+    private Integer totalWordCnt;
+    private Integer rightWordCnt;
 }
