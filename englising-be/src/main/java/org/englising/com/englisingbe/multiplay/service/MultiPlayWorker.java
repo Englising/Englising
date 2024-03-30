@@ -195,6 +195,7 @@ public class MultiPlayWorker {
             case 3:
                 // 오답 수 계산
                 int wrongAnswerCount = wrongAnswerCount();
+                System.out.println("wrongAnswerCount = " + wrongAnswerCount);
                 messagingTemplate.convertAndSend(roundDestination,
                         RoundDto.<Integer>builder()
                                 .round(multiPlayGame.getRound())
@@ -221,8 +222,8 @@ public class MultiPlayWorker {
     }
 
     private int wrongAnswerCount() {
-        Map<Integer, String> userAnswerMap = multiPlayGame.getAnswerAlphabets();
-        Map<Integer, String> correctAnswerMap = redisService.findMultiPlayAnswerMap(multiPlayGame.getMultiPlayId())
+        Map<Integer, String> correctAnswerMap = multiPlayGame.getAnswerAlphabets();
+        Map<Integer, String> userAnswerMap = redisService.findMultiPlayAnswerMap(multiPlayGame.getMultiPlayId())
                 .orElseThrow(()->new GlobalException(ErrorHttpStatus.NO_MATCHING_MULTIPLAYGAME));
         int wrongAnswerCount = 0;
         for (Map.Entry<Integer, String> entry : userAnswerMap.entrySet()) {
