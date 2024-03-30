@@ -19,7 +19,7 @@ export type Alphabet = {
   alphabet: string;
 };
 
-const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alphabet[] }) => {
+const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alphabet[] | number }) => {
   const client = useRef<Client>();
   const { multiId } = useParams();
   const [changedAnswer, setChangedAnswer] = useState<Alphabet | undefined>();
