@@ -1,4 +1,4 @@
-package org.englising.com.englisingbe.multiplay.dto.socket;
+package org.englising.com.englisingbe.singleplay.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatDto {
-    private String message;
+public class SinglePlayResultRequestDto {
+    private Long singlePlayId;
 }

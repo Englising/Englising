@@ -15,8 +15,8 @@ public class SecurityAllowedUrls {
             "/swagger-ui/**",
             "/auth/**",
 //            "/**",
-            "/ws-stomp/**",
-            "/api/login/oauth2/**"
+//            "/ws-stomp/**",
+//            "/api/login/oauth2/**"
 //            "/oauth/**",
 //            "/oauth2/**"
     };

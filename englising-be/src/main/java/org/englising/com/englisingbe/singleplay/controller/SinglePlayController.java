@@ -15,6 +15,7 @@ import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
 import org.englising.com.englisingbe.global.util.PlayListType;
 import org.englising.com.englisingbe.global.util.ResponseMessage;
 import org.englising.com.englisingbe.singleplay.dto.request.SinglePlayRequestDto;
+import org.englising.com.englisingbe.singleplay.dto.request.SinglePlayResultRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.response.*;
 import org.englising.com.englisingbe.singleplay.service.SinglePlayServiceImpl;
@@ -145,7 +146,7 @@ public class SinglePlayController {
     @PostMapping("/result")
     @Operation(
             summary = "싱글플레이 종료",
-            description = "싱글플레이를 하기 위해 필요한 노래 정보, 단어 출제 내용, 가사를 가져옵니다"
+            description = "싱글플레이를 종료하고 현재까지 맞춘 단어와 개수, 노래 정보를 가져옵니다"
     )
     @Parameters({
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
@@ -156,14 +157,14 @@ public class SinglePlayController {
                     schema = @Schema(implementation = SinglePlayResponseDto.class)
             )
     )
-    public ResponseEntity getSingleplayResult(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody Long singlePlayId){
+    public ResponseEntity getSingleplayResult(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody SinglePlayResultRequestDto singlePlay){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
                         DefaultResponseDto.<SinglePlayResponseDto>builder()
                                 .status(HttpStatus.OK.value())
                                 .message("싱글플레이 결과를 가져왔습니다.")
-                                .data(singlePlayService.getSinglePlayResult(singlePlayId))
+                                .data(singlePlayService.getSinglePlayResult(singlePlay.getSinglePlayId()))
                                 .build()
                 );
     }
