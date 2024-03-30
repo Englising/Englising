@@ -5,7 +5,6 @@ import axios from 'axios';
 import useStomp from "../hooks/useStomp";
 import { Client, IMessage } from "@stomp/stompjs";
 // import { createBrowserHistory } from "history";
-
 // import useCustomBack from '../hooks/useCustomBack';
 
 interface User {
@@ -13,6 +12,7 @@ interface User {
     nickname: string;
     profileImg: string;
     color: string;
+    isMe : boolean;
 }
 interface Room {
     multiPlayId: number;
@@ -29,9 +29,8 @@ interface Room {
 
 const WaitingRoomPage: React.FC = () => {
     const [multiroom, setMultiRoom] = useState<Room | undefined>();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [userId, setUserId] = useState<number>(0);
     const params = useParams().multiId;
+    const [userId, setUserId] = useState<number>(0);
     const client = useRef<Client>();
     const navigate = useNavigate();
 
@@ -49,10 +48,12 @@ const WaitingRoomPage: React.FC = () => {
     // })
 
     // useStomp 훅을 직접 함수 컴포넌트 내에서 호출
-    const [connect, disconnect] =useStomp(client, `participant/${params}`, (message: IMessage) => {
+    const [connect, disconnect] =useStomp(client, `sub/participant/${params}`, (message: IMessage) => {
         console.log("Received message:", message.body);
+        //메시지 주인공(?)의 userData
         const userData = JSON.parse(message.body);
         const state = userData.kind;
+        console.log(userData)
 
         if (state === 'enter') {
                 setMultiRoom(prevState => {
@@ -61,16 +62,20 @@ const WaitingRoomPage: React.FC = () => {
                         userId: userData.user.userId,
                         nickname: userData.user.nickname,
                         profileImg: userData.user.profileImg,
-                        color: userData.user.color
+                        color: userData.user.color,
+                        isMe : userData.user.isMe,
                     }];
+
                     return {
                         ...prevState,
                         currentUser: updatedUsers
-                    };
+                    }
                 }); 
             } else if (state === 'leave') {
+                //나간 유저 삭제
                 setMultiRoom(prevState => {
                     if (!prevState) return prevState;
+                    //나간 유저 삭제
                     const updatedUsers = prevState.currentUser.filter(user => user.userId !== userData.user.userId);
                     return {
                         ...prevState,
@@ -78,19 +83,24 @@ const WaitingRoomPage: React.FC = () => {
                     };
                 }); 
                 
+            } 
+            // 방장 바뀜
+            else if (state ==='change'){
+                setMultiRoom({ ...multiroom, managerUserId: userData.user.userId} as Room);
             }
         }
     );
     
     //게임시작용 웹소켓 구독
-    const [connectGame, disconnectGame] =useStomp(client, `round/${params}`, (message: IMessage) => {
+    const [connectGame, disconnectGame] =useStomp(client, `sub/round/${params}`, (message: IMessage) => {
         console.log("Received message:", message.body);
         const userData = JSON.parse(message.body);
         const state = userData.status;
+        const round = userData.round;
 
-        if (state === 'GAMESTART') {
+        if (state === 'GAMESTART' && round === 0) {
                 //게임방으로 보내주기
-                console.log("게임시작")
+                console.log(userData.data)
                 navigate(`/multiplay/${multiroom?.multiPlayId}`);
             } 
         }
@@ -101,7 +111,6 @@ const WaitingRoomPage: React.FC = () => {
             .then((response) => {
                 setMultiRoom(response.data.data);
                 console.log(response.data.data);
-                setUserId(parseInt(localStorage.getItem("userId") || "0"));
             });
     }, [params]); // params를 의존성 배열에 추가
 
@@ -110,12 +119,13 @@ const WaitingRoomPage: React.FC = () => {
         connect();
         connectGame();
 
-        // return () => {
-        //     disconnect();
-        //     disconnectGame();
-        // }
+        return () => {
+            disconnect();
+            disconnectGame();
+        }
     },[]);
 
+    //내가 나갈때
     const leaveRoom = ():void => {
         axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
         navigate("/englising/selectMulti");
@@ -123,6 +133,7 @@ const WaitingRoomPage: React.FC = () => {
         disconnectGame();
     }
 
+    //방장이 게임 시작 눌렀을 때
     const startGame = ():void => {
         axios.get(`https://j10a106.p.ssafy.io/api/multiplay/${params}/game`, {withCredentials:true})
         .then(()=>{
@@ -131,6 +142,15 @@ const WaitingRoomPage: React.FC = () => {
         })
     }
 
+    useEffect(() => {
+        if (multiroom && multiroom.currentUser) {
+            const currentUser = multiroom.currentUser.find(user => user.isMe);
+            if (currentUser) {
+                setUserId(currentUser.userId);
+            }
+            console.log(userId)
+        }
+    }, [multiroom]);
 
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 ">
@@ -159,13 +179,16 @@ const WaitingRoomPage: React.FC = () => {
                                                 <img src={item.profileImg} className='w-20 h-20 absolute top-4 left-4'/>
                                             </div>
                                             <div className='flex flex-col pt-3 items-center'>
-                                            {(item.userId === multiroom?.managerUserId) && <div className='text-secondary-500 pb-2'>(방장)</div>}
-                                                <div className='text-white pr-2'>
-                                                    {item.nickname}
+                                            {(item.userId === multiroom?.managerUserId) && 
+                                            <div className='text-secondary-500 pb-2'>(방장)</div>}
+                                            {(item.isMe) && 
+                                            <div className='text-secondary-500 pb-2'>(Me)</div>}
+                                                    <div className='text-white pr-2'>
+                                                        {item.nickname}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                            ))}
                                 </div>
                             ) : (
                                 <div className="text-white w-full">대기방 목록이 없습니다.</div>
@@ -180,11 +203,11 @@ const WaitingRoomPage: React.FC = () => {
 
                 <div className='flex flex-row justify-center pt-10 gap-8'>
                     {/* 방장이면 이거 표시되게 */}
-                    {/* {(userId === multiroom?.managerUserId) && */}
+                    {(userId === multiroom?.managerUserId) &&
                     <button onClick={startGame} className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'> 
                         게임시작        
                     </button> 
-                    {/* } */}
+                    }
                     <button onClick={leaveRoom} className='text-black bg-red-400 w-48 h-12 rounded-lg text-sm hover:opacity-50'>
                         나가기
                     </button>
