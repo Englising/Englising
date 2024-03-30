@@ -105,7 +105,7 @@ public class MultiPlayWorker {
                         RoundDto.<String>builder()
                                 .round(multiPlayGame.getRound())
                                 .status(MultiPlayStatus.ROUNDSTART)
-                                .data("3라운드 시작") // 선택된 힌트 결과를 ??
+                                .data("3라운드 시작")
                                 .build());
                 // 힌트 결과 알림 예약 (3초 뒤)
                 scheduleNextTask(this::sendHintResult, bufferTime);
@@ -299,8 +299,8 @@ public class MultiPlayWorker {
     }
 
     private int getTrackPlayTime(){
-        BigDecimal startTime = multiPlayGame.getSentences().get(0).getStartTime();
-        BigDecimal endTime = multiPlayGame.getSentences().get(multiPlayGame.getSentences().size() - 1).getEndTime();
+        BigDecimal startTime = multiPlayGame.getBeforeLyricStartTime();
+        BigDecimal endTime = multiPlayGame.getAfterLyricEndTime();
         return endTime.subtract(startTime).multiply(new BigDecimal("1000")).intValue();
     }
 }
