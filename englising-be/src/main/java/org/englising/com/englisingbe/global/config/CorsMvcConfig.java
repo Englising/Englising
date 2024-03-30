@@ -15,6 +15,11 @@ public class CorsMvcConfig implements WebMvcConfigurer {
                 .allowedOrigins("https://j10a106.p.ssafy.io")
                 .allowedOrigins("http://localhost:5173")
                 .allowedOrigins("http://localhost:5174")
-                .allowedOrigins("https://localhost:5175/"); //todo. 수정
+                .allowedOrigins("https://localhost:5173/")
+                .allowedOrigins("https://localhost:5174/")
+                .allowedOrigins("https://localhost:5175/")
+                .allowCredentials(true)
+                .allowedHeaders("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 }

@@ -52,39 +52,49 @@ public class RedisServiceImpl {
     }
 
     public boolean addNewUserToMultiPlayGame(Long multiPlayId, MultiPlayUser user) {
-        boolean result = false;
         MultiPlayGame game = getMultiPlayGameById(multiPlayId);
         List<MultiPlayUser> users = game.getUsers();
         if (users == null) {
             users = new ArrayList<>();
             game.setUsers(users);
         }
-        //TODO 기존 참여중인 유저 확인 코드 주석 해제 (아래 if문 변경)
-//        boolean userExists = users.stream()
-//                .anyMatch(existingUser -> existingUser.getUserId().equals(user.getUserId()));
-//
-//        if (userExists) {
-//            throw new GlobalException(ErrorHttpStatus.USER_ALREADY_EXISTS);
-//        }
-        if(!users.contains(user)){
-            users.add(user);
-            result = true;
+        // 이미 방 정원이 다 찬 경우
+        if(users.size() >= game.getMaxUser()){
+            return false;
         }
+        // 방에 이미 참여 중인 사람인 경우
+        boolean userExists = users.stream()
+                .anyMatch(existingUser -> existingUser.getUserId().equals(user.getUserId()));
+
+        if (userExists) {
+            throw new GlobalException(ErrorHttpStatus.USER_ALREADY_EXISTS);
+        }
+        // 에러가 없을 경우 유저 추가 및 게임 상태 저장
+        game.getUsers().add(user);
         saveMultiPlayGame(game);
-        return result;
+        return true;
     }
 
     public boolean deleteUserToMultiPlayGame(Long multiPlayId, MultiPlayUser user) {
         boolean result = false;
         MultiPlayGame game = getMultiPlayGameById(multiPlayId);
         List<MultiPlayUser> users = game.getUsers();
-        if(game.getUsers().contains(user)){
-            game.getUsers().remove(user);
-            result = true;
+        MultiPlayUser userToRemove = null;
+        for (MultiPlayUser currentUser : users) {
+            if (currentUser.getUserId().equals(user.getUserId())) {
+                userToRemove = currentUser;
+                result = true;
+                break;
+            }
         }
+        if (userToRemove != null) {
+            users.remove(userToRemove);
+        }
+        game.setUsers(users);
         saveMultiPlayGame(game);
         return result;
     }
+
 
     public MultiPlayGame updateRoundStatus(Long multiPlayId, int round, MultiPlayStatus status){
         MultiPlayGame game = getMultiPlayGameById(multiPlayId);

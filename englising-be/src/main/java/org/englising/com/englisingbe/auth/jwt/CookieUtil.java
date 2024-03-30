@@ -73,9 +73,6 @@ public class CookieUtil {
         String accessToken = null;
 
         Cookie[] cookies = request.getCookies();
-//        if(cookies == null) {
-//            throw new GlobalException(ErrorHttpStatus.COOKIE_NOT_FOUNDED);
-//        }
 
         if(cookies != null) {
             for(Cookie cookie : cookies) {
@@ -86,9 +83,6 @@ public class CookieUtil {
             }
         }
 
-//        if(accessToken == null) {
-//            throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_TOKEN);
-//        }
         return accessToken;
     }
 
@@ -96,9 +90,6 @@ public class CookieUtil {
         String refreshToken = null;
 
         Cookie[] cookies = request.getCookies();
-//        if(cookies == null) {
-//            throw new GlobalException(ErrorHttpStatus.COOKIE_NOT_FOUNDED);
-//        }
 
         if(cookies != null) {
             for(Cookie cookie : cookies) {
@@ -108,12 +99,6 @@ public class CookieUtil {
                 }
             }
         }
-
-//        if(refreshToken == null) {
-//            throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_TOKEN);
-//        }
         return refreshToken;
     }
-
-
 }

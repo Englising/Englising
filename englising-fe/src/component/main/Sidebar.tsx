@@ -14,7 +14,9 @@ const SideBar: React.FC = () => {
     const [modalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
-        axios.get("https://j10a106.p.ssafy.io/api/user/profile")
+        axios.get("https://j10a106.p.ssafy.io/api/user/profile", {
+            withCredentials: true, // 이 옵션을 설정하여 쿠키와 인증 정보를 함께 보냄
+            })
             .then((Response) => {
                 setProfile(Response.data.data);
                 console.log(Response.data.data);
