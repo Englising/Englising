@@ -9,11 +9,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
+import org.englising.com.englisingbe.global.util.PlayListType;
+import org.englising.com.englisingbe.global.util.ResponseMessage;
 import org.englising.com.englisingbe.singleplay.dto.request.SinglePlayRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.request.WordCheckRequestDto;
 import org.englising.com.englisingbe.singleplay.dto.response.*;
+import org.englising.com.englisingbe.singleplay.service.SinglePlayServiceImpl;
+import org.englising.com.englisingbe.auth.dto.CustomUserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -21,30 +28,37 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/singleplay")
+@Slf4j
 public class SinglePlayController {
+    private final SinglePlayServiceImpl singlePlayService;
 
     @GetMapping("/playlist")
-    // API 상세 정보 기술
     @Operation(
             summary = "싱글플레이가 가능한 노래의 플레이리스트 조회",
             description = "type 파라미터로 플레이리스트의 종류를 보내주세요. 페이지네이션이 적용되어 있습니다"
     )
-    // API Parameter 정보 작성
     @Parameters({
-            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
             @Parameter(name = "type", description = "플레이리스트 종류 : RECOMMEND(추천된), LIKE(좋아요 한), RECENT(최근 플레이 한)", in = ParameterIn.QUERY),
             @Parameter(name = "page", description = "페이지 번호", in = ParameterIn.QUERY),
             @Parameter(name = "size", description = "(선택적) 페이지당 컨텐츠 개수, 기본 10", in = ParameterIn.QUERY)
     })
-    // API Response 정보 기술
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = PlayListResponseDto.class)
+                    schema = @Schema(implementation = TrackResponseDto.class)
             )
     )
-    public ResponseEntity getPlaylists(@RequestParam String type, @RequestParam Integer page, @RequestParam Integer size){
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity getPlaylists(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam PlayListType type, @RequestParam Integer page, @RequestParam Integer size){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        DefaultResponseDto.<PlayListDto>builder()
+                                .status(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getCode())
+                                .message(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getMessage())
+                                .data(singlePlayService.getPlayList(type, page, size, 1L))
+                                .build()
+                );
     }
 
     @PostMapping()
@@ -53,7 +67,7 @@ public class SinglePlayController {
             description = "싱글플레이를 하기 위해 필요한 노래 정보, 단어 출제 내용, 가사를 가져옵니다"
     )
     @Parameters({
-            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
     })
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
@@ -61,7 +75,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = StartResponseDto.class)
             )
     )
-    public ResponseEntity startSingleplay(@RequestBody SinglePlayRequestDto startDto){
+    public ResponseEntity startSingleplay(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody SinglePlayRequestDto startDto){
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -71,7 +85,7 @@ public class SinglePlayController {
             description = "싱글플레이 플레이 중 사용자가 입력한 단어 답안의 정답 유무를 확인합니다."
     )
     @Parameters({
-            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
     })
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
@@ -79,7 +93,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = WordCheckResponseDto.class)
             )
     )
-    public ResponseEntity checkSingleplayWord(@RequestBody WordCheckRequestDto wordCheckRequestDto){
+    public ResponseEntity checkSingleplayWord(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody WordCheckRequestDto wordCheckRequestDto){
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -89,7 +103,7 @@ public class SinglePlayController {
             description = "싱글플레이를 하기 위해 필요한 노래 정보, 단어 출제 내용, 가사를 가져옵니다"
     )
     @Parameters({
-            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.HEADER),
+            @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
     })
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(
@@ -97,7 +111,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = ResultResponseDto.class)
             )
     )
-    public ResponseEntity getSingleplayResult(@RequestBody Long singleplayId){
+    public ResponseEntity getSingleplayResult(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody Long singleplayId){
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -115,7 +129,7 @@ public class SinglePlayController {
                     schema = @Schema(implementation = TimeResponseDto.class)
             )
     )
-    public ResponseEntity getLyricStartTimes(@PathVariable Long trackId){
+    public ResponseEntity getLyricStartTimes(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long trackId){
         return new ResponseEntity(HttpStatus.OK);
     }
 }
