@@ -14,6 +14,12 @@ export interface SinglePlayResultData {
     singlePlayId: number
 }
 
+export interface SinglePlayWordCheck {
+  singleplayId: number,
+  singleplayWordId: number,
+  word: string
+}
+
 export const getSinglePlayData = async (data: SinglePlayData): Promise<any> => {
     try {
         const response = await axios.post(`${BASE_URL}/singleplay`, data, {withCredentials:true});
@@ -45,5 +51,14 @@ export const getSinglePlayResultData = async (data: SinglePlayResultData): Promi
         console.error(error, "Fail getSinglePlayResultData")
         throw error;
     } 
+}
+
+export const  singlePlayWordCheck =async (data:SinglePlayWordCheck) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/singleplay/word-check`, data, {withCredentials:true});
+        console.log(response, "Success getSinglePlayResultData");
+    }catch (error) {
+        console.error(error, "Fail singlePlayWordCheck")
+    }
 }
 
