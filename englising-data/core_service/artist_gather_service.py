@@ -21,30 +21,19 @@ from log.englising_logger import log
 # 4. Artist, Artist_Album DB에 저장
 
 
-
 class ArtistWorker:
-
     def __init__(self):
         self.job_queue = Queue()
-
-    # def __init__(self, redis_host='localhost', redis_port=6379, redis_db=0, queue_name=WorkList.ARTIST.name):
-    #     self.redis_connection = redis.Redis(host=redis_host, port=redis_port, db=redis_db)
-    #     self.queue_name = queue_name
 
     def start(self):
         while True:
             session = Session()
-            # queue_length = self.redis_connection.llen(self.queue_name)
             queue_length = self.job_queue.qsize()
             if queue_length <= 10:
                 albums_without_artists = get_album_without_artist(session)
                 for album in albums_without_artists:
                     self.job_queue.put(album)
-                    # self.redis_connection.rpush(self.queue_name, album.json())
             session.close()
-
-            # _, album_dto_json = self.redis_connection.blpop(self.queue_name, timeout=None)
-            # album_dto = Album.parse_raw(album_dto_json)
             try:
                 album_dto = self.job_queue.get(timeout=5)
                 self.process_job(album_dto)
@@ -54,7 +43,7 @@ class ArtistWorker:
                 time.sleep(10)
 
     def process_job(self, album_dto: Album):
-        log(LogList.ARTIST.name, LogKind.INFO, "Starting Job: "+str(album_dto))
+        log(LogList.ARTIST.name, LogKind.INFO, "Starting Job: "+str(album_dto.album_id))
         session = Session()
         try:
             artist_spotify_ids = get_artists_by_album_spotify_id(album_dto.spotify_id)
@@ -62,7 +51,6 @@ class ArtistWorker:
                 artist = get_artist_by_spotify_id(artist_spotify_id, session)
                 if artist is None:
                     artist: ArtistDto = get_artist_by_spotify_id_spotify(artist_spotify_id)
-                    print(artist)
                     artist = create_artist(Artist(
                         name=artist.name,
                         genres=artist.genres,
@@ -75,18 +63,17 @@ class ArtistWorker:
                         artist_id=artist.artist_id,
                         album_id=album_dto.album_id
                     ), session)
-                session.commit()
+            session.commit()
         except ArtistException as e:
             log(LogList.ARTIST.name, LogKind.ERROR, str(e))
             self.job_queue.put(album_dto)
-            # self.redis_connection.rpush(self.queue_name, album_dto.json())
             session.rollback()
             time.sleep(30)
         except Exception as e:
             log(LogList.ARTIST.name, LogKind.ERROR, str(e))
             self.job_queue.put(album_dto)
             session.rollback()
-            time.sleep(30)
+            time.sleep(5)
         finally:
             session.close()
 
