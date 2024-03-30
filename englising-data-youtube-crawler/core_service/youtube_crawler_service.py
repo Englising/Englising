@@ -1,23 +1,13 @@
 import time
 from queue import Queue
 
-import redis
-
 from client.youtube_crawler import YoutubeCrawler
 from database.mysql_manager import Session
 from log.englising_logger import log
 from log.log_info import LogList, LogKind
-from util.custom_exception import YoutubeException
-from util.worklist import WorkList
 
-from client.youtube_client import *
 from crud.track_crud import *
 
-# 변경 사항
-# 1. Redis Job Queue가 특정 개수 이하일 경우, DB에서 Track 중 youtube_id가 없는 트랙 조회, Job Queue에 넣음
-# 2. Youtube 해당 트랙의 정보 조회
-# 3. 해당하는 영상이 있을 경우, youtube_id update
-# 4. 해당하는 영상이 없을 경우, NONE으로 update
 
 class YoutubeWorker:
     def __init__(self):
@@ -50,7 +40,7 @@ class YoutubeWorker:
                 youtube_query_dto.duration_ms
             )
             youtube_query_dto.youtube_id = "NONE" if youtube_result is None else youtube_result.youtube_id
-            update_track(youtube_query_dto, session)
+            update_track_youtube_status(youtube_query_dto, session)
             session.commit()
         except Exception as e:
             log(LogList.YOUTUBE.name, LogKind.ERROR, str(e))
