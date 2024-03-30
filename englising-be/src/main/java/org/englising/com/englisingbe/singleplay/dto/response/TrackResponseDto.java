@@ -14,16 +14,16 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrackResponseDto {
-    public Long albumId;
-    public String albumTitle;
-    public String albumImg;
-    public Long trackId;
-    public String trackTitle;
-    public List<String> artists;
-    public String spotifyId;
-    public String youtubeId;
-    public Integer score;
-    public Boolean isLike;
+    private Long albumId;
+    private String albumTitle;
+    private String albumImg;
+    private Long trackId;
+    private String trackTitle;
+    private List<String> artists;
+    private String spotifyId;
+    private String youtubeId;
+    private Integer score;
+    private Boolean isLike;
 
     public static TrackResponseDto getTrackResponseFromTrackAlbumArtist(TrackAlbumArtistDto trackAlbumArtistDto, Integer score, Boolean isLike){
         return TrackResponseDto.builder()

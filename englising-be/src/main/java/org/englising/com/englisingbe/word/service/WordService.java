@@ -102,7 +102,6 @@ public class WordService {
         return null;
     }
 
-
     public WordLikeResponseDto likeWord(Long wordId, Long userId) {
         WordLike wordLike = wordLikeRepository.findByWordIdAndUserId(wordId, userId).orElse(null);
 
@@ -123,6 +122,10 @@ public class WordService {
         wordLike.updateWordLike(updatedLikeStatus);
 
         return new WordLikeResponseDto(wordLike.getIsLiked());
+    }
+
+    public boolean isLikedByUserIdAndWordId(Long wordId, Long userId){
+        return wordLikeRepository.existsByUserUserIdAndWordWordIdAndIsLikedTrue(userId, wordId);
     }
 
     private WordResponseDto getWordResponseDto(Word word, Long userId) {

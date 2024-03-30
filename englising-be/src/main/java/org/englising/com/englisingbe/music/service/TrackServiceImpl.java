@@ -40,7 +40,7 @@ public class TrackServiceImpl {
     }
 
     public Page<Track> getSearchTrackIds(String keyword, Pageable pageable){
-        return trackRepository.findByTitleContainingAndYoutubeIdIsNotNull(keyword, pageable);
+        return trackRepositorySupport.findByTitleContainingAndYoutubeIdIsNotNullAndOtherConditions(keyword, pageable);
     }
 
     public Track getRandomTrack(Genre genre, int limit){
