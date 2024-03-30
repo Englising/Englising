@@ -8,8 +8,8 @@ def create_track(track: Track, session):
     return track
 
 
-def update_track(lyric_status: str, track_id: int, session):
-    session.query(Track).filter(Track.track_id == track_id).update({"lyric_status": lyric_status})
+def update_track(is_english: bool, track_id: int, session):
+    session.query(Track).filter(Track.track_id == track_id).update({"is_english": is_english})
     session.flush()
 
 
