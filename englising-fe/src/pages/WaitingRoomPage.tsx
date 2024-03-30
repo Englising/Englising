@@ -2,7 +2,7 @@ import React, { useState,  useRef, useEffect } from 'react';
 import WaitChatArea from '../component/chat/WaitChatArea'
 import {useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import useStomp from "../hooks/useStomp";
+// import useStomp from "../hooks/useStomp";
 import { Client, IMessage } from "@stomp/stompjs";
 // import { createBrowserHistory } from "history";
 // import useCustomBack from '../hooks/useCustomBack';
@@ -33,6 +33,7 @@ const WaitingRoomPage: React.FC = () => {
     const [userId, setUserId] = useState<number>(0);
     const client = useRef<Client>();
     const navigate = useNavigate();
+    const [isConnected, setIsConnected] = useState(false);
 
     // const history = createBrowserHistory();
 
@@ -47,62 +48,27 @@ const WaitingRoomPage: React.FC = () => {
     //     })
     // })
 
-    // useStomp 훅을 직접 함수 컴포넌트 내에서 호출
-    const [connect, disconnect] = useStomp(client, `/sub/participant/${params}`, (message: IMessage) => {
-        console.log("Received message:", message.body);
-        //메시지 주인공(?)의 userData
-        const userData = JSON.parse(message.body);
-        const state = userData.kind;
+    // STOMP CONNECTION
+    useEffect(() => {
+        client.current = new Client({
+            brokerURL: "wss://j10a106.p.ssafy.io/ws-stomp",
+            onConnect: () => {
+                console.log("STOMP connect cucess");
+                setIsConnected(true); // 연결 상태 업데이트
+            },
+            onStompError: (error) => {
+                console.error('STOMP error:', error);
+            },
+        });
 
-        if (state === 'enter') {
-                setMultiRoom(prevState => {
-                    if (!prevState) return prevState;
-                    const updatedUsers = [...prevState.currentUser, {
-                        userId: userData.user.userId,
-                        nickname: userData.user.nickname,
-                        profileImg: userData.user.profileImg,
-                        color: userData.user.color,
-                        isMe : userData.user.isMe,
-                    }];
-                    return {
-                        ...prevState,
-                        currentUser: updatedUsers
-                    }
-                }); 
-            } else if (state === 'leave') {
-                //나간 유저 삭제
-                setMultiRoom(prevState => {
-                    if (!prevState) return prevState;
-                    //나간 유저 삭제
-                    const updatedUsers = prevState.currentUser.filter(user => user.userId !== userData.user.userId);
-                    return {
-                        ...prevState,
-                        currentUser: updatedUsers
-                    };
-                }); 
-                
-            } 
-            // 방장 바뀜
-            else if (state ==='change'){
-                setMultiRoom({ ...multiroom, managerUserId: userData.user.userId} as Room);
+        client.current.activate();
+
+        return () => {
+            if (client.current) {
+                client.current.deactivate();
             }
-        }
-    );
-    
-    //게임시작용 웹소켓 구독
-    const [connectGame, disconnectGame] = useStomp(client, `/sub/round/${params}`, (message: IMessage) => {
-        console.log("Received message:", message.body);
-        const gameData = JSON.parse(message.body);
-        const state = gameData.status;
-        const round = gameData.round;
-
-        if (state === "GAMESTART" && round === 0) {
-                //게임방으로 보내주기
-                console.log(gameData.data)
-                navigate(`/multiplay/${multiroom?.multiPlayId}`);
-            } 
-        }
-    );
+        };
+    }, []);
 
     useEffect(() => {
         axios.get(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
@@ -112,23 +78,86 @@ const WaitingRoomPage: React.FC = () => {
             });
     }, [params]); // params를 의존성 배열에 추가
 
-    useEffect(()=>{
-        console.log("연결 시도")
-        connect();
-        connectGame();
+    // STOMP State Print Options
+    useEffect(() => {
+        if (isConnected && client.current) {
+            const subscription1 = client.current.subscribe(`/sub/participant/${params}`, participantMessageCallback);
+            console.log(`Subscribed to /sub/participant/${params} successfully.`);
 
-        return () => {
-            disconnect();
-            disconnectGame();
+            const subscription2 = client.current.subscribe(`/sub/round/${params}`, gameMessageCallback);
+            console.log(`Subscribed to /sub/round/${params} successfully.`);
+
+            return () => {
+                subscription1.unsubscribe();
+                console.log(`Unsubscribed from /sub/participant/${params}.`);
+
+                subscription2.unsubscribe();
+                console.log(`Unsubscribed from /sub/round/${params}.`);
+            };
         }
-    },[]);
+    }, [params, isConnected, participantMessageCallback, gameMessageCallback]);
+
+
+    // TESTING FUNCTION ----------------------------------------------------------
+    function participantMessageCallback(message: IMessage){
+        console.log("Received message:", message.body);
+        //메시지 주인공(?)의 userData
+        const userData = JSON.parse(message.body);
+        const state = userData.kind;
+
+        if (state === 'enter') {
+            setMultiRoom(prevState => {
+                if (!prevState) return prevState;
+                const updatedUsers = [...prevState.currentUser, {
+                    userId: userData.user.userId,
+                    nickname: userData.user.nickname,
+                    profileImg: userData.user.profileImg,
+                    color: userData.user.color,
+                    isMe : userData.user.isMe,
+                }];
+                return {
+                    ...prevState,
+                    currentUser: updatedUsers
+                }
+            });
+        } else if (state === 'leave') {
+            //나간 유저 삭제
+            setMultiRoom(prevState => {
+                if (!prevState) return prevState;
+                //나간 유저 삭제
+                const updatedUsers = prevState.currentUser.filter(user => user.userId !== userData.user.userId);
+                return {
+                    ...prevState,
+                    currentUser: updatedUsers
+                };
+            });
+
+        }
+        // 방장 바뀜
+        else if (state ==='change'){
+            setMultiRoom({ ...multiroom, managerUserId: userData.user.userId} as Room);
+        }
+    }
+
+    function gameMessageCallback(message: IMessage){
+        console.log("Received message:", message.body);
+        const gameData = JSON.parse(message.body);
+        const state = gameData.status;
+        const round = gameData.round;
+
+        if (state === "GAMESTART" && round === 0) {
+            //게임방으로 보내주기
+            console.log(gameData.data)
+            navigate(`/multiplay/${multiroom?.multiPlayId}`);
+        }
+    }
 
     //내가 나갈때
     const leaveRoom = ():void => {
         axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
         navigate("/englising/selectMulti");
-        disconnect();
-        disconnectGame();
+        // disconnect();
+        // disconnectGame();
     }
 
     //방장이 게임 시작 눌렀을 때
