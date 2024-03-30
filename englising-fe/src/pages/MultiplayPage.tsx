@@ -17,9 +17,10 @@ import useStomp from "../hooks/useStomp";
 import { getMultiplayInfo } from "../util/multiAxios";
 
 export interface User {
-  userId: number;
-  profileImage: string;
+  userId: string;
+  profileImg: string;
   nickname: string;
+  color?: string;
 }
 
 export interface PlayInfo {
