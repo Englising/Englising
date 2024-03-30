@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WordResponseDto {
+public class WordResultResponseDto {
     private Long singleplayWordId;
     private Integer sentenceIndex;
     private Integer wordIndex;
     private String word;
     private Boolean isRight;
+    private Long wordId;
+    private Boolean isLike;
 }

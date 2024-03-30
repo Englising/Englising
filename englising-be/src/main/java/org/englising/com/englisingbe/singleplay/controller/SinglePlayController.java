@@ -115,8 +115,6 @@ public class SinglePlayController {
                 );
     }
 
-    // todo. 모두 @AuthenticationPrincipal CustomUserDetails userDetails 추가하기!!!!
-
     @PostMapping("/word-check")
     @Operation(
             summary = "싱글플레이 단어 답안 확인",
@@ -138,7 +136,7 @@ public class SinglePlayController {
                         DefaultResponseDto.<WordCheckResponseDto>builder()
                                 .status(HttpStatus.OK.value())
                                 .message("단어 정답을 확인 했습니다.")
-                                .data(singlePlayService.checkWord(wordCheckRequestDto))
+                                .data(singlePlayService.checkWord(wordCheckRequestDto, Long.parseLong(userDetails.getUsername())))
                                 .build()
                 );
     }
@@ -161,10 +159,10 @@ public class SinglePlayController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        DefaultResponseDto.<SinglePlayResponseDto>builder()
+                        DefaultResponseDto.<SinglePlayResultResponseDto>builder()
                                 .status(HttpStatus.OK.value())
                                 .message("싱글플레이 결과를 가져왔습니다.")
-                                .data(singlePlayService.getSinglePlayResult(singlePlay.getSinglePlayId()))
+                                .data(singlePlayService.getSinglePlayResult(singlePlay.getSinglePlayId(), Long.parseLong(userDetails.getUsername())))
                                 .build()
                 );
     }
