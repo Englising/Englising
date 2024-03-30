@@ -4,7 +4,7 @@ import {useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import useStomp from "../hooks/useStomp";
 import { Client, IMessage } from "@stomp/stompjs";
-import { createBrowserHistory } from "history";
+// import { createBrowserHistory } from "history";
 
 // import useCustomBack from '../hooks/useCustomBack';
 
@@ -35,18 +35,18 @@ const WaitingRoomPage: React.FC = () => {
     const client = useRef<Client>();
     const navigate = useNavigate();
 
-    const history = createBrowserHistory();
+    // const history = createBrowserHistory();
 
-    useEffect(()=> {
-        return history.listen(() => {
-            if(history.action === "POP"){
-                console.log("뒤로가기누름!");
-                axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
-                navigate("/englising/selectMulti");
-                disconnect();
-            }
-        })
-    })
+    // useEffect(()=> {
+    //     return history.listen(() => {
+    //         if(history.action === "POP"){
+    //             console.log("뒤로가기누름!");
+    //             axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
+    //             navigate("/englising/selectMulti");
+    //             disconnect();
+    //         }
+    //     })
+    // })
 
     // useStomp 훅을 직접 함수 컴포넌트 내에서 호출
     const [connect, disconnect] =useStomp(client, `participant/${params}`, (message: IMessage) => {
