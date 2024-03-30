@@ -11,10 +11,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SinglePlayResponseDto {
+public class SinglePlayResultResponseDto {
     private Long singlePlayId;
     private List<LyricDto> lyrics;
-    private List<WordResponseDto> words;
+    private List<WordResultResponseDto> words;
     private int totalWordCnt;
     private int rightWordCnt;
 }
