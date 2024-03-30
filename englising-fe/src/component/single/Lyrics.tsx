@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { PlayInfo, SingleData, Lyric, Word, AnswerInfo } from "../../pages/SinglePage.tsx";
 import HintModal from "./HintModal.tsx";
+import { singlePlayWordCheck } from "../../util/SinglePlayAPI.tsx";
 
 interface Props {
     onSetInfo(currIdx: number, blank: boolean, start: number, end: number): void,
@@ -88,7 +89,14 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
         if (lyrics != undefined ) {
             solution = lyrics[idx].lyric[parseInt(solutionIdx)];
         }
-
+        
+        const data = {
+            singleplayId: singleData?.singlePlayId || 0, 
+            singleplayWordId: parseInt(targetBlank?.dataset.wordid || "0"),
+            word: answer.toLowerCase()
+        }
+        console.log(data.singleplayId, targetBlank?.dataset.wordid, data.word)
+        singlePlayWordCheck(data);
 
         if(answer.toLowerCase() == solution.toLowerCase()){
             if (targetBlank) {
@@ -238,12 +246,14 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
                             if(word == " ") return <div>&nbsp;</div>
                             let isBlank:boolean = false;
                             let blankIdx:number = 0;
-
+                            let singlePlayWordId: number = 0;
+                                
                             blankWord?.forEach((blank, blankId) => {
                                 //console.log("단어 idx:", blank.sentenceIndex, "result:", word.toLowerCase(), blank.word.toLowerCase());
                                 if(word.toLowerCase().includes(blank.word.toLowerCase())  && i == blank.sentenceIndex && j == blank.wordIndex){
                                     isBlank = true; 
                                     blankIdx = blankId; 
+                                    singlePlayWordId = blank.singleplayWordId;
                                 }
                             })
                             //만약 해당 단어가 빈칸이 필요하다면 -> isBlank 속성 값 결정
@@ -254,9 +264,10 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
                                         key={j} 
                                         className={"mx-2 bg-white rounded-lg text-white bg-opacity-60 text-opacity-0"}
                                         ref={(el) => blanksRef.current[blankIdx] = el}
+                                        data-wordid={singlePlayWordId}
                                         data-index={j}
                                         data-sentence={i}
-                                        data-word={blankIdx}
+                                        data-word={blankIdx} 
                                         data-solve="0"
                                             onClick={(e) => {
                                                 if (idx == i) {

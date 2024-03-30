@@ -34,7 +34,7 @@ export interface Lyric {
 }
 
 export interface Word {
-    singlePlayWordId: number;
+    singleplayWordId: number;
     sentenceIndex: number;
     wordIndex: number;
     word: string;
