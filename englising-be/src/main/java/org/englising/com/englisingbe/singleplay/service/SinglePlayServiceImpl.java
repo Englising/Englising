@@ -99,7 +99,7 @@ public class SinglePlayServiceImpl {
 
     public WordCheckResponseDto checkWord(WordCheckRequestDto wordCheckRequestDto, Long userId){
         SinglePlayWord originWord = singlePlayWordService.getSinglePlayWordById(wordCheckRequestDto.getSingleplayWordId());
-        if(originWord.getSinglePlay().getUser().getUserId().equals(userId)){
+        if(!originWord.getSinglePlay().getUser().getUserId().equals(userId)){
             throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_TOKEN);
         }
         SinglePlayWord singlePlayWord = singlePlayWordService.checkWordAnswer(wordCheckRequestDto);
