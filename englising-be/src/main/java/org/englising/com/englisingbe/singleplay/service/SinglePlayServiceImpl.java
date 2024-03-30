@@ -120,7 +120,8 @@ public class SinglePlayServiceImpl {
         List<SinglePlayWord> singlePlayWordList = singlePlayWordService.getAllSinglePlayWordsBySinglePlayId(singlePlayId);
         int totalWordCnt = singlePlayWordList.size();
         int rightWordCnt = (int) singlePlayWordList.stream().filter(SinglePlayWord::getIsRight).count();
-        singlePlayRepository.updateScoreAndCorrectRateById(singlePlayId, rightWordCnt, rightWordCnt / totalWordCnt * 100);
+        int correctRate = rightWordCnt == 0? 0 : rightWordCnt / totalWordCnt * 100;
+        singlePlayRepository.updateScoreAndCorrectRateById(singlePlayId, rightWordCnt, correctRate);
         // Dto 생성
         return SinglePlayResponseDto.builder()
                 .singlePlayId(singlePlay.getSinglePlayId())
