@@ -1,20 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { Client, IMessage } from "@stomp/stompjs";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import UserProfile from "../component/multi/UserProfile";
 import ChatArea from "../component/chat/ChatArea";
 import MemoArea from "../component/multi/MemoArea";
 import Timer from "../component/multi/Timer";
 import Modal from "../component/multi/Modal";
-import Timeout from "../component/multi/modalContent/Timeout";
 import MultiInputArea, { Alphabet } from "../component/multi/MultiInputArea";
 import { Quiz } from "../component/multi/MultiInputArea";
-import Hint from "../component/multi/modalContent/Hint/Hint";
 import MultiMusicPlayer from "../component/multi/MultiMusicPlayer";
-import Result from "../component/multi/modalContent/Result";
-import Fail from "../component/multi/modalContent/Fail";
-import useStomp from "../hooks/useStomp";
+import MultiplayModal from "../component/multi/modalContent/MultiplayModal";
 import { getMultiplayInfo } from "../util/multiAxios";
+import useStomp from "../hooks/useStomp";
 
 export interface User {
   userId: string;
@@ -46,14 +43,16 @@ export interface Room {
   hint: number;
   result?: boolean;
   track?: Track;
+  answer?: Quiz[];
 }
 
 function MultiplayPage() {
   const roundClient = useRef<Client>();
   const timeClient = useRef<Client>();
   const dialog = useRef<HTMLDialogElement>(null);
+  const navigate = useNavigate();
   const { multiId } = useParams();
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(true);
   const [status, setStatus] = useState<string>();
   const [round, setRound] = useState<number>(1);
   const [time, setTime] = useState<number>();
@@ -61,7 +60,7 @@ function MultiplayPage() {
   const [quiz, setQuiz] = useState<Quiz[]>([]);
   const [track, setTrack] = useState<Track | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
-  const [hintResult, setHintResult] = useState<Alphabet[] | null>(null);
+  const [hintResult, setHintResult] = useState<Alphabet[] | number>([]);
 
   const handleModalOpen = () => {
     setModalOpen(!modalOpen);
@@ -75,11 +74,11 @@ function MultiplayPage() {
     onPlay: 0,
   });
 
-  const basicPlay = () => {
+  const basicPlay = (speed: number) => {
     // 특정시간에 도달하면 playInfo 값 넣어주기 (url, startTime, endTime, speed)
     setPlayInfo({
       ...playInfo,
-      speed: 1,
+      speed: speed,
       onPlay: (playInfo.onPlay + 1) % 2,
     });
   };
@@ -106,42 +105,11 @@ function MultiplayPage() {
   //   });
   // };
 
-  useEffect(() => {
-    roundConnect();
-    timeConnect();
-
-    // 참여 게임 정보 받기
-    getMultiplayInfo(multiId as string)
-      .then((res) => {
-        setRoom({
-          currentUser: res.data.data.currentUser,
-          name: res.data.data.roomName,
-          hint: 0,
-        });
-      })
-      .catch((e) => console.log(e));
-
-    return () => {
-      roundDisconnect();
-      timeDiscconnect();
-    };
-  }, []);
-
   const roundCallback = (body: IMessage) => {
     const json = JSON.parse(body.body);
     console.log("round", json);
     setStatus(json.status);
     setRound(json.round);
-
-    if (json.data.sentences != undefined) {
-      setPlayInfo({
-        url: `https://www.youtube.com/watch?v=${json.data.youtubeId}`, //처음에 초기화 해줘야함.
-        startTime: json.data.sentences[0].startTime,
-        endTime: json.data.sentences[json.data.sentences.length - 1].endTime,
-        speed: 1,
-        onPlay: 0,
-      });
-    }
 
     switch (json.status) {
       case "ROUNDSTART":
@@ -155,18 +123,27 @@ function MultiplayPage() {
             beforeLyric: json.data.beforeLyric,
             title: json.data.trackTitle,
             youtubeId: json.data.youtubeId,
-            startTime: 1,
-            endTime: 2,
+            startTime: json.data.beforeLyricStartTime,
+            endTime: json.data.afterLyricEndTime,
           });
           setRoom((prev) => {
-            return { ...prev, hint: parseInt(json.data.selectedHint) };
+            return { ...prev, hint: parseInt(json.data.selectedHint), answer: json.data.sentences };
+          });
+          setPlayInfo({
+            url: `https://www.youtube.com/watch?v=${json.data.youtubeId}`, //처음에 초기화 해줘야함.
+            startTime: json.data.beforeLyricStartTime,
+            endTime: json.data.afterLyricEndTime,
+            speed: 1,
+            onPlay: 0,
           });
         }
 
         break;
       case "MUSICSTART":
         setModalOpen(false);
-        if (track != undefined) setTime(track?.endTime - track?.startTime);
+        if (track) {
+          setTime(track?.endTime - track?.startTime);
+        }
         break;
       case "INPUTSTART":
         setModalOpen(false);
@@ -182,58 +159,53 @@ function MultiplayPage() {
         setRoom((prev) => {
           return { ...prev, result: json.data };
         });
+        if (json.round == 3) {
+          console.log("마지막");
+          setTimeout(() => {
+            basicPlay(1);
+          }, 1000);
+        }
         break;
       case "HINTRESULT":
         setHintResult(json.data);
     }
   };
 
-  const timeCallback = (body: IMessage) => {
-    const json = JSON.parse(body.body);
-    setLeftTime(json.leftTime);
-  };
+  // const timeCallback = (body: IMessage) => {
+  //   const json = JSON.parse(body.body);
+  //   setLeftTime(json.leftTime);
+  // };
 
-  const [roundConnect, roundDisconnect] = useStomp(roundClient, `round/${multiId}`, roundCallback);
-  const [timeConnect, timeDiscconnect] = useStomp(timeClient, `time/${multiId}`, timeCallback);
+  const [roundConnect, roundDisconnect] = useStomp(roundClient, `/sub/round/${multiId}`, roundCallback);
+  // const [timeConnect, timeDiscconnect] = useStomp(timeClient, `time/${multiId}`, timeCallback);
 
-  const showHintModal = (status?: string, round?: number, room?: Room) => {
-    console.log(room);
-    if (status == "ROUNDSTART") {
-      if (round == 3) {
-        return <Hint hint={room?.hint} />;
-      } else {
-        return (
-          <Timeout time={time}>
-            <p>
-              {time}초 뒤 게임 시작과 함께 음악이 재생됩니다
-              <br />
-              음악을 듣고 빈 칸을 채워보세요!
-            </p>
-          </Timeout>
-        );
-      }
-    } else if (status == "INPUTEND") {
-      return (
-        <Timeout time={time}>
-          <p className="text-secondary-400 font-bold text-3xl">답변이 제출되었습니다</p>
-          <p className="mt-6 mb-12 font-bold text-xl">{time}초 후, 이번 라운드의 결과가 공개됩니다</p>
-          {round == 2 && <p>다음 라운드엔 특별한 힌트가 지급되니 </p>}
-        </Timeout>
-      );
-    } else if (status == "ROUNDEND") {
-      if (round == 3 || room.result) {
-        return <Result room={room} />;
-      } else {
-        return (
-          <Timeout>
-            <Fail />
-          </Timeout>
-        );
-      }
-    } else if (status == "HINTRESULT") {
-      return <Hint hint={room.hint} />;
+  const handleLeaveGame = () => {
+    if (confirm("게임을 종료하시겠습니까?")) {
+      navigate("/englising/selectMulti");
     }
   };
+
+  useEffect(() => {
+    roundConnect();
+    // timeConnect();
+
+    // 참여 게임 정보 받기
+    getMultiplayInfo(multiId as string)
+      .then((res) => {
+        console.log(res.data.data.currentUser);
+        setRoom({
+          currentUser: res.data.data.currentUser,
+          name: res.data.data.roomName,
+          hint: 0,
+        });
+      })
+      .catch((e) => console.log(e));
+
+    return () => {
+      roundDisconnect();
+      // timeDiscconnect();
+    };
+  }, []);
 
   useEffect(() => {
     setRoom((prev) => {
@@ -246,10 +218,17 @@ function MultiplayPage() {
       dialog.current?.showModal();
     } else {
       dialog.current?.close();
-    }
-
-    if (!modalOpen && status == "MUSICSTART") {
-      basicPlay();
+      if (status == "MUSICSTART") {
+        if (round == 3) {
+          if (room?.hint == 1) {
+            basicPlay(0.7);
+          } else {
+            basicPlay(2);
+          }
+        } else {
+          basicPlay(1);
+        }
+      }
     }
   }, [modalOpen]);
 
@@ -264,12 +243,19 @@ function MultiplayPage() {
             Round {round}/<span className="text-white">3</span>
           </p>
           <div className="flex flex-col gap-4 justify-self-start">
-            {/* {room?.currentUser.map((user) => {
-              return <UserProfile key={user.userId} user={user} classes={"w-10 h-10"} />;
-            })} */}
+            {room?.currentUser &&
+              room.currentUser.map((user) => {
+                return (
+                  <UserProfile
+                    key={user.userId}
+                    user={user}
+                    classes={`w-10 h-10 flex justify-center items-center   p-1.5`}
+                  />
+                );
+              })}
           </div>
           {status == "INPUTSTART" ? (
-            <Timer ref={dialog} roundTime={time} status={status} leftTime={leftTime} onModalOpen={handleModalOpen} />
+            <Timer ref={dialog} roundTime={time || 0} status={status} onModalOpen={handleModalOpen} />
           ) : (
             ""
           )}
@@ -280,7 +266,7 @@ function MultiplayPage() {
             <div className="bg-gradient-to-r from-secondary-400 to-purple-500 rounded-full p-px text-center">
               <div className="bg-gray-800 py-1 rounded-full">{track && track.beforeLyric}</div>
             </div>
-            <div className="h-full flex flex-col gap-4 justify-center">
+            <div className="h-full flex flex-col gap-4 justify-around">
               {quiz && <MultiInputArea quiz={quiz} hintResult={hintResult} />}
             </div>
             <div className="justify-self-end bg-gradient-to-r from-secondary-400 to-purple-500 rounded-full p-px text-center">
@@ -290,13 +276,15 @@ function MultiplayPage() {
         </section>
         <section className="shrink-0 grid grid-rows-[0.5fr_7fr_2fr] gap-4">
           <div className="flex-shrink-0">
-            <button>나가기</button>
+            <button onClick={handleLeaveGame}>나가기</button>
           </div>
           <ChatArea />
           <MemoArea />
         </section>
       </div>
-      <Modal ref={dialog}>{modalOpen && showHintModal(status, round, room)}</Modal>
+      <Modal ref={dialog}>
+        {modalOpen && <MultiplayModal status={status} round={round} room={room} time={time} hintResult={hintResult} />}
+      </Modal>
     </>
   );
 }
