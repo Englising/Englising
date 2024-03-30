@@ -95,7 +95,7 @@ const SelectSingle1Page: React.FC = () => {
                         <h1 className=' text-white font-thin text-sm w-60 text-right flex-1 pr-5'>ⓘ 좋아요 & 인기도를 기반으로 추천된 플레이리스트 입니다.</h1>
                     </div>
     
-                    <div className="relative flex flex-col overflow-y-auto h-full scrollbar-hide">
+                    <div className="relative flex flex-col overflow-y-auto h-full">
                         <div className='text-white grid grid-cols-3 gap-4 justify-items-start '>
                         {playList && playList.length > 0 ? ( // playList가 비어있지 않은 경우에만 map 함수 호출
                         playList.map((item, index) => (
