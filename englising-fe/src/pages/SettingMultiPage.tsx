@@ -211,7 +211,6 @@ const SettingMulti = () => {
                             <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'>
                                 <p>
                                     방 설정 완료
-                                    {/* <Link to ={`/waitroom/${multiId}`}>방 설정 완료</Link> */}
                                 </p>        
                             </button>
                         </div>
