@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "word") // 이거 하던 중
+@Table(name = "word")
 public class Word {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +25,17 @@ public class Word {
     @Column(name = "en_text")
     private String enText;
 
-    @Column(name = "ko_text")
-    private String koText;
+    @Column(name = "ko_text_1")
+    private String koText1;
+
+    @Column(name = "ko_text_2")
+    private String koText2;
+
+    @Column(name = "ko_text_3")
+    private String koText3;
 
     @Column(name = "example")
-    private Integer example;
+    private String example;
 
     @CreationTimestamp
     @Column(name = "created_at")
