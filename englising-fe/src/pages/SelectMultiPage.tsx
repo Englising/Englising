@@ -43,7 +43,9 @@ const SelectMultiPage: React.FC = () => {
     const handleClick = async (endpoint: string) => {
         try {
             // API 호출
-            const response = await axios.get(`https://j10a106.p.ssafy.io/api/multiplay/rooms?genre=${endpoint}&page=0&size=1000`);
+            const response = await axios.get(`https://j10a106.p.ssafy.io/api/multiplay/rooms?genre=${endpoint}&page=0&size=1000`, {
+                withCredentials: true, 
+            });
 
             // 응답 받아서 리스트에 넣기
             setMultiRoom(response.data.data);
