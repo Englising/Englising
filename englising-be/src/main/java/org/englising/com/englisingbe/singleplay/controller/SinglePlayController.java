@@ -145,7 +145,7 @@ public class SinglePlayController {
     @PostMapping("/result")
     @Operation(
             summary = "싱글플레이 종료",
-            description = "싱글플레이를 하기 위해 필요한 노래 정보, 단어 출제 내용, 가사를 가져옵니다"
+            description = "싱글플레이를 종료하고 현재까지 맞춘 단어와 개수, 노래 정보를 가져옵니다"
     )
     @Parameters({
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
