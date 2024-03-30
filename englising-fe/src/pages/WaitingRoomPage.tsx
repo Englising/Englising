@@ -48,12 +48,11 @@ const WaitingRoomPage: React.FC = () => {
     // })
 
     // useStomp 훅을 직접 함수 컴포넌트 내에서 호출
-    const [connect, disconnect] =useStomp(client, `sub/participant/${params}`, (message: IMessage) => {
+    const [connect, disconnect] = useStomp(client, `/sub/participant/${params}`, (message: IMessage) => {
         console.log("Received message:", message.body);
         //메시지 주인공(?)의 userData
         const userData = JSON.parse(message.body);
         const state = userData.kind;
-        console.log(userData)
 
         if (state === 'enter') {
                 setMultiRoom(prevState => {
@@ -65,7 +64,6 @@ const WaitingRoomPage: React.FC = () => {
                         color: userData.user.color,
                         isMe : userData.user.isMe,
                     }];
-
                     return {
                         ...prevState,
                         currentUser: updatedUsers
@@ -92,15 +90,15 @@ const WaitingRoomPage: React.FC = () => {
     );
     
     //게임시작용 웹소켓 구독
-    const [connectGame, disconnectGame] =useStomp(client, `sub/round/${params}`, (message: IMessage) => {
+    const [connectGame, disconnectGame] = useStomp(client, `/sub/round/${params}`, (message: IMessage) => {
         console.log("Received message:", message.body);
-        const userData = JSON.parse(message.body);
-        const state = userData.status;
-        const round = userData.round;
+        const gameData = JSON.parse(message.body);
+        const state = gameData.status;
+        const round = gameData.round;
 
-        if (state === 'GAMESTART' && round === 0) {
+        if (state === "GAMESTART" && round === 0) {
                 //게임방으로 보내주기
-                console.log(userData.data)
+                console.log(gameData.data)
                 navigate(`/multiplay/${multiroom?.multiPlayId}`);
             } 
         }
@@ -110,7 +108,7 @@ const WaitingRoomPage: React.FC = () => {
         axios.get(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
             .then((response) => {
                 setMultiRoom(response.data.data);
-                console.log(response.data.data);
+                // console.log(response.data.data);
             });
     }, [params]); // params를 의존성 배열에 추가
 
@@ -148,7 +146,7 @@ const WaitingRoomPage: React.FC = () => {
             if (currentUser) {
                 setUserId(currentUser.userId);
             }
-            console.log(userId)
+            // console.log(userId)
         }
     }, [multiroom]);
 
