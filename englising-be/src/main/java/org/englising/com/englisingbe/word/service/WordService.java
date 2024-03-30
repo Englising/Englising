@@ -44,7 +44,7 @@ public class WordService {
 
     public Word getWordById(long wordId) {
         Word word = wordRepository.findById(wordId)
-                .orElseThrow(() -> new GlobalException(ErrorHttpStatus.WORD_NOT_FOUND));
+                .orElseThrow(() -> new GlobalException(ErrorHttpStatus.NO_MATCHING_WORD));
         return word;
     }
 
