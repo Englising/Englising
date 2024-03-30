@@ -10,6 +10,7 @@ import org.englising.com.englisingbe.singleplay.entity.SinglePlay;
 import org.englising.com.englisingbe.singleplay.entity.SinglePlayWord;
 import org.englising.com.englisingbe.singleplay.repository.SinglePlayWordRepository;
 import org.englising.com.englisingbe.word.entity.TrackWord;
+import org.englising.com.englisingbe.word.entity.Word;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class SinglePlayWordService {
                 .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MACHING_SINGLEPLAY));
     }
 
-    private SinglePlayWord getSinglePlayWordById(Long id){
+    public SinglePlayWord getSinglePlayWordById(Long id){
         return singlePlayWordRepository.findById(id)
                 .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MATCHING_SINGLEPLAYWORD));
     }
