@@ -86,7 +86,7 @@ const SelectSinglePage: React.FC = () => {
 
                     {/* 플레이리스트 목록 */}
                     {/* 자꾸 화면 삐져나와... 고쳐줘...*/}
-                <div className='pl-14 w-4/5'>
+                <div className='pl-10 w-4/5'>
                     <h1 className=' text-white font-bold text-xl w-60 pb-3'>좋아요한 음악</h1>
                     <div className='flex flex-row pb-6 w-full'>
                         <h1 className=' text-white font-thin text-sm w-60 flex-1'>플레이 할 노래를 선택해주세요!</h1>

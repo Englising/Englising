@@ -21,10 +21,10 @@ interface WordButtonProps {
 
 const WordListPage = () => {
     const [wordList, setWordList] = useState<Word[]>([]);
-    const [selectedButton, setSelectedButton] = useState<string>(''); // 선택된 버튼 상태
+    const [selectedButton, setSelectedButton] = useState<string>('played'); // 선택된 버튼 상태
 
     useEffect(() => {
-        axios.get(`https://j10a106.p.ssafy.io/api/word/list?type=like&page=0&size=20`, {withCredentials:true})
+        axios.get(`https://j10a106.p.ssafy.io/api/word/list?type=played&page=0&size=20`, {withCredentials:true})
             .then((response) => {
                 // 응답 받아서 리스트에 넣기
                 setWordList(response.data.data.wordResponseDto);
@@ -83,7 +83,7 @@ const WordListPage = () => {
                     <WordButton buttonText="기출 단어" apiEndpoint="played"  onClick={handleClick} selected={selectedButton === "played"} />
                     <WordButton buttonText="북마크 한 단어" apiEndpoint="like" onClick={handleClick} selected={selectedButton === "like"} />
                 </div>
-                <div className="grid grid-cols-2 gap-10 overflow-y-auto pr-24">
+                <div className="grid grid-cols-2 gap-10 overflow-y-auto pr-24 scrollbar-hide">
                     {wordList && wordList.length > 0 ? ( // wordList 배열이 비어있지 않은 경우에만 map 함수 호출
                         wordList.map((item, index) => (
                             <div key={index} className="relative" >
