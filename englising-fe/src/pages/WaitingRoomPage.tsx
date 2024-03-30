@@ -4,6 +4,9 @@ import {useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import useStomp from "../hooks/useStomp";
 import { Client, IMessage } from "@stomp/stompjs";
+import { createBrowserHistory } from "history";
+
+// import useCustomBack from '../hooks/useCustomBack';
 
 interface User {
     userId : number;
@@ -32,15 +35,26 @@ const WaitingRoomPage: React.FC = () => {
     const client = useRef<Client>();
     const navigate = useNavigate();
 
+    const history = createBrowserHistory();
+
+    useEffect(()=> {
+        return history.listen(() => {
+            if(history.action === "POP"){
+                console.log("뒤로가기누름!");
+                axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
+                navigate("/englising/selectMulti");
+                disconnect();
+            }
+        })
+    })
+
     // useStomp 훅을 직접 함수 컴포넌트 내에서 호출
     const [connect, disconnect] =useStomp(client, `participant/${params}`, (message: IMessage) => {
         console.log("Received message:", message.body);
         const userData = JSON.parse(message.body);
         const state = userData.kind;
 
-        // const userExists = multiroom?.currentUser.some(user => user.userId === userData.userId);
-        // if (!userExists) {
-            if (state === 'enter') {
+        if (state === 'enter') {
                 setMultiRoom(prevState => {
                     if (!prevState) return prevState;
                     const updatedUsers = [...prevState.currentUser, {
@@ -66,7 +80,20 @@ const WaitingRoomPage: React.FC = () => {
                 
             }
         }
-    // }
+    );
+    
+    //게임시작용 웹소켓 구독
+    const [connectGame, disconnectGame] =useStomp(client, `round/${params}`, (message: IMessage) => {
+        console.log("Received message:", message.body);
+        const userData = JSON.parse(message.body);
+        const state = userData.status;
+
+        if (state === 'GAMESTART') {
+                //게임방으로 보내주기
+                console.log("게임시작")
+                navigate(`/multiplay/${multiroom?.multiPlayId}`);
+            } 
+        }
     );
 
     useEffect(() => {
@@ -81,18 +108,27 @@ const WaitingRoomPage: React.FC = () => {
     useEffect(()=>{
         console.log("연결 시도")
         connect();
+        connectGame();
 
-        return () => disconnect();
+        // return () => {
+        //     disconnect();
+        //     disconnectGame();
+        // }
     },[]);
 
     const leaveRoom = ():void => {
         axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
         navigate("/englising/selectMulti");
         disconnect();
+        disconnectGame();
     }
 
     const startGame = ():void => {
-        window.location.href = `/multiplay/${multiroom?.multiPlayId}`;
+        axios.get(`https://j10a106.p.ssafy.io/api/multiplay/${params}/game`, {withCredentials:true})
+        .then(()=>{
+            console.log("시작요청")
+            navigate(`/multiplay/${multiroom?.multiPlayId}`);
+        })
     }
 
 
@@ -118,12 +154,15 @@ const WaitingRoomPage: React.FC = () => {
                         {multiroom?.currentUser && multiroom.currentUser.length > 0 ? ( // multiroom 배열이 비어있지 않은 경우에만 map 함수 호출
                                 <div className='text-white grid grid-cols-3 gap-6 justify-items-center overflow-y-auto pl-48 pt-10'>
                                     {multiroom.currentUser.map((item) => (
-                                        <div className='flex flex-col'>
-                                            {/* 색깔 추가해야돼 */}
-                                            <div className="w-28 h-28 rounded-full relative justify-center place-self-center" style={{background: item?.color }} >
-                                                <img src={item.profileImg} className='w-20 h-20 absolute top-4 left-4  place-self-center'/>
+                                        <div className='flex flex-col items-center'>
+                                            <div className="w-28 h-28 rounded-full relative " style={{background: item?.color }} >
+                                                <img src={item.profileImg} className='w-20 h-20 absolute top-4 left-4'/>
                                             </div>
-                                            <div className='text-white w-36 pl-6 pt-4 pb-10'>{item.nickname}
+                                            <div className='flex flex-col pt-3 items-center'>
+                                            {(item.userId === multiroom?.managerUserId) && <div className='text-secondary-500 pb-2'>(방장)</div>}
+                                                <div className='text-white pr-2'>
+                                                    {item.nickname}
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
