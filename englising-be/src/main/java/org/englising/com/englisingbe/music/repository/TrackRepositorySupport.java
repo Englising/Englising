@@ -1,13 +1,13 @@
 package org.englising.com.englisingbe.music.repository;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.englising.com.englisingbe.global.util.Genre;
 import org.englising.com.englisingbe.music.dto.TrackAlbumArtistDto;
-import org.englising.com.englisingbe.music.entity.QAlbum;
-import org.englising.com.englisingbe.music.entity.QArtist;
-import org.englising.com.englisingbe.music.entity.QArtistTrack;
-import org.englising.com.englisingbe.music.entity.QTrack;
+import org.englising.com.englisingbe.music.entity.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -41,7 +41,21 @@ public class TrackRepositorySupport {
                 .artists(results.stream()
                         .map(tuple -> tuple.get(artist))
                         .distinct()
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build());
     }
+
+    public List<Track> findTracksByGenreAndLyricStatus(Genre genre, int limit){
+        BooleanExpression genreCondition = genre.name().equals("all") ? null : QTrack.track.genre.eq(genre.name());
+        BooleanExpression lyricsDoneCondition = QTrack.track.lyricStatus.eq("DONE");
+        BooleanExpression youtubeIdNotNull = QTrack.track.youtubeId.isNotNull();
+
+        return queryFactory
+                .selectFrom(QTrack.track)
+                .where(youtubeIdNotNull, lyricsDoneCondition, genreCondition)
+                .orderBy(QTrack.track.spotifyPopularity.desc())
+                .limit(limit)
+                .fetch();
+    }
+
 }

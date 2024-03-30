@@ -57,7 +57,7 @@ public class MultiPlayController {
             mediaType = "application/json"
         )
     )
-    public ResponseEntity getMultiPlayList(@RequestParam(required = false) Genre genre){
+    public ResponseEntity getMultiPlayList(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(required = false) Genre genre){
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(
@@ -114,7 +114,7 @@ public class MultiPlayController {
                         DefaultResponseDto.<MultiPlayDetailResponseDto>builder()
                                 .status(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getCode())
                                 .message(ResponseMessage.MULTIPLAY_JOIN_SUCCESS.getMessage())
-                                .data(multiPlayService.getMultiPlayById(multiPlayId))
+                                .data(multiPlayService.getMultiPlayById(multiPlayId, Long.parseLong(userDetails.getUsername())))
                                 .build()
                 );
     }
