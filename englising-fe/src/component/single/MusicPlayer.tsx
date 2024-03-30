@@ -63,14 +63,17 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
         }
     }
     const handlePlay = () => {
+        if (!playing) setPlaying(true);
         setTogglePlayButton(false);
     }
 
     const handlePuase = () => {
+        if (playing) setPlaying(false);
         setTogglePlayButton(true);
     }
     
     const handleError = () => {
+        if(playing) setPlaying(false)
         setTogglePlayButton(true);
     }
     
@@ -125,10 +128,14 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
     // 특정 구간 가사를 누를 때 발생하는 이벤트
     useEffect(() => {
         if (showStartModal) return;
-        setTogglePlayButton(false);
         setPlaying(true);
         player.current?.seekTo(startTime);
-    },[toggleNext])
+    }, [toggleNext])
+    
+    useEffect(() => {
+        if (playing) setTogglePlayButton(false);
+        else setTogglePlayButton(true);
+    },[playing])
 
     // 힌트창이 켜졌을때 노래 일시중지
 
