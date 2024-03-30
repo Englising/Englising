@@ -1,6 +1,8 @@
 from typing import List
 
+from database.mysql_manager import Session
 from dto.track_dto import YoutubeQueryDto
+from model import TrackWord
 from model.artist import Artist
 from model.lyric import Lyric
 from model.track import Track
@@ -18,6 +20,11 @@ def update_track(youtube: YoutubeQueryDto, session):
     session.flush()
 
 
+def update_track_lyric_status(track_id:int, status: str, session):
+    session.query(Track).filter(Track.track_id == track_id).update({"lyric_status": status})
+    session.flush()
+
+
 def get_track_by_spotify_id(spotify_id: str, session):
     result = session.query(Track).filter(Track.spotify_id == spotify_id).one_or_none()
     return result
@@ -29,7 +36,7 @@ def get_track_by_track_id(track_id: int, session):
 
 
 def get_youtube_id_unfigured_tracks(session) -> List[YoutubeQueryDto]:
-    tracks = session.query(Track).filter(Track.youtube_id == None).all()
+    tracks = session.query(Track).filter(Track.youtube_id == None).limit(100)
     tracks_with_top_artist = []
     for track in tracks:
         top_artist: Artist = None
@@ -55,3 +62,24 @@ def get_tracks_without_lyrics(session) -> Track:
         .outerjoin(Lyric, Track.track_id == Lyric.track_id) \
         .filter(Lyric.lyric_id == None) \
         .all()
+
+
+def get_tracks_without_words(session) -> List[Track]:
+    return (session.query(Track)
+            .outerjoin(TrackWord, Track.track_id == TrackWord.track_id)
+            .filter(TrackWord.track_id == None)
+            .filter(Track.lyric_status != 'RATEDR')
+            .limit(100)
+            .all())
+
+
+def get_tracks_without_genre(session) -> List[Track]:
+    return (session.query(Track)
+            .filter(Track.genre == None)
+            .limit(100)
+            .all())
+
+
+def update_track_genre(session: Session, track: Track, genre: str):
+    session.query(Track).filter(Track.track_id == track.track_id).update({"genre": genre})
+    session.flush()

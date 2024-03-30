@@ -20,8 +20,11 @@ class Track(Base):
     feature_energy = Column(Float, nullable=True)
     feature_positiveness = Column(Float, nullable=True)
     genre = Column(String(255), nullable=True)
+    lyric_status = Column(String(255), nullable=True)
     created_at = Column(TIMESTAMP, nullable=False, default=func.now())
     updated_at = Column(TIMESTAMP, onupdate=func.now())
 
     lyrics = relationship('Lyric', back_populates='track', uselist=True)
     artists = relationship('Artist', secondary='artist_track', back_populates='tracks')
+    track_words = relationship("TrackWord", back_populates="track")
+

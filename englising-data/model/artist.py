@@ -9,7 +9,7 @@ class Artist(Base):
     artist_id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
     genres = Column(String(255), nullable=True)
-    spotify_id = Column(String(255), nullable=False)
+    spotify_id = Column(String(255), nullable=False, unique=True)
     spotify_popularity = Column(Integer, nullable=True)
     image = Column(String(512))
     created_at = Column(TIMESTAMP, nullable=False, default=func.now())
