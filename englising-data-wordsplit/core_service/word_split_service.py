@@ -50,11 +50,10 @@ class LyricWordWorker:
                 lyric_list = self.job_queue.get(timeout=5)
                 self.process_job(lyric_list)
                 log(LogList.LYRIC_WORD.name, LogKind.INFO, f"Finished processing lyric data: {lyric_list}")
-                return
-                time.sleep(10)
+                time.sleep(5)
             except Empty:
                 log(LogList.LYRIC_WORD.name, LogKind.INFO, "Queue is empty, waiting...")
-                time.sleep(10)
+                time.sleep(5)
 
     def process_job(self, lyric_list: List[LyricDto]):
         log(LogList.LYRIC_WORD.name, LogKind.INFO, f"Starting Job trackId: {lyric_list[0].track_id}' Lyrics")
