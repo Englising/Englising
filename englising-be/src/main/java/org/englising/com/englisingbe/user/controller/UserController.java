@@ -1,48 +1,90 @@
 package org.englising.com.englisingbe.user.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.apache.juli.logging.Log;
-import org.englising.com.englisingbe.jwt.JwtResponseDto;
-import org.englising.com.englisingbe.jwt.JwtTokenProvider;
-import org.englising.com.englisingbe.user.dto.UserSignUpDto;
+import org.englising.com.englisingbe.global.dto.DefaultResponseDto;
+import org.englising.com.englisingbe.auth.dto.CustomUserDetails;
+import org.englising.com.englisingbe.user.dto.*;
 import org.englising.com.englisingbe.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    // todo. ResponseEntity로 추후 수정
-
-    // 게스트 로그인
-//    @PostMapping("/guest")
-//    public ResponseEntity<JwtResponseDto> guestLogin(@RequestBody UserSignUpDto userSignUpDto) throws Exception {
-//        userService.signUp(userSignUpDto);
-//
-//
-//        return ResponseEntity<JwtResponseDto>;
-//        //todo. api에 맞춰서 수정. 지금은 test만
-//    }
-
-    @PostMapping("/guest")
-    public ResponseEntity<JwtResponseDto> guestLogin() throws Exception {
-        userService.signUp();
-
-        //이메일로 회원찾기 해서 회원 아이디 가져옴
-        String userId = "12"; //임시로
-        String accessToken = jwtTokenProvider.createAccessToken(userId);
-        String refreshToken = jwtTokenProvider.createRefreshToken(userId);
+    @GetMapping("/profile")
+    @Operation(
+            summary = "회원 프로필 조회",
+            description = "회원 프로필을 조회합니다"
+    )
+    public ResponseEntity<DefaultResponseDto<?>> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
+//        ProfileDto profileDto = userService.getProfile(userDetails.getUsername());
+        ProfileDto profileDto = userService.getProfile("100"); //todo. 추후 위로 수정
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(new JwtResponseDto(accessToken, refreshToken));
-        //todo. api에 맞춰서 수정. DefaultResponse로 수정
+                .status(HttpStatus.OK)
+                .body(new DefaultResponseDto<>(UserResponseMessage.USER_GETPROFILE_MESSAGE.getCode(),
+                        UserResponseMessage.USER_GETPROFILE_MESSAGE.getMessage(),
+                        profileDto));
     }
+
+    @PutMapping("/profile")
+    @Operation(
+            summary = "회원 프로필 수정",
+            description = "회원 프로필을 수정합니다"
+    )
+    public ResponseEntity<DefaultResponseDto<?>> updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                            @RequestBody ProfileDto profileDto) {
+
+//        userService.updateProfile(userDetails.getUsername(), profileDto);
+        userService.updateProfile("100", profileDto);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new DefaultResponseDto<>(UserResponseMessage.USER_UPDATEPROFILE_MESSAGE.getCode(),
+                        UserResponseMessage.USER_UPDATEPROFILE_MESSAGE.getMessage(),
+                        null));
+    }
+
+    @GetMapping("/profile/random")
+    @Operation(
+            summary = "랜덤 이미지 반환",
+            description = "랜덤 이미지와 배경색을 반환합니다"
+    )
+    public ResponseEntity<DefaultResponseDto<?>> getRandomImg() {
+
+        RandomImgDto randomImgDto = userService.getRandomImg();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new DefaultResponseDto<>(UserResponseMessage.USER_GETRANDOM_MESSAGE.getCode(),
+                        UserResponseMessage.USER_GETRANDOM_MESSAGE.getMessage(),
+                        randomImgDto));
+    }
+
+
+    @PostMapping("/nickname")
+    @Operation(
+            summary = "닉네임 중복 확인",
+            description = "닉네임 중복 가능성을 확인합니다"
+    )
+    public ResponseEntity<DefaultResponseDto<?>> checkNickname(@RequestBody NicknameRequestDto nicknameRequestDto) {
+        NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new DefaultResponseDto<>(UserResponseMessage.USER_CHECKNICKNAME_MESSAGE.getCode(),
+                        UserResponseMessage.USER_CHECKNICKNAME_MESSAGE.getMessage(),
+                        nicknameResponseDto));
+    }
+
+
+
 
 }

@@ -17,7 +17,7 @@ public class SinglePlayHint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "singleplay_level_id")
-    private Integer singlepleyLevelId;
+    private Integer singleplayLevelId;
 
     @Column(name = "singleplay_level")
     private String singleplayLevel;
