@@ -28,7 +28,7 @@ function ChatArea() {
     setChatList((prev) => [...prev, json]);
   };
 
-  const [connect, disconnect] = useStomp(client, `chat/${multiId}`, callback);
+  const [connect, disconnect] = useStomp(client, `/user/sub/chat/${multiId}`, callback);
 
   const publish = () => {
     if (!client.current?.connected) return;
