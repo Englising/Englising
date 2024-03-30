@@ -43,9 +43,10 @@ class LyricWordWorker:
             if self.job_queue.qsize() <= 10:
                 session = Session()
                 tracks = get_tracks_without_words(session)
-                print(tracks)
                 for track in tracks:
-                    self.job_queue.put(get_lyric_dtos_by_track_id(track.track_id, session))
+                    lyric_dtos = get_lyric_dtos_by_track_id(track.track_id, session)
+                    if lyric_dtos:
+                        self.job_queue.put(lyric_dtos)
                 session.close()
             try:
                 lyric_list = self.job_queue.get(timeout=5)
