@@ -15,6 +15,7 @@ import org.englising.com.englisingbe.multiplay.dto.game.MultiPlayUser;
 import org.englising.com.englisingbe.multiplay.dto.request.MultiPlayRequestDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayDetailResponseDto;
 import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayListResponseDto;
+import org.englising.com.englisingbe.multiplay.dto.response.MultiPlayUserResponseDto;
 import org.englising.com.englisingbe.multiplay.dto.socket.ParticipantDto;
 import org.englising.com.englisingbe.multiplay.entity.MultiPlay;
 import org.englising.com.englisingbe.multiplay.repository.MultiPlayHintRepository;
@@ -45,7 +46,7 @@ public class MultiPlayServiceImpl {
 
     public Long createMultiPlay(MultiPlayRequestDto requestDto, Long userId) {
         MultiPlay multiPlay = multiPlayRepository
-                .save(MultiPlay.getMultiPlayFromMultiPlayRequestDto(requestDto, trackService.getTrackByTrackId(158L))); //TODO 노래 선정 수정
+                .save(MultiPlay.getMultiPlayFromMultiPlayRequestDto(requestDto, trackService.getRandomTrack(requestDto.getGenre(), 30)));
         MultiPlayGame game = getMultiPlayGameFromMultiPlay(multiPlay, userId);
         // Redis에 Game 저장
         redisService.saveMultiPlayGame(game);
@@ -74,7 +75,7 @@ public class MultiPlayServiceImpl {
                 }).toList();
     }
 
-    public MultiPlayDetailResponseDto getMultiPlayById(Long multiPlayId) {
+    public MultiPlayDetailResponseDto getMultiPlayById(Long multiPlayId, Long userId) {
         // MultiPlay 게임 방 정보 반환
         MultiPlayGame multiPlayGame = redisService.getMultiPlayGameById(multiPlayId);
         return MultiPlayDetailResponseDto.builder()
@@ -83,7 +84,16 @@ public class MultiPlayServiceImpl {
                 .multiPlayImgUrl(multiPlayGame.getMultiplayImgUrl())
                 .genre(multiPlayGame.getGenre())
                 .managerUserId(multiPlayGame.getManagerUserId())
-                .currentUser(multiPlayGame.getUsers())
+                .currentUser(multiPlayGame.getUsers().stream()
+                        .map(gameUser->
+                                MultiPlayUserResponseDto.builder()
+                                        .userId(gameUser.getUserId())
+                                        .nickname(gameUser.getNickname())
+                                        .profileImg(gameUser.getProfileImg())
+                                        .color(gameUser.getColor())
+                                        .isMe(gameUser.getUserId().equals(userId))
+                                        .build()
+                        ).toList())
                 .maxUser(multiPlayGame.getMaxUser())
                 .isSecret(multiPlayGame.isSecret())
                 .build();
@@ -140,23 +150,21 @@ public class MultiPlayServiceImpl {
             throw new GlobalException(ErrorHttpStatus.NOT_PARTICIPATING_USER);
         }
         // User 수가 0명인 경우 방 삭제
-        if(hasUserLeft && multiPlayGame.getUsers().isEmpty()){
+        if(multiPlayGame.getUsers().isEmpty()){
             redisService.deleteMultiPlayGame(multiPlayId);
         }
         // 방장이 변경되는 경우
-        if(hasUserLeft && multiPlayGame.getManagerUserId().equals(userId)){
+        if(multiPlayGame.getManagerUserId().equals(userId)){
             hasManagerLeft = true;
             multiPlayGame.setManagerUserId(multiPlayGame.getUsers().get(0).getUserId());
         }
         // 유저가 떠난 경우, 레디스 저장 및 결과 전송
-        if(hasUserLeft){
-            redisService.saveMultiPlayGame(multiPlayGame);
-            messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
-                    ParticipantDto.builder()
-                            .kind("leave")
-                            .user(user)
-                            .build());
-        }
+        redisService.saveMultiPlayGame(multiPlayGame);
+        messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
+                ParticipantDto.builder()
+                        .kind("leave")
+                        .user(user)
+                        .build());
         // 방장이 변경된 경우, 소켓 알림 전송
         if(hasManagerLeft){
             messagingTemplate.convertAndSend(WebSocketUrls.participantUrl + multiPlayId.toString(),
