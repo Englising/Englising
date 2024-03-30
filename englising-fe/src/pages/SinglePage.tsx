@@ -185,7 +185,7 @@ const SinglePage = () => {
         if (progressInfo.rightWord == progressInfo.totalWord) {
             navigate(`/SinglePlay/result/${singlePlayId}`, { state: { ...state } } );
         }
-    }, [progressInfo])
+    }, [progressInfo.totalWord])
 
 return (
     <div className="bg-cover bg-center h-screen w-screen p-0 m-0 relative z-10" style={{ backgroundImage: `url(${img})` }}>
@@ -198,7 +198,7 @@ return (
                     <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} showStartModal={showStartModal} /> 
                 </div>
                 <div className="w-3/5 flex items-center justify-center">
-                    <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} onSetIsBlank = {onSetIsBlank} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
+                    <Lyrics onSetInfo={onSetInfo} onSetProgressInfo={onSetProgressInfo} onSetIsBlank={onSetIsBlank} playInfo={playInfo} answerInfo={answerInfo} singleData={singleData} showStartModal={showStartModal} />
                 </div>
             </div>
             <div className="w-full h-[10%] bg-black flex justify-center">
