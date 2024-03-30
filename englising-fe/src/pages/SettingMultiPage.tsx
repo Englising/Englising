@@ -223,7 +223,17 @@ const SettingMulti = () => {
                             <img src={roomInfo.roomImg} alt={roomInfo.roomName} className='w-52 h-48 rounded-t-lg '/>
                             <div className='flex flex-row'>
                                 <div className='pt-2 pl-2'>
-                                    <div className='text-lg font-extrabold text-white pt-3'>{roomInfo.roomName} </div>
+                                <div className='flex flex-col'>
+                            <div className='flex flex-row pt-1 pb-2 items-center'>
+                                <div className='pr-2'>
+                                    <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill='#00FFFF' className="w-4 h-4">
+                                        <path fillRule="evenodd" d="M19.952 1.651a.75.75 0 0 1 .298.599V16.303a3 3 0 0 1-2.176 2.884l-1.32.377a2.553 2.553 0 1 1-1.403-4.909l2.311-.66a1.5 1.5 0 0 0 1.088-1.442V6.994l-9 2.572v9.737a3 3 0 0 1-2.176 2.884l-1.32.377a2.553 2.553 0 1 1-1.402-4.909l2.31-.66a1.5 1.5 0 0 0 1.088-1.442V5.25a.75.75 0 0 1 .544-.721l10.5-3a.75.75 0 0 1 .658.122Z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div className='text-sm font-extrabold text-secondary-500 '>{roomInfo.genre} </div>
+                            </div>
+                            <div className='text-lg font-extrabold text-white'>{roomInfo.roomName} </div>
+                        </div>
                                     <div className='flex flex-row text-sm pb-4 gap-1'>
                                         <div className='text-secondary-500'> {roomInfo.currentUser} </div>
                                         <div>/</div>

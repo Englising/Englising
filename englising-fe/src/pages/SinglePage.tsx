@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getSinglePlayData } from "../util/SinglePlayAPI";
 import Lyrics from "../component/single/Lyrics";
 import MusicPlayer from "../component/single/MusicPlayer";
@@ -50,15 +50,19 @@ export interface SingleData {
 }
 
 const SinglePage = () => {
+    const navigate = useNavigate();
+
     const { state } = useLocation();
     const { img } = state;
-
-    const [showStartModal, setShowStartModal] = useState<boolean>(true);
 
     const { trackId, level } = useParams<{
         trackId: string,
         level: string,
     }>();
+
+    const [showStartModal, setShowStartModal] = useState<boolean>(true);
+
+    const [singlePlayId, setSingPlayId] = useState<number>(0);
 
     const [singleData, setSingleData] = useState<SingleData>({
         lyrics: [],
@@ -158,11 +162,11 @@ const SinglePage = () => {
             "trackId": parseInt(trackId || "0"),
             "level": parseInt(level || "1")
         }
-
       
         const getData = async () => {
             try {
                 const singleData = await getSinglePlayData(data);
+                setSingPlayId(singleData.data.singlePlayId);
                 setSingleData(singleData.data);
                 setProgressInfo({
                     totalWord: singleData.data.totalWordCnt, // 나중에 axios로 받아올 것
@@ -174,7 +178,14 @@ const SinglePage = () => {
             }
         }
         getData();
-    },[])
+    }, [])
+    
+    useEffect(() => {
+        if (progressInfo.totalWord == 0) return;
+        if (progressInfo.rightWord == progressInfo.totalWord) {
+            navigate(`/SinglePlay/result/${singlePlayId}`, { state: { ...state } } );
+        }
+    }, [progressInfo.totalWord])
 
 return (
     <div className="bg-cover bg-center h-screen w-screen p-0 m-0 relative z-10" style={{ backgroundImage: `url(${img})` }}>
@@ -187,11 +198,11 @@ return (
                     <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} showStartModal={showStartModal} /> 
                 </div>
                 <div className="w-3/5 flex items-center justify-center">
-                    <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} onSetIsBlank = {onSetIsBlank} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
+                    <Lyrics onSetInfo={onSetInfo} onSetProgressInfo={onSetProgressInfo} onSetIsBlank={onSetIsBlank} playInfo={playInfo} answerInfo={answerInfo} singleData={singleData} showStartModal={showStartModal} />
                 </div>
             </div>
             <div className="w-full h-[10%] bg-black flex justify-center">
-                <FooterVar onSetAnswer={onSetAnswer} onLyricMove={onLyricMove} idx={playInfo.idx} />
+                <FooterVar onSetAnswer={onSetAnswer} onLyricMove={onLyricMove} idx={playInfo.idx} singlePlayId={singlePlayId} />
             </div>
         </div>
     </div>

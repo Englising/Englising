@@ -12,7 +12,7 @@ const InputPassword: React.FC<InputPasswordProps> = ({ onClose, correctPassword,
     const handleSubmit = () => {
         if (password === correctPassword) {
             onClose(); // 비밀번호가 일치하면 모달을 닫음
-            axios.post(`https://j10a106.p.ssafy.io/api/multiplay/${roomId}/game`, {withCredentials:true})
+            axios.post(`https://j10a106.p.ssafy.io/api/multiplay/${roomId}`,{}, {withCredentials:true})
             .then(() => {
                 window.location.href = `/waitroom/${roomId}`;
             })
