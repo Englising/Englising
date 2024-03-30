@@ -95,36 +95,49 @@ def get_album_by_spotify_id(spotify_id: str) -> JobDto:
 
 
 def get_artists_by_album_spotify_id(spotify_id: str) -> List[str]:
-    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting album {id}".format(id=spotify_id))
+    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting album's artists {id}".format(id=spotify_id))
     try:
         result = spotify.album(spotify_id)
         artists: List[str] = []
         for artist in result["artists"]:
             artists.append(artist["id"])
         return artists
+    except spotipy.SpotifyException as e:
+        if e.http_status == 429:
+            log(LogList.SPOTIFY, LogKind.ERROR, "Failed album's artists: TIMEOUT {e}".format(e=e))
+            raise TrackException()
+        else:
+            log(LogList.SPOTIFY, LogKind.ERROR, "Failed album's artists {e}".format(e=e))
+            return None
     except Exception as e:
-        log(LogList.SPOTIFY, LogKind.ERROR, "Failed album {e}".format(e=e))
-        raise ArtistException()
+        log(LogList.SPOTIFY, LogKind.ERROR, "Failed album's artists {e}".format(e=e))
+        return None
 
 
 def get_tracks_by_album_spotify_id(spotify_id: str) -> List[str]:
-    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting album {id}".format(id=spotify_id))
+    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting album's tacks {id}".format(id=spotify_id))
     try:
         result = spotify.album(spotify_id)
         tracks: List[str] = []
         for track in result["tracks"]["items"]:
             tracks.append(track["id"])
         return tracks
+    except spotipy.SpotifyException as e:
+        if e.http_status == 429:
+            log(LogList.SPOTIFY, LogKind.ERROR, "Failed album's tacks: TIMEOUT {e}".format(e=e))
+            raise TrackException()
+        else:
+            log(LogList.SPOTIFY, LogKind.ERROR, "Failed album's tacks {e}".format(e=e))
+            return None
     except Exception as e:
-        log(LogList.SPOTIFY, LogKind.ERROR, "Failed album {e}".format(e=e))
-        raise TrackException()
+        log(LogList.SPOTIFY, LogKind.ERROR, "Failed album's tacks {e}".format(e=e))
+        return None
 
 
 def get_artist_by_spotify_id_spotify(spotify_id) -> ArtistDto:
     log(LogList.SPOTIFY.name, LogKind.INFO, "Getting artist {id}".format(id=spotify_id))
     try:
         result = spotify.artist(spotify_id)
-        # print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+result)
         return ArtistDto(
             name=result["name"],
             genres=str(result["genres"]),
@@ -132,9 +145,16 @@ def get_artist_by_spotify_id_spotify(spotify_id) -> ArtistDto:
             spotify_popularity=result["popularity"],
             image=result["images"][0]["url"]
         )
+    except spotipy.SpotifyException as e:
+        if e.http_status == 429:
+            log(LogList.SPOTIFY, LogKind.ERROR, "Failed getting artist: TIMEOUT {e}".format(e=e))
+            raise ArtistException()
+        else:
+            log(LogList.SPOTIFY, LogKind.ERROR, "Failed getting artist {e}".format(e=e))
+            return None
     except Exception as e:
-        log(LogList.SPOTIFY, LogKind.ERROR, "Failed artist {e}".format(e=e))
-        raise ArtistException()
+        log(LogList.SPOTIFY, LogKind.ERROR, "Failed getting artist {e}".format(e=e))
+        return None
 
 
 def get_track_by_spotify_id_spotify(spotify_id) -> TrackDto:
@@ -157,35 +177,19 @@ def get_track_by_spotify_id_spotify(spotify_id) -> TrackDto:
         for artist in result["artists"]:
             track.artists.append(artist["id"])
         return track
+    except spotipy.SpotifyException as e:
+        if e.http_status == 429:
+            log(LogList.SPOTIFY, LogKind.ERROR, "Failed getting track: TIMEOUT {e}".format(e=e))
+            raise TrackException()
+        else:
+            log(LogList.SPOTIFY, LogKind.ERROR, "Failed getting track {e}".format(e=e))
+            return None
     except Exception as e:
-        log(LogList.SPOTIFY, LogKind.ERROR, "Failed track {e}".format(e=e))
-        raise TrackException()
+        log(LogList.SPOTIFY, LogKind.ERROR, "Failed getting track {e}".format(e=e))
+        return None
 
 
-def get_track_audiofeature(spotify_id:str) -> TrackDto:
-    log(LogList.SPOTIFY.name, LogKind.INFO, "Getting track audiofeatures {id}".format(id=spotify_id))
-    try:
-        result = spotify.audio_features(spotify_id)[0]
-        # if 0.33 < result["speechiness"] < 0.66 and result["liveness"] < 0.8:
-        #     return TrackDto(
-        #         feature_acousticness = result["acousticness"],
-        #         feature_danceability = result["danceability"],
-        #         feature_energy = result["energy"],
-        #         feature_positiveness = result["valence"]
-        #     )
-        if result["liveness"] < 0.8:
-            return TrackDto(
-                feature_acousticness = result["acousticness"],
-                feature_danceability = result["danceability"],
-                feature_energy = result["energy"],
-                feature_positiveness = result["valence"]
-            )
-    except Exception as e:
-        log(LogList.SPOTIFY, LogKind.ERROR, "Failed track audiofeatures {e}".format(e=e))
-        raise TrackException()
-
-
-def get_track_audiofeature(spotify_id:str, track_dto:TrackDto) -> TrackDto:
+def get_track_audiofeature_spotify(spotify_id:str, track_dto:TrackDto) -> TrackDto:
     log(LogList.SPOTIFY.name, LogKind.INFO, "Getting track audiofeatures {id}".format(id=spotify_id))
     try:
         result = spotify.audio_features(spotify_id)[0]
@@ -202,7 +206,14 @@ def get_track_audiofeature(spotify_id:str, track_dto:TrackDto) -> TrackDto:
             track_dto.feature_energy = result["energy"]
             track_dto.feature_positiveness = result["valence"]
             return track_dto
+    except spotipy.SpotifyException as e:
+        if e.http_status == 429:
+            log(LogList.SPOTIFY, LogKind.ERROR, "Failed track audiofeatures: TIMEOUT {e}".format(e=e))
+            raise TrackException()
+        else:
+            log(LogList.SPOTIFY, LogKind.ERROR, "Failed track audiofeatures {e}".format(e=e))
+            return None
     except Exception as e:
         log(LogList.SPOTIFY, LogKind.ERROR, "Failed track audiofeatures {e}".format(e=e))
-        raise TrackException()
+        return None
 
