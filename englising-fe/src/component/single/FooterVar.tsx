@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface Props {
     onSetAnswer(answer: string): void;
     onLyricMove(index: number): void;
     idx: number;
+    singlePlayId: number;
 }
 
-const FooterVar = ({onSetAnswer, onLyricMove, idx}:Props) => {
+const FooterVar = ({ onSetAnswer, onLyricMove, idx, singlePlayId }: Props) => {
+    const { state } = useLocation();
+    
+    const navigate = useNavigate();
+
     const [answer, setAnswer] = useState<string>("");
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -32,7 +38,7 @@ const FooterVar = ({onSetAnswer, onLyricMove, idx}:Props) => {
 
 
     const handleExitClick = () => {
-        // use 네비게이트로 내보내기, 기존에 받았던 데이터를 가지고
+        navigate(`/SinglePlay/result/${singlePlayId}`, { state: { ...state } } );
     }
 
     useEffect(() => {
