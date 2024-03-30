@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface Props {
     onSetAnswer(answer: string): void;
     onLyricMove(index: number): void;
     idx: number;
+    singlePlayId: number;
 }
 
-const FooterVar = ({onSetAnswer, onLyricMove, idx}:Props) => {
+const FooterVar = ({ onSetAnswer, onLyricMove, idx, singlePlayId }: Props) => {
+    const { state } = useLocation();
+    
+    const navigate = useNavigate();
+
     const [answer, setAnswer] = useState<string>("");
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -32,7 +38,7 @@ const FooterVar = ({onSetAnswer, onLyricMove, idx}:Props) => {
 
 
     const handleExitClick = () => {
-        // use 네비게이트로 내보내기, 기존에 받았던 데이터를 가지고
+        navigate(`/SinglePlay/result/${singlePlayId}`, { state: { ...state } } );
     }
 
     useEffect(() => {
@@ -60,12 +66,12 @@ const FooterVar = ({onSetAnswer, onLyricMove, idx}:Props) => {
                     </input>
                 </div>
                 <div 
-                className="h-[2.5em] w-[5em] mr-[1em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"
+                className="h-[2.5em] w-[5em] mr-[1em] rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"
                 onClick={handleAnswerSubmit}> 
                     <div className="m-auto text-[1em]">입력</div>
                 </div>
                 <div 
-                    className="h-[2.5em] w-[5em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"> 
+                    className="h-[2.5em] w-[5em] rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"> 
                     <div className="m-auto text-[1em]">공사중</div>
                 </div>
             </div> 

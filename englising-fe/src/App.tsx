@@ -17,6 +17,7 @@ import WordListPage from './pages/WordListPage'
 import SidebarLayout from './pages/SidebarLayout'
 import PlayerTest from './component/multi/PlayerTest.tsx'
 import SearchResultPage from './pages/SearchResultPage.tsx'
+import SingleResultPlage from './pages/SingleResultPage.tsx'
 
 function App() {
 
@@ -61,6 +62,10 @@ function App() {
     {
       path: "/singlePlay/:trackId/:level/:youtubeId",
       element: <SinglePlay/>
+    },
+    {
+      path: "/SinglePlay/result/:singlePlayId",
+      element: <SingleResultPlage/>
     },
     {
       path: "/waitroom/:multiId",

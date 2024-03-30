@@ -9,6 +9,7 @@ interface Props {
     playInfo: PlayInfo,
     singleData: SingleData|undefined,
     answerInfo: AnswerInfo,
+    showStartModal: boolean;
 }
 const blankSort = (a:Word, b:Word) => {
     if (a.sentenceIndex == b.sentenceIndex) {
@@ -18,7 +19,7 @@ const blankSort = (a:Word, b:Word) => {
     }
 }
 
-const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playInfo, singleData }: Props) => {
+const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playInfo, singleData, showStartModal }: Props) => {
     { /* 현재 문장, 제출 답안정보 */ }
     const {idx} = playInfo;
     const { answer, toggleSubmit } = answerInfo;
@@ -35,9 +36,6 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
     const [showHintModal, setShowHintModal] = useState<boolean>(false);
     const [hintWord, setHintWord] = useState<string>("");
     const [hintNum, setHintNum] = useState<number>(3);
-
-    {/* 처음 시작할 때 빈칸 추적*/ }
-    const [startBlank, setStartBlank] = useState<boolean>(true);
     
     useEffect(() => {
         const lyricsData:Lyric[] | undefined = singleData?.lyrics;
@@ -159,9 +157,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
             }
         });
 
-        if (blanksRef.current.length <= 0) setStartBlank(!startBlank);
-        
-    }, [idx, toggleSubmit, startBlank])
+    }, [idx, toggleSubmit, showStartModal])
 
     useEffect(() => {
         // 모든 가사 이동이 생길때 

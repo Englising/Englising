@@ -10,13 +10,17 @@ export interface SinglePlayData {
   level: number
 }
 
+export interface SinglePlayResultData {
+    singlePlayId: number
+}
+
 export const getSinglePlayData = async (data: SinglePlayData): Promise<any> => {
     try {
         const response = await axios.post(`${BASE_URL}/singleplay`, data, {withCredentials:true});
         console.log(response, "Success getSinglePlayData");
         return response.data; 
     } catch (error) {
-        console.error(error, "Fail");
+        console.error(error, "Fail getSinglePlayData");
         throw error; 
     }
 };
@@ -27,8 +31,19 @@ export const getStartimeData =async (trackId:number): Promise<any> => {
         console.log(response, "Success getStartimeData");
         return response.data; 
     } catch (error) {
-        console.error(error, "Fail")
+        console.error(error, "Fail getStartimeData")
         throw error;
     }
+}
+
+export const getSinglePlayResultData = async (data: SinglePlayResultData): Promise<any> => {
+    try {
+        const response = await axios.post(`${BASE_URL}/singleplay/result`, data, {withCredentials:true});
+        console.log(response, "Success getSinglePlayResultData");
+        return response.data; 
+    } catch (error) {
+        console.error(error, "Fail getSinglePlayResultData")
+        throw error;
+    } 
 }
 
