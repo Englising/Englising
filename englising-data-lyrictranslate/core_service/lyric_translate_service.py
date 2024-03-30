@@ -16,6 +16,7 @@ from model.lyric import Lyric
 # track_id 단위로 List[Lyric]을 가져옴
 # Lyric 번역 입력 후 Lyric의 kr_text 업데이트
 
+# 만약 가사 중 한줄이라도 영어가 아닐 경우, Track의 is_english를 false로 업데이트
 
 class LyricTranslateWorker:
     def __init__(self):
@@ -46,7 +47,7 @@ class LyricTranslateWorker:
         try:
             for lyric in lyrics:
                 if not google_trans_client.detect_lyric_language(lyric.en_text):
-                    track_crud.update_track("NOTENGLISH", lyric.en_text)
+                    track_crud.update_track(False, lyric.track_id, session)
                     return
                 lyric.kr_text = self.easy_google_trans.translate(lyric.en_text)
                 lyric_crud.update_lyric_kr_text(lyric, session)
