@@ -24,12 +24,16 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# ChromeDriver 설치
-ARG CHROME_DRIVER_VERSION=88.0.4324.96
-RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip && \
+# Chrome 버전 확인
+RUN google-chrome --version | grep -oE "[0-9.]+" | head -1 > /chrome-version.txt
+
+# ChromeDriver 설치 (Chrome 버전에 맞게 자동으로 선택)
+RUN CHROME_VERSION=$(cat /chrome-version.txt) && \
+    CHROMEDRIVER_VERSION=$(wget -qO- "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION") && \
+    wget -O /tmp/chromedriver.zip "http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" && \
     unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/ && \
     rm /tmp/chromedriver.zip && \
-    mv /usr/local/bin/chromedriver /app/chromedriver
+    chmod +x /usr/local/bin/chromedriver
 
 # 애플리케이션 파일 복사
 COPY . .
