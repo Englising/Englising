@@ -9,7 +9,7 @@ interface ChatMessageProps {
   myMessage: boolean;
 }
 
-function WaitChatMessage({ user, chat, profileVisible, myMessage }: ChatMessageProps) {
+function ChatMessage({ user, chat, profileVisible, myMessage }: ChatMessageProps) {
   return (
     <div className={`flex gap-2 ${myMessage ? "justify-end" : ""}`}>
       {/* <ProfileImage
@@ -34,4 +34,4 @@ function WaitChatMessage({ user, chat, profileVisible, myMessage }: ChatMessageP
   );
 }
 
-export default WaitChatMessage;
+export default ChatMessage;
