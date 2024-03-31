@@ -65,13 +65,14 @@ def find_lyrics(musixmatch_dto:MusixMatchDto) -> List[LyricDto]:
         else:
             log(LogList.MUSIX.name, LogKind.ERROR, f'Requested error: {body["matcher.track.get"]["message"]["header"]}')
             raise LyricException("DROP", musixmatch_dto.track_spotify_id)
-    elif isinstance(body["track.lyrics.get"]["message"].get("body"), dict):
+    if isinstance(body["track.lyrics.get"]["message"].get("body"), dict):
         if body["track.lyrics.get"]["message"]["body"]["lyrics"]["restricted"]:
             log(LogList.MUSIX.name, LogKind.INFO, "Restricted lyrics.")
             raise LyricException("DROP", musixmatch_dto.track_spotify_id)
-    elif body["matcher.track.get"]["message"]["body"]["track"]["has_richsync"] == 0:
+    if body["matcher.track.get"]["message"]["body"]["track"]["has_richsync"] == 0:
         log(LogList.MUSIX.name, LogKind.INFO, "No richsync found.")
         raise LyricException("DROP", musixmatch_dto.track_spotify_id)
+
     return musixmatch_reqult_to_lyric(body['track.subtitles.get']['message']['body']['subtitle_list'][0])
 
 

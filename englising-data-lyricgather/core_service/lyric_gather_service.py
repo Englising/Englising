@@ -72,10 +72,13 @@ class LyricWorker:
             if "TIMEOUT" in e.args:
                 self.job_queue.put(track_dto)
                 time.sleep(180)
+            elif "DROP" in e.args:
+                update_track_lyric_status(track_dto.track_id, "NORICHSYNC", session)
+                session.commit()
         except Exception as e:
             log(LogList.LYRICS.name, LogKind.ERROR, str(e))
             self.job_queue.put(track_dto)
             session.rollback()
-            time.sleep(30)
+            time.sleep(10)
         finally:
             session.close()
