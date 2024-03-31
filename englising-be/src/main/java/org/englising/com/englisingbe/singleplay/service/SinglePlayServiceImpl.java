@@ -35,8 +35,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -258,7 +261,7 @@ public class SinglePlayServiceImpl {
                 ).toList();
     }
     private List<WordResultResponseDto> getWordResultDtoFromSinglePlayWord(List<SinglePlayWord> singlePlayWordList, Long userId){
-        return singlePlayWordList.stream()
+        Map<Long, WordResultResponseDto> wordIdMap = singlePlayWordList.stream()
                 .map(singlePlayWord ->
                         WordResultResponseDto.builder()
                                 .singleplayWordId(singlePlayWord.getSinglePlayWordId())
@@ -269,7 +272,9 @@ public class SinglePlayServiceImpl {
                                 .wordId(singlePlayWord.getWord().getWordId())
                                 .isLike(wordService.isLikedByUserIdAndWordId(singlePlayWord.getWord().getWordId(), userId))
                                 .build()
-                ).toList();
+                )
+                .collect(Collectors.toMap(WordResultResponseDto::getWordId, Function.identity(), (existing, replacement) -> existing));
+        return new ArrayList<>(wordIdMap.values());
     }
 
     private TrackWord trackWordFastApiDtoToTrackWord(TrackWordFastApiDto trackWordFastApiDto){
