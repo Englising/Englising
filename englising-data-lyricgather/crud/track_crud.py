@@ -20,14 +20,9 @@ def update_track_is_english(track_id: int, is_english: bool, session):
     session.flush()
 
 
-def get_track_by_spotify_id(spotify_id: str, session):
-    result = session.query(Track).filter(Track.spotify_id == spotify_id).one_or_none()
-    return result
-
-
-def get_track_by_track_id(track_id: int, session):
-    result = session.query(Track).filter(Track.track_id == track_id).one_or_none()
-    return result
+def update_track_lyric_status(track_id: int, lyric_status: str, session):
+    session.query(Track).filter(Track.track_id == track_id).update({"lyric_status": lyric_status})
+    session.flush()
 
 
 def get_tracks_without_lyrics_and_not_only_english(session: Session) -> List[Track]:
