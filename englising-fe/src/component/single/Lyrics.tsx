@@ -58,12 +58,14 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
         // 빈칸이 우선으로 정답이 채워지게 만들기 위함
         let blankNum = 0; 
         let incorrectNum = 0;
+        let twiceIncorrectNum = 0;
         blanksRef.current.forEach(el => {
             const sentenceIdx = el?.dataset.sentence;
             const isSolve = el?.dataset.solve;
             if (sentenceIdx == `${idx}`) {
                 if (isSolve === '0') blankNum++;
                 if (isSolve === '1') incorrectNum++;
+                if (isSolve === '3') twiceIncorrectNum++;
             }
         });
 
@@ -115,7 +117,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
             }
 
              // 문장에 정답을 모두 맞췄을때, SinglePage Data 자체를 바꿔줌 (여긴 더이상 빈칸이 없어!)
-            if(blankNum == 1 && incorrectNum == 0 || blankNum == 0 && incorrectNum == 1){
+            if(blankNum == 1 && twiceIncorrectNum == 0 && incorrectNum == 0 || blankNum == 0 && incorrectNum == 1){
                 onSetIsBlank(idx);
             }
 
