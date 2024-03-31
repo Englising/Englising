@@ -1,6 +1,5 @@
-import axios, {AxiosResponse, AxiosError } from "axios";
-import { SingleData } from "../pages/SinglePage";
-// export const BASE_URL = "http://localhost:8080";
+import axios from "axios";
+
 
 const BASE_URL = "https://j10a106.p.ssafy.io/api";
 
@@ -18,6 +17,10 @@ export interface SinglePlayWordCheck {
   singleplayId: number,
   singleplayWordId: number,
   word: string
+}
+
+export interface SinglePlayWordLike {
+    wordId: number
 }
 
 export const getSinglePlayData = async (data: SinglePlayData): Promise<any> => {
@@ -62,3 +65,11 @@ export const  singlePlayWordCheck =async (data:SinglePlayWordCheck) => {
     }
 }
 
+export const singlePlayWordLike =async (data: SinglePlayWordLike) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/word/like`, data, {withCredentials:true});
+        console.log(response, "Success singlePlayWordLike");
+    }catch (error) {
+        console.error(error, "Fail singlePlayWordLike")
+    }
+}
