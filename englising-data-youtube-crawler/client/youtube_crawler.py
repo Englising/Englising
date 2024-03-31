@@ -82,7 +82,7 @@ class YoutubeCrawler:
             if closest_time is None or diff < closest_time:
                 closest_youtube = youtube
                 closest_time = diff
-        if closest_time > 1000:
+        if closest_time is None or closest_time > 1000:
             log(LogList.YOUTUBE.name, LogKind.WARNING,
                 f"Can't figure out Close video closest={closest_time}, duration={duration_ms}")
             return None
