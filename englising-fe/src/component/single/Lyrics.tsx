@@ -38,6 +38,9 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
     const [hintWord, setHintWord] = useState<string>("");
     const [hintNum, setHintNum] = useState<number>(3);
     
+    {/* 오답간 구분을 위한 변수*/ }
+    const preIdx = useRef<number>(-1);
+
     useEffect(() => {
         const lyricsData:Lyric[] | undefined = singleData?.lyrics;
         const blankData:Word[] | undefined = singleData?.words.sort(blankSort);
@@ -82,6 +85,8 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
 
         if (targetBlank == null) return;
         
+        const targetIsSolve = targetBlank.dataset.solve;
+
         // 빈칸에 들어갈 정답 가져오기
         
         const solutionIdx:string = targetBlank?.dataset.index || "0";
@@ -120,10 +125,17 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
                 if (wrongAnswer.length > solution?.length) {
                     wrongAnswer = wrongAnswer.slice(0, solution?.length) + "..";
                 }
-                // 오답시 스타일변경
-                targetBlank.dataset.solve = "1";
-                targetBlank.className = "rounded-lg text-[#FF4646] font-bold"
-                targetBlank.textContent = wrongAnswer;
+                if (targetIsSolve == "1") {
+                    // 오답을 또 들렸을 경우
+                    targetBlank.dataset.solve = "3";
+                    targetBlank.className = "rounded-lg text-[#FF4646] font-bold"
+                    targetBlank.textContent = wrongAnswer;
+                } else {
+                    // 오답시 스타일변경
+                    targetBlank.dataset.solve = "1";
+                    targetBlank.className = "rounded-lg text-[#FF4646] font-bold"
+                    targetBlank.textContent = wrongAnswer;
+                }
             }
         }
         // 마지막 빈칸을 등록했을때 or 마지막 오답이 수정되었을때 넘어감
@@ -136,6 +148,15 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
     
     // 현재 답안이 입력 될 빈칸을 표시해주는 hook
     useEffect(() => {
+        if (idx != preIdx.current) {
+            preIdx.current = idx;
+            blanksRef.current.map(el => {
+                const isSolve = el?.dataset.solve;
+                if (isSolve == "3") {
+                    if(el) el.dataset.solve = "1";
+                }
+            })
+        }
         // 빈칸의 dom을 가져오기
         let targetBlank = blanksRef.current.find(el => {
             const sentenceIdx = el?.dataset.sentence;
@@ -257,7 +278,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
                                 }
                             })
                             //만약 해당 단어가 빈칸이 필요하다면 -> isBlank 속성 값 결정
-                            //data-isSolve: 0=미해결, 1=오답, 2=정답
+                            //data-isSolve: 0=미해결, 1=오답, 2=정답, 3=우선 순위 낮은 오답
                             return (
                                 isBlank ? 
                                     (<div 
