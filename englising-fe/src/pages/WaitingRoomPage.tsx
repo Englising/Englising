@@ -206,9 +206,16 @@ const WaitingRoomPage: React.FC = () => {
                                                 <img src={item.profileImg} className='w-20 h-20 absolute top-4 left-4'/>
                                             </div>
                                             <div className='flex flex-col pt-3 items-center'>
-                                            {(item.userId === multiroom?.managerUserId) && 
+                                            {/* 내가 방장이면 */}
+                                            {(item.userId === multiroom?.managerUserId) && (item.isMe) &&
+                                            <div className='flex flex-row'>
+                                                <div className='text-secondary-500 pb-2 pr-2'>(방장)</div>
+                                                <div className='text-secondary-500 pb-2'>(Me)</div>
+                                            </div>
+                                            }
+                                            {(item.userId === multiroom?.managerUserId) && (!item.isMe) &&
                                             <div className='text-secondary-500 pb-2'>(방장)</div>}
-                                            {(item.isMe) && 
+                                            {(item.isMe) && (item.userId !== multiroom?.managerUserId) &&
                                             <div className='text-secondary-500 pb-2'>(Me)</div>}
                                                     <div className='text-white pr-2'>
                                                         {item.nickname}
@@ -228,7 +235,7 @@ const WaitingRoomPage: React.FC = () => {
                     </div>
                 </div>
 
-                <div className='flex flex-row justify-center pt-10 gap-8'>
+                <div className='flex flex-row justify-center pt-20 gap-5'>
                     {/* 방장이면 이거 표시되게 */}
                     {(userId === multiroom?.managerUserId) &&
                     <button onClick={startGame} className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'> 
