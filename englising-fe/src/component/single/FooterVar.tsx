@@ -1,23 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { PlayInfo } from "../../pages/SinglePage";
 
 interface Props {
     onSetAnswer(answer: string): void;
     onLyricMove(index: number): void;
     onCurrReplay(): void;
-    idx: number;
+    onPlayerControl(): void,
+    playInfo: PlayInfo
     singlePlayId: number;
 }
 
-const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, idx, singlePlayId }: Props) => {
+const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, onPlayerControl, playInfo, singlePlayId }: Props) => {
     const { state } = useLocation();
-    
     const navigate = useNavigate();
 
     const [answer, setAnswer] = useState<string>("");
     const inputRef = useRef<HTMLInputElement | null>(null);
 
+    const { idx, toggleNext } = playInfo
+    
     const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === ' ') return;
         setAnswer(e.target.value);
     }
 
@@ -34,6 +38,8 @@ const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, idx, singlePlayId }
             onLyricMove(idx - 1);
         } else if (e.key == 'ArrowDown') {
             onLyricMove(idx + 1);
+        } else if (e.key === ' ') {
+            onPlayerControl();
         }
     }
 
@@ -44,11 +50,12 @@ const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, idx, singlePlayId }
 
     const handleReplayClick = () => {
         onCurrReplay();
+        inputRef.current?.focus();
     }
 
     useEffect(() => {
         inputRef.current?.focus();
-    }, [idx])
+    }, [idx,toggleNext])
     
     return (
         <div className="w-full h-full flex items-center justify-evenly ">
