@@ -40,7 +40,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
 
     {/** 프로필 */}
     const { state } = useLocation();
-    const { title, img, artist } = state;
+    const { title, img, artists } = state;
 
     const player = useRef<ReactPlayer | null>(null);
 
@@ -147,7 +147,8 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
     return(
         <div className="w-full h-full flex flex-col items-center">
             <div className="w-full h-3/5 flex flex-col items-center justify-center">
-                <div className="text-[1.25em] my-[1em] text-white text-center">{artist} {title}</div>
+                <div className="text-[1.25em] text-white text-center">{title}</div>
+                <div className="text-[1em] mb-[1em] text-white text-center">{artists}</div>
                 <div className="hidden">
                     <ReactPlayer
                     ref={player}
