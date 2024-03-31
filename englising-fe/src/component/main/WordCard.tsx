@@ -1,4 +1,5 @@
 import React from 'react';
+import useSpeek from '../../hooks/useSpeek';
 
 interface WordProps {
     engText : string;
@@ -25,7 +26,10 @@ interface WordProps {
 //     }
 // }
 
-const WordCard: React.FC<WordProps> = ({engText, korText1, korText2, korText3, example}) => {
+const WordCard: React.FC<WordProps> = ({ engText, korText1, korText2, korText3, example }) => {
+    const handleSpeekClick = (word: string): void => {
+        useSpeek(word);
+    }
     return (
         <div className='text-white bg-primary-800 pl-5 w-[400px] h-[220px] relative rounded-xl'>
             <div className='text-2xl pl-0.5 pt-2 font-bold'>{engText}</div>
@@ -33,7 +37,7 @@ const WordCard: React.FC<WordProps> = ({engText, korText1, korText2, korText3, e
             {korText2 && <div className='text-sm'>2. {korText2}</div>}
             {korText3 &&<div className='text-sm'>3. {korText3}</div> }
             <div className='text-secondary-100 pt-4 pb-3'>예문 : {example}</div>
-            <svg className="feather feather-volume-2 absolute top-4 right-14" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 28 28" width="28" xmlns="https://www.w3.org/2000/svg"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <svg className="feather feather-volume-2 absolute top-4 right-14 cursor-pointer" onClick={() => handleSpeekClick(engText)} fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 28 28" width="28" xmlns="https://www.w3.org/2000/svg"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
             {/* <div className='absolute top-4 right-5'>{renderLikeIcon(liked)} </div> */}
         </div>
     );
