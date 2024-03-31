@@ -19,7 +19,7 @@ def get_recommended_track_words(user_id: int, track_id: int, level: int) -> List
     return final_selected_words
 
 
-def __recommend_words__(all_track_words: List[TrackWord], level, liked_words: List[Word], recently_played_words: List[Word]):
+def __recommend_words__(all_track_words: List[TrackWord], level, liked_words: List[Word], recently_played_words: List[Word]) -> List[TrackWord]:
     # 좋아한 단어와 유사도 판단
     # 단어의 난이도 판단
     # 최근 플레이 한 단어와 유사도 판단, 유사하지 않도록 함
@@ -51,9 +51,14 @@ def __select_words_from_recommended__(level, recommended_words):
         if word.origin_word not in seen_words:
             seen_words.add(word.origin_word)
             unique_recommended_words.append((word, score))
-    if len(unique_recommended_words) < final_count*2:
+    if len(unique_recommended_words) < final_count + 10:
         for word, score in recommended_words:
-            if word not in unique_recommended_words:
+            already_in = False
+            for word_selected, _ in unique_recommended_words:
+                if word_selected.track_word_id == word.track_word_id:
+                    already_in = True
+                    break
+            if not already_in:
                 unique_recommended_words.append((word, score))
             if len(unique_recommended_words) >= len(recommended_words):
                 break
