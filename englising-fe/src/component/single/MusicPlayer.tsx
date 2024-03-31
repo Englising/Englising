@@ -11,12 +11,13 @@ interface Props {
     onSetInfoIdx(currIdx: number):void,
     playInfo: PlayInfo,
     progressInfo: ProgressInfo,
-    showStartModal: boolean
+    showStartModal: boolean,
+    togglePlayerControl: number
 }
 
 const hintStyle = "w-[1.5em] h-[1.5em] mx-[0.4em] rounded-full"
 
-const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Props ) => {
+const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal, togglePlayerControl}:Props ) => {
     // 현재 재생중인 가사 정보
     let { idx, isBlank, startTime, toggleNext } = playInfo
     
@@ -40,7 +41,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
 
     {/** 프로필 */}
     const { state } = useLocation();
-    const { title, img, artist } = state;
+    const { title, img, artists } = state;
 
     const player = useRef<ReactPlayer | null>(null);
 
@@ -88,7 +89,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
         setPlaying(true);
         
         if (isBlank) {
-            if(timeData.current[idx+1] < playedSeconds-0.1){
+            if(timeData.current[idx+1] < playedSeconds+0.5){
             onSetInfoIdx(idx + 1);
             }      
         }
@@ -135,19 +136,25 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
     useEffect(() => {
         if (playing) setTogglePlayButton(false);
         else setTogglePlayButton(true);
-    },[playing])
-
-    // 힌트창이 켜졌을때 노래 일시중지
-
-
+    }, [playing])
+    
     useEffect(() => {
         setPercentage((rightWord / totalWord) * 100);
     },[progressInfo])
     
+    useEffect(() => {
+        if (showStartModal == true) return;
+        if (togglePlayButton) {
+            handlePlayClick();
+        } else {
+            handlePauseClick();
+        }
+    },[togglePlayerControl])
     return(
         <div className="w-full h-full flex flex-col items-center">
             <div className="w-full h-3/5 flex flex-col items-center justify-center">
-                <div className="text-[1.25em] my-[1em] text-white text-center">{artist} {title}</div>
+                <div className="text-[1.25em] text-white text-center">{title}</div>
+                <div className="text-[1em] mb-[1em] text-white text-center">{artists}</div>
                 <div className="hidden">
                     <ReactPlayer
                     ref={player}
@@ -175,8 +182,8 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
                     <div className="flex items-center justify-center my-2">
                         <div className="w-[10%]">
                             {volume != 0 ?
-                                <img className="h-4 mr-2 cursor-pointer" src={`/src/assets/volume.png`} onClick={handleMuteClick}></img> :
-                                <img className="h-4 mr-2" src={`/src/assets/enable-sound.png`} onClick={handleSoundClick}></img>
+                                <img className="h-4 mr-2 cursor-pointer" src="https://englising-bucket.s3.ap-northeast-2.amazonaws.com/volume.png" onClick={handleMuteClick}></img> :
+                                <img className="h-4 mr-2" src="https://englising-bucket.s3.ap-northeast-2.amazonaws.com/mute.png" onClick={handleSoundClick}></img>
                             }
                         </div>
                         <input type="range" value={volume} min={0} max={1} step="any"
@@ -191,8 +198,8 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
                     <div className="flex items-center justify-center my-1">
                         <div className="w-[10%]">
                             {togglePlayButton ? 
-                                <img className="h-3.5 mr-2 cursor-pointer" src={`/src/assets/play.png`} onClick={handlePlayClick}></img> :
-                                <img className="h-3.5 mr-2 cursor-pointer" src={`/src/assets/pause.png`} onClick={handlePauseClick}></img>
+                                <img className="h-3.5 mr-2 cursor-pointer" src="https://englising-bucket.s3.ap-northeast-2.amazonaws.com/play.png" onClick={handlePlayClick}></img> :
+                                <img className="h-3.5 mr-2 cursor-pointer" src="https://englising-bucket.s3.ap-northeast-2.amazonaws.com/pause.png" onClick={handlePauseClick}></img>
                             }
                         </div>
                         <div className="w-[90%] h-2.5 bg-gray-200 dark:bg-gray-700 rounded-md">
