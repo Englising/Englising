@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { PlayInfo, SingleData, Lyric, Word, AnswerInfo } from "../../pages/SinglePage.tsx";
 import HintModal from "./HintModal.tsx";
 import { singlePlayWordCheck } from "../../util/SinglePlayAPI.tsx";
+import useSpeek from "../../hooks/useSpeek.tsx";
 
 interface Props {
     onSetInfo(currIdx: number, blank: boolean, start: number, end: number): void,
@@ -220,37 +221,12 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
         setShowHintModal(true);
     }
 
-    const speak = (word: string): void => {
-        const voicesChangedHandler = () => {
-            const voices: SpeechSynthesisVoice[] = speechSynthesis.getVoices();
-            
-            // 목소리를 설정하고 발화
-            const utter: any = new SpeechSynthesisUtterance(word);
-            utter.voice = voices[2]; 
-            speechSynthesis.speak(utter);
-
-            // 이벤트 핸들러 제거
-            speechSynthesis.onvoiceschanged = null;
-        };
-
-        // 이벤트 핸들러 등록
-        speechSynthesis.onvoiceschanged = voicesChangedHandler;
-
-        // 현재 목소리를 가져와서 발화
-        const voices: SpeechSynthesisVoice[] = speechSynthesis.getVoices();
-        if (voices.length > 0) {
-            const utter: any = new SpeechSynthesisUtterance(word);
-            utter.voice = voices[2]; 
-            speechSynthesis.speak(utter);
-        }
-    };
-
     const onUse = (word: string) => { //힌트 사용 
         onSetProgressInfo("hintNum", hintNum - 1);
         setHintNum(hintNum - 1);
         setShowHintModal(!showHintModal);
         //정답시 맞은 단어 개수 변경
-        speak(word);
+        useSpeek(word);
     }
 
     const onCancel = () => { //힌트 취소 -> 힌트 모두 소진시 onCancel만 쓸거임

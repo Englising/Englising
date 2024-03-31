@@ -62,6 +62,8 @@ const SinglePage = () => {
 
     const [toggleCurrReplay, setToggleCurrReplay] = useState<number>(0);
 
+    const [togglePlayerControl, setTogglePlayerControl] = useState<number>(0);
+
     const [showStartModal, setShowStartModal] = useState<boolean>(true);
 
     const [singlePlayId, setSingPlayId] = useState<number>(0);
@@ -92,6 +94,10 @@ const SinglePage = () => {
         rightWord: 0,
         hintNum: 0,
     });
+
+    const onPlayerControl = (): void => {
+        setTogglePlayerControl((togglePlayerControl + 1) % 2);
+    }
 
     const onCurrReplay = (): void => {
         setToggleCurrReplay((toggleCurrReplay + 1) % 2);
@@ -201,14 +207,14 @@ return (
             </div>) : (<></>)}
             <div className="h-[90%] w-9/12 flex">
                 <div className="w-2/5 h-full items-center">
-                    <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} showStartModal={showStartModal} /> 
+                    <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} showStartModal={showStartModal} togglePlayerControl={togglePlayerControl} /> 
                 </div>
                 <div className="w-3/5 flex items-center justify-center">
                     <Lyrics onSetInfo={onSetInfo} onSetProgressInfo={onSetProgressInfo} onSetIsBlank={onSetIsBlank} playInfo={playInfo} answerInfo={answerInfo} singleData={singleData} showStartModal={showStartModal} toggleCurrReplay={toggleCurrReplay} />
                 </div>
             </div>
             <div className="w-full h-[10%] bg-black flex justify-center">
-                <FooterVar onSetAnswer={onSetAnswer} onLyricMove={onLyricMove} onCurrReplay={onCurrReplay} idx={playInfo.idx} singlePlayId={singlePlayId}/>
+                <FooterVar onSetAnswer={onSetAnswer} onLyricMove={onLyricMove} onCurrReplay={onCurrReplay} onPlayerControl={onPlayerControl} playInfo={playInfo} singlePlayId={singlePlayId}/>
             </div>
         </div>
     </div>
