@@ -6,11 +6,12 @@ interface Props {
     onSetAnswer(answer: string): void;
     onLyricMove(index: number): void;
     onCurrReplay(): void;
+    onPlayerControl(): void,
     playInfo: PlayInfo
     singlePlayId: number;
 }
 
-const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, playInfo, singlePlayId }: Props) => {
+const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, onPlayerControl, playInfo, singlePlayId }: Props) => {
     const { state } = useLocation();
     const navigate = useNavigate();
 
@@ -20,6 +21,7 @@ const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, playInfo, singlePla
     const { idx, toggleNext } = playInfo
     
     const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === ' ') return;
         setAnswer(e.target.value);
     }
 
@@ -36,6 +38,8 @@ const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, playInfo, singlePla
             onLyricMove(idx - 1);
         } else if (e.key == 'ArrowDown') {
             onLyricMove(idx + 1);
+        } else if (e.key === ' ') {
+            onPlayerControl();
         }
     }
 

@@ -11,12 +11,13 @@ interface Props {
     onSetInfoIdx(currIdx: number):void,
     playInfo: PlayInfo,
     progressInfo: ProgressInfo,
-    showStartModal: boolean
+    showStartModal: boolean,
+    togglePlayerControl: number
 }
 
 const hintStyle = "w-[1.5em] h-[1.5em] mx-[0.4em] rounded-full"
 
-const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Props ) => {
+const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal, togglePlayerControl}:Props ) => {
     // 현재 재생중인 가사 정보
     let { idx, isBlank, startTime, toggleNext } = playInfo
     
@@ -135,15 +136,20 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
     useEffect(() => {
         if (playing) setTogglePlayButton(false);
         else setTogglePlayButton(true);
-    },[playing])
-
-    // 힌트창이 켜졌을때 노래 일시중지
-
-
+    }, [playing])
+    
     useEffect(() => {
         setPercentage((rightWord / totalWord) * 100);
     },[progressInfo])
     
+    useEffect(() => {
+        if (togglePlayerControl == undefined) return;
+        if (togglePlayButton) {
+            handlePlayClick();
+        } else {
+            handlePauseClick();
+        }
+    },[togglePlayerControl])
     return(
         <div className="w-full h-full flex flex-col items-center">
             <div className="w-full h-3/5 flex flex-col items-center justify-center">
