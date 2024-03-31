@@ -143,7 +143,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal, togg
     },[progressInfo])
     
     useEffect(() => {
-        if (togglePlayerControl == undefined) return;
+        if (showStartModal == true) return;
         if (togglePlayButton) {
             handlePlayClick();
         } else {
