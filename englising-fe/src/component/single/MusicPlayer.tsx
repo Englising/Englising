@@ -55,7 +55,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal, togg
     const handleProgress = (e: OnProgressProps) => {
         setPlayed(e.played);
         setPlayedSeconds(e.playedSeconds);
-        if(timeData.current[idx+1] < e.playedSeconds+0.5){
+        if(timeData.current[idx+1] < e.playedSeconds-0.2){
             if(!isBlank){
                 onSetInfoIdx(idx+1);
             }else {
@@ -89,7 +89,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal, togg
         setPlaying(true);
         
         if (isBlank) {
-            if(timeData.current[idx+1] < playedSeconds+0.5){
+            if(timeData.current[idx+1] < playedSeconds-0.2){
             onSetInfoIdx(idx + 1);
             }      
         }
