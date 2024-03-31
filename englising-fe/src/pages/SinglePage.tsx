@@ -34,7 +34,7 @@ export interface Lyric {
 }
 
 export interface Word {
-    singlePlayWordId: number;
+    singleplayWordId: number;
     sentenceIndex: number;
     wordIndex: number;
     word: string;
@@ -59,6 +59,8 @@ const SinglePage = () => {
         trackId: string,
         level: string,
     }>();
+
+    const [toggleCurrReplay, setToggleCurrReplay] = useState<number>(0);
 
     const [showStartModal, setShowStartModal] = useState<boolean>(true);
 
@@ -90,6 +92,10 @@ const SinglePage = () => {
         rightWord: 0,
         hintNum: 0,
     });
+
+    const onCurrReplay = (): void => {
+        setToggleCurrReplay((toggleCurrReplay + 1) % 2);
+    }
 
 
     const onSetInfo = (currIdx: number, blank: boolean, start: number, end: number): void => {
@@ -198,11 +204,11 @@ return (
                     <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} showStartModal={showStartModal} /> 
                 </div>
                 <div className="w-3/5 flex items-center justify-center">
-                    <Lyrics onSetInfo={onSetInfo} onSetProgressInfo={onSetProgressInfo} onSetIsBlank={onSetIsBlank} playInfo={playInfo} answerInfo={answerInfo} singleData={singleData} showStartModal={showStartModal} />
+                    <Lyrics onSetInfo={onSetInfo} onSetProgressInfo={onSetProgressInfo} onSetIsBlank={onSetIsBlank} playInfo={playInfo} answerInfo={answerInfo} singleData={singleData} showStartModal={showStartModal} toggleCurrReplay={toggleCurrReplay} />
                 </div>
             </div>
             <div className="w-full h-[10%] bg-black flex justify-center">
-                <FooterVar onSetAnswer={onSetAnswer} onLyricMove={onLyricMove} idx={playInfo.idx} singlePlayId={singlePlayId} />
+                <FooterVar onSetAnswer={onSetAnswer} onLyricMove={onLyricMove} onCurrReplay={onCurrReplay} idx={playInfo.idx} singlePlayId={singlePlayId}/>
             </div>
         </div>
     </div>

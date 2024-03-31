@@ -4,11 +4,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 interface Props {
     onSetAnswer(answer: string): void;
     onLyricMove(index: number): void;
+    onCurrReplay(): void;
     idx: number;
     singlePlayId: number;
 }
 
-const FooterVar = ({ onSetAnswer, onLyricMove, idx, singlePlayId }: Props) => {
+const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, idx, singlePlayId }: Props) => {
     const { state } = useLocation();
     
     const navigate = useNavigate();
@@ -41,6 +42,10 @@ const FooterVar = ({ onSetAnswer, onLyricMove, idx, singlePlayId }: Props) => {
         navigate(`/SinglePlay/result/${singlePlayId}`, { state: { ...state } } );
     }
 
+    const handleReplayClick = () => {
+        onCurrReplay();
+    }
+
     useEffect(() => {
         inputRef.current?.focus();
     }, [idx])
@@ -48,7 +53,7 @@ const FooterVar = ({ onSetAnswer, onLyricMove, idx, singlePlayId }: Props) => {
     return (
         <div className="w-full h-full flex items-center justify-evenly ">
             <div className="w-1/3 flex pl-10 box-border text-white">
-                <div className="h-[2.5em] w-[5em] mr-[1em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col" onClick={handleExitClick}>
+                <div className="h-[2.5em] w-[5em] mr-[1em] rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col justify-center items-center" onClick={handleExitClick}>
                     <div> 종료하기 </div>
                 </div>
             </div>
@@ -71,8 +76,10 @@ const FooterVar = ({ onSetAnswer, onLyricMove, idx, singlePlayId }: Props) => {
                     <div className="m-auto text-[1em]">입력</div>
                 </div>
                 <div 
-                    className="h-[2.5em] w-[5em] rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"> 
-                    <div className="m-auto text-[1em]">공사중</div>
+                    className="h-[2.5em] w-[5em] rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"
+                    onClick={handleReplayClick}    
+                > 
+                    <div className="m-auto text-[1em]">다시듣기</div>
                 </div>
             </div> 
         </div>
