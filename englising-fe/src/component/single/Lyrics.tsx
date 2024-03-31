@@ -11,7 +11,9 @@ interface Props {
     singleData: SingleData|undefined,
     answerInfo: AnswerInfo,
     showStartModal: boolean;
+    toggleCurrReplay: number;
 }
+
 const blankSort = (a:Word, b:Word) => {
     if (a.sentenceIndex == b.sentenceIndex) {
         return a.wordIndex - b.wordIndex;
@@ -20,7 +22,7 @@ const blankSort = (a:Word, b:Word) => {
     }
 }
 
-const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playInfo, singleData, showStartModal }: Props) => {
+const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playInfo, singleData, showStartModal, toggleCurrReplay }: Props) => {
     { /* 현재 문장, 제출 답안정보 */ }
     const {idx} = playInfo;
     const { answer, toggleSubmit } = answerInfo;
@@ -194,6 +196,12 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
         // 모든 가사 이동이 생길때 
         lyricsRef.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, [idx])
+
+    useEffect(() => {
+        if (lyrics == undefined) return;
+        lyricsRef.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        onSetInfo(idx, lyrics[idx]?.isBlank, lyrics[idx]?.startTime, lyrics[idx]?.endTime);
+    },[toggleCurrReplay])
     
     const handleLyricsClick = (currIdx: number, blank: boolean, start: number, end: number): void => {
         /*
