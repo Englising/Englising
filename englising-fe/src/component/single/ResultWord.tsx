@@ -28,15 +28,17 @@ const ResultWord = ({ resultWord }: Props) => {
             if (wordRef != null) {
                 wordRef.dataset.like = "false";
                 singlePlayWordLike(data);
+                wordsRef?.current[index]?.classList.remove('px-3', 'border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
+                wordsRef?.current[index]?.classList.add('opacity-70');
             }
-            wordsRef?.current[index]?.classList.remove('px-3', 'border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
         } else if (isLike === "false") {
             //좋아요 취소 상태에서 스타일 부여       
             if (wordRef != null) {
                 wordRef.dataset.like = "true";
                 singlePlayWordLike(data);
+                wordsRef?.current[index]?.classList.add('px-3', 'border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
+                wordsRef?.current[index]?.classList.remove('opacity-70');
             }
-            wordsRef?.current[index]?.classList.add('px-3', 'border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
         }
     }
     
@@ -50,7 +52,7 @@ const ResultWord = ({ resultWord }: Props) => {
         
     }, [resultWord])
     return (
-        <div className="w-[90%] h-[80%] flex flex-wrap justify-center overflow-y-scroll scrollbar-webkit">
+        <div className="w-[90%] h-full flex flex-wrap justify-center overflow-y-scroll scrollbar-webkit">
             {resultWord?.map((resultWord, i) => {
                 return (
                     <div key={i} ref={(el) => wordsRef.current[i]=el}  className={resultWord.isRight? rightStyle : wrongStyle} data-wordid={resultWord.wordId} data-like={resultWord.isLike} onClick={() => {handleLikeClick(i)}}>
