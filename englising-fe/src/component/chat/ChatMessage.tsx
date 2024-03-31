@@ -1,4 +1,5 @@
 import { User } from "../../pages/MultiplayPage";
+import ProfileImage from "../multi/ProfileImage";
 import { Chat } from "./ChatArea";
 
 interface ChatMessageProps {
@@ -11,11 +12,12 @@ interface ChatMessageProps {
 function ChatMessage({ user, chat, profileVisible, myMessage }: ChatMessageProps) {
   return (
     <div className={`flex gap-2 ${myMessage ? "justify-end" : ""}`}>
-      <div className={`w-8 h-8 flex-shrink-0 rounded-full overflow-hidden ${profileVisible ? "" : "hidden"}`}>
-        <img src={user.profileImg} />
-      </div>
+      {/* <ProfileImage
+        classes={`w-8 h-8 flex-shrink-0 rounded-full overflow-hidden ${profileVisible ? "" : "hidden"}`}
+        src={user.profileImg}
+      /> */}
       <div>
-        <p className={`mb-1 ${profileVisible ? "" : "hidden"}`}>{user.nickname}</p>
+        {/* <p className={`mb-1 ${profileVisible ? "" : "hidden"}`}>{user.nickname}</p> */}
         {myMessage ? (
           <p className={`max-w-52 ms-auto py-1 px-2 text-white bg-gray-800 rounded-lg rounded-tr-sm break-keep`}>
             {chat.message}

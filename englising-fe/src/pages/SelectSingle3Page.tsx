@@ -59,7 +59,9 @@ const SelectSinglePage: React.FC = () => {
         const updatedPlaylist = [...playList];
         updatedPlaylist[index].isLike = !updatedPlaylist[index].isLike;
         setPlayList(updatedPlaylist);
-        axios.post('https://j10a106.p.ssafy.io/api/track/like', { trackId: playList[index].trackId })
+        axios.post('https://j10a106.p.ssafy.io/api/track/like', { trackId: playList[index].trackId }, {
+            withCredentials: true, // 이 옵션을 설정하여 쿠키와 인증 정보를 함께 보냄
+            })
             .then(() => {
                 // 성공적으로 토글되면 liked 상태 변경
                 
@@ -86,7 +88,7 @@ const SelectSinglePage: React.FC = () => {
 
                     {/* 플레이리스트 목록 */}
                     {/* 자꾸 화면 삐져나와... 고쳐줘...*/}
-                <div className='pl-14 w-4/5'>
+                <div className='pl-10 w-4/5'>
                     <h1 className=' text-white font-bold text-xl w-60 pb-3'>최근 플레이한 음악</h1>
                     <div className='flex flex-row pb-6 w-full'>
                         <h1 className=' text-white font-thin text-sm w-60 flex-1'>플레이 할 노래를 선택해주세요!</h1>

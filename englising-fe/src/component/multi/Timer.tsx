@@ -1,17 +1,17 @@
 import styles from "./Multi.module.css";
 import useTimer from "../../hooks/useTimer";
-import { RefObject, forwardRef, useEffect } from "react";
+import { forwardRef, useEffect } from "react";
 
 type TimerProps = {
   roundTime: number;
-  leftTime: number;
+  // leftTime: number;
   status: string;
   onModalOpen: () => void;
 };
 
 const RADIUS = Math.PI * 2 * 50;
 
-const Timer = forwardRef(function Timer({ roundTime, leftTime, onModalOpen }: TimerProps, ref) {
+const Timer = forwardRef(function Timer({ roundTime, onModalOpen }: TimerProps, ref) {
   const calculateTime = (time: number) => {
     const min = Math.floor(time / 60);
     const sec = Math.floor(time - 60 * min);

@@ -7,7 +7,7 @@ const useStomp = (client: MutableRefObject<Client | undefined>, url: string, cal
       brokerURL: import.meta.env.VITE_SOKCET_BROKER_URL,
       onConnect: () => {
         console.log("connect success");
-        client.current?.subscribe(`/sub/${url}`, callback);
+        client.current?.subscribe(`${url}`, callback);
       },
     });
 
