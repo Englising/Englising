@@ -51,7 +51,7 @@ def __select_words_from_recommended__(level, recommended_words):
         if word.origin_word not in seen_words:
             seen_words.add(word.origin_word)
             unique_recommended_words.append((word, score))
-    if len(unique_recommended_words) < final_count + 10:
+    if len(unique_recommended_words) < final_count*2:
         for word, score in recommended_words:
             already_in = False
             for word_selected, _ in unique_recommended_words:
