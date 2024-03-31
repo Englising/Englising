@@ -227,7 +227,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
     }
 
     return(
-        <div className="w-full h-[90%] flex flex-col items-center py-10 px-20 box-border text-center overflow-y-scroll">
+        <div className="w-full h-[90%] flex flex-col items-center py-10 px-5 box-border text-center overflow-y-scroll scrollbar-webkit">
             {showHintModal ? (<div className="relative">
                 <HintModal hintWord={hintWord} hintNum={hintNum} onUse={onUse} onCancel={onCancel} />
             </div>) : (<></>)}

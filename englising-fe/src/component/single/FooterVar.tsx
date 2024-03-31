@@ -48,7 +48,7 @@ const FooterVar = ({ onSetAnswer, onLyricMove, idx, singlePlayId }: Props) => {
     return (
         <div className="w-full h-full flex items-center justify-evenly ">
             <div className="w-1/3 flex pl-10 box-border text-white">
-                <div className="h-[2.5em] w-[5em] mr-[1em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col" onClick={handleExitClick}>
+                <div className="h-[2.5em] w-[5em] mr-[1em] rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col justify-center items-center" onClick={handleExitClick}>
                     <div> 종료하기 </div>
                 </div>
             </div>
