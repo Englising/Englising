@@ -1,22 +1,24 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { PlayInfo } from "../../pages/SinglePage";
 
 interface Props {
     onSetAnswer(answer: string): void;
     onLyricMove(index: number): void;
     onCurrReplay(): void;
-    idx: number;
+    playInfo: PlayInfo
     singlePlayId: number;
 }
 
-const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, idx, singlePlayId }: Props) => {
+const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, playInfo, singlePlayId }: Props) => {
     const { state } = useLocation();
-    
     const navigate = useNavigate();
 
     const [answer, setAnswer] = useState<string>("");
     const inputRef = useRef<HTMLInputElement | null>(null);
 
+    const { idx, toggleNext } = playInfo
+    
     const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAnswer(e.target.value);
     }
@@ -44,11 +46,12 @@ const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, idx, singlePlayId }
 
     const handleReplayClick = () => {
         onCurrReplay();
+        inputRef.current?.focus();
     }
 
     useEffect(() => {
         inputRef.current?.focus();
-    }, [idx])
+    }, [idx,toggleNext])
     
     return (
         <div className="w-full h-full flex items-center justify-evenly ">

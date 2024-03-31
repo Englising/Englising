@@ -208,7 +208,7 @@ return (
                 </div>
             </div>
             <div className="w-full h-[10%] bg-black flex justify-center">
-                <FooterVar onSetAnswer={onSetAnswer} onLyricMove={onLyricMove} onCurrReplay={onCurrReplay} idx={playInfo.idx} singlePlayId={singlePlayId}/>
+                <FooterVar onSetAnswer={onSetAnswer} onLyricMove={onLyricMove} onCurrReplay={onCurrReplay} playInfo={playInfo} singlePlayId={singlePlayId}/>
             </div>
         </div>
     </div>
