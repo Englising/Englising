@@ -83,7 +83,7 @@ const WordListPage = () => {
                     <WordButton buttonText="기출 단어" apiEndpoint="played"  onClick={handleClick} selected={selectedButton === "played"} />
                     <WordButton buttonText="북마크 한 단어" apiEndpoint="like" onClick={handleClick} selected={selectedButton === "like"} />
                 </div>
-                <div className="grid grid-cols-2 gap-10 overflow-y-auto pr-24 scrollbar-hide">
+                <div className="grid grid-cols-2 gap-10 overflow-y-auto pr-24 scrollbar-webkit">
                     {wordList && wordList.length > 0 ? ( // wordList 배열이 비어있지 않은 경우에만 map 함수 호출
                         wordList.map((item, index) => (
                             <div key={index} className="relative" >

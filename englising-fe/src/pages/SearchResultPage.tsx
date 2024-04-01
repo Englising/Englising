@@ -103,7 +103,7 @@ const SearchResultPage: React.FC = () => {
                             <h1 className=' text-white font-thin text-sm w-60 text-right flex-1 pr-5'>ⓘ 플레이 할 노래를 선택해주세요!</h1>
                         </div>
                         
-                        <div className="relative flex flex-col overflow-y-auto h-full">
+                        <div className="relative flex flex-col overflow-y-auto h-full scrollbar-webkit">
                             <div className='text-white grid grid-cols-3 gap-4 justify-items-start '>
                                 {searchedMusic && searchedMusic.length > 0 ? (
                                     searchedMusic.map((item, index) => (

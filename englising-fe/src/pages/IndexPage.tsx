@@ -25,14 +25,13 @@ const IndexPage = () => {
 
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 flex items-center justify-center relative">
-            <video autoPlay muted playsInline className='absolute inset-0 w-full h-full object-cover'>
+            <video autoPlay muted playsInline className='flex absolute inset-0 w-full h-full object-cover p-6'>
                 <source src={landingVideo}></source>
             </video>
             <div className='flex flex-row z-50 pb-24 pt-16 w-full h-full'>
                 <div className='flex flex-row gap-5 self-end pl-36'>
                         {/* 카카오로그인 */}
                     <img src={KakaoLogin} className='h-12 w-auto' onClick={handleKakaoLogin}/>   
-        
                     {/* 게스트로그인 */}
                     <div className='flex flex-row items-center justify-center h-12 w-48 bg-gray-300 text-center text-black text-base font-normal rounded-lg z-50 '
                         onClick={guestLogin}>
@@ -42,8 +41,8 @@ const IndexPage = () => {
                             <h1 className='pl-6'>게스트 로그인</h1>
                     </div>
                 </div>
-                <div className='pl-32 z-50'>
-                        <LandingSlider />
+                <div className='pl-32 pr-32 z-50'>
+                    <LandingSlider />
                 </div>
             </div>
         </div>

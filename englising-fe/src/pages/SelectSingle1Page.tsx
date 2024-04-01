@@ -32,6 +32,7 @@ const SelectSingle1Page: React.FC = () => {
         })
         .then((Response) => {
             setPlayList(Response.data.data);
+            console.log(playList);
         })
         .catch((error) => {
             console.error('Error fetching playlist:', error);
@@ -88,14 +89,14 @@ const SelectSingle1Page: React.FC = () => {
 
                     {/* 플레이리스트 목록 */}
                     {/* 자꾸 화면 삐져나와... 고쳐줘...*/}
-                <div className='pl-10 w-4/5'>
+                <div className='pl-10 w-4/5 pb-3'>
                     <h1 className=' text-white font-bold text-xl w-60 pb-3'>추천 플레이리스트</h1>
                     <div className='flex flex-row pb-6 w-full'>
                         <h1 className=' text-white font-thin text-sm w-60 flex-1'>플레이 할 노래를 선택해주세요!</h1>
-                        <h1 className=' text-white font-thin text-sm w-60 text-right flex-1 pr-5'>ⓘ 좋아요 & 인기도를 기반으로 추천된 플레이리스트 입니다.</h1>
+                        <h1 className=' text-white font-thin text-sm w-60 text-right flex-1 pr-5'>ⓘ 좋아요 & 인기도 기반 추천된 플레이리스트 입니다.</h1>
                     </div>
     
-                    <div className="relative flex flex-col overflow-y-auto h-full">
+                    <div className="relative flex flex-col overflow-y-auto max-h-full scrollbar-webkit">
                         <div className='text-white grid grid-cols-3 gap-4 justify-items-start '>
                         {playList && playList.length > 0 ? ( // playList가 비어있지 않은 경우에만 map 함수 호출
                         playList.map((item, index) => (
