@@ -1,6 +1,6 @@
 import React from 'react';
 import KakaoLogin from '../assets/kakao_login_large_narrow.png'
-import landingVideo from '../assets/landing.mp4'
+import landingVideo from '../assets/landingVideo.mp4'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import LandingSlider from '../component/main/LandingSlider'
@@ -25,11 +25,11 @@ const IndexPage = () => {
 
     return (
         <div className="bg-black h-svh w-screen m-0 p-0 flex items-center justify-center relative">
-            <video autoPlay muted playsInline className='flex absolute inset-0 w-full h-full object-cover p-6'>
+            <video autoPlay muted playsInline className='flex absolute inset-0 w-full h-full object-cover p-6 pb-12'>
                 <source src={landingVideo}></source>
             </video>
             <div className='flex flex-row z-50 pb-24 pt-16 w-full h-full'>
-                <div className='flex flex-row gap-5 self-end pl-36'>
+                <div className='flex flex-row gap-5 self-end pl-[140px] pr-40 pb-8'>
                         {/* 카카오로그인 */}
                     <img src={KakaoLogin} className='h-12 w-auto' onClick={handleKakaoLogin}/>   
                     {/* 게스트로그인 */}
@@ -41,7 +41,7 @@ const IndexPage = () => {
                             <h1 className='pl-6'>게스트 로그인</h1>
                     </div>
                 </div>
-                <div className='pl-32 pr-32 z-50'>
+                <div className='pr-16 z-50 w-2/5 h-4/5 self-center pl-16'>
                     <LandingSlider />
                 </div>
             </div>
