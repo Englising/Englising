@@ -3,6 +3,7 @@ package org.englising.com.englisingbe.music.repository;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -54,13 +55,19 @@ public class TrackRepositorySupport {
         BooleanExpression lyricsDoneCondition = QTrack.track.lyricStatus.eq("DONE");
         BooleanExpression youtubeIdNotNull = QTrack.track.youtubeId.isNotNull();
 
+        BooleanExpression hasLyrics = JPAExpressions.selectOne()
+                .from(QLyric.lyric)
+                .where(QLyric.lyric.track.trackId.eq(QTrack.track.trackId))
+                .exists();
+
         return queryFactory
                 .selectFrom(QTrack.track)
-                .where(youtubeIdNotNull, lyricsDoneCondition, genreCondition)
+                .where(youtubeIdNotNull, lyricsDoneCondition, genreCondition, hasLyrics)
                 .orderBy(QTrack.track.spotifyPopularity.desc())
                 .limit(limit)
                 .fetch();
     }
+
 
     public Page<Track> findByTitleContainingAndYoutubeIdIsNotNullAndOtherConditions(String keyword, Pageable pageable) {
         QTrack qTrack = QTrack.track;
