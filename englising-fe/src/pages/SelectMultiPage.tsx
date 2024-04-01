@@ -86,7 +86,7 @@ const SelectMultiPage: React.FC = () => {
                         </div>
                         <div className="relative flex flex-col">
                             {multiroom && multiroom.length > 0 ? ( // multiroom 배열이 비어있지 않은 경우에만 map 함수 호출
-                                <div className='text-white grid grid-cols-4 gap-9 justify-items-start overflow-y-auto'>
+                                <div className='text-white grid grid-cols-4 gap-9 justify-items-start overflow-y-auto scrollbar-webkit'>
                                     {multiroom.map((item) => (
                                         <MultiRoom key={item.multiPlayId} roomName={item.roomName} roomId={item.multiPlayId} maxUser={item.maxUser} currentUser={item.currentUser} multiPlayImgUrl={item.multiPlayImgUrl} isSecret={item.isSecret} genre={item.genre} password={item.password}/>
                                     ))}
