@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 
 function HintRoulette({ hint, onRoulette }: { hint: number; onRoulette: () => void }) {
   const backgroundRef = useRef<HTMLDivElement>(null);
-  console.log("hint num:", hint);
 
   useEffect(() => {
     const width = Number(backgroundRef.current?.offsetWidth);
