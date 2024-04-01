@@ -41,8 +41,6 @@ public class TrackLikeController {
         Long userId = Long.parseLong(userDetails.getUsername());
         TrackLikeResponseDto trackLikeResponseDto = trackLikeService.likeTrack(trackLikeRequestDto.getTrackId(), userId);
 
-//        TrackLikeResponseDto trackLikeResponseDto = trackLikeService.likeTrack(trackLikeRequestDto.getTrackId(),1L);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new DefaultResponseDto<>(TrackResponseMessage.TRACK_LIKE_MESSAGE.getCode(),
