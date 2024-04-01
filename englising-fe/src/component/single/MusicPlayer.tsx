@@ -15,7 +15,7 @@ interface Props {
     togglePlayerControl: number
 }
 
-const hintStyle = "w-[1.5em] h-[1.5em] mx-[0.4em] rounded-full"
+const hintStyle = "w-[1.75em] h-[1.75em] mr-[0.8em] rounded-full"
 
 const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal, togglePlayerControl}:Props ) => {
     // 현재 재생중인 가사 정보
@@ -217,43 +217,49 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal, togg
                 </div>
             </div>
 
-            <div className="w-full h-2/5 flex flex-col items-center box-border ">
-                 <div className="w-full h-3/5 flex flex-row justify-center items-center">
-                            <div className=" flex text-[1em] text-white w-24">
-                                정답
-                            </div>
-                        <div className="h-20 w-24 pl-18">
-                            <CircularProgressbar
-                                value={(percentage == 0) ? 0.5 : percentage}
-                                
-                                text={`${rightWord}/${totalWord}`}
-                                strokeWidth={10} // 진행 바의 폭 조절
-
-                                styles={buildStyles({
-                                    // 게이지의 처음 위치
-                                    rotation: 0,
-
-                                    // 진행바 모서리 모양 'butt' or 'round'
-                                    strokeLinecap: 'round',
-
-                                    // 텍스트 사이즈
-                                    textSize: '1em',
-
-                                    // percent 게이지 차는 속도
-                                    pathTransitionDuration: 1,
-
-                                    // 색상
-                                    pathColor: `rgba(0, 255, 255, ${(percentage==0) ? 10 : percentage})`,
-                                    textColor: '#ffffff',
-                                    trailColor: '#d6d6d6', 
-                                    backgroundColor: '#00ffff',
-                                })}
-                            />
+            <div className="w-full h-2/5 flex flex-col ">
+                <div className="w-full h-3/5 mb-2 flex justify-center">
+                    <div className="w-[50%] h-full flex items-center">
+                        <div className="w-[30%] pr-[10%] text-xl text-center text-white">
+                            정답
                         </div>
+                        <div className="w-[55%]">
+                            <div className="w-[75%]">
+                                <CircularProgressbar
+                                    value={(percentage == 0) ? 0.5 : percentage}
+                                    
+                                    text={`${rightWord}/${totalWord}`}
+                                    strokeWidth={10} // 진행 바의 폭 조절
+
+                                    styles={buildStyles({
+                                        // 게이지의 처음 위치
+                                        rotation: 0,
+
+                                        // 진행바 모서리 모양 'butt' or 'round'
+                                        strokeLinecap: 'round',
+
+                                        // 텍스트 사이즈
+                                        textSize: '1em',
+
+                                        // percent 게이지 차는 속도
+                                        pathTransitionDuration: 1,
+
+                                        // 색상
+                                        pathColor: `rgba(0, 255, 255, ${(percentage==0) ? 10 : percentage})`,
+                                        textColor: '#ffffff',
+                                        trailColor: '#d6d6d6', 
+                                        backgroundColor: '#00ffff',
+                                    })}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
                 
-                <div className="flex flex-row items-center">
-                        <div className="w-20 text-white text text-[1em]">
+                <div className="w-full flex justify-center items-center">
+                    <div className="w-[50%] h-full flex justify-start items-center">
+                        <div className="w-[30%] pr-[10%] text-xl text-center text-white">
                                 힌트
                         </div>
                         <div className={(hintNum >= 1) ? `${hintStyle} + bg-secondary-500` : `${hintStyle} + bg-white`}>
@@ -262,9 +268,12 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal, togg
                         </div>
                         <div className={(hintNum >= 3) ? `${hintStyle} + bg-secondary-500` : `${hintStyle} + bg-white`}>
                         </div>
+                        <div className={(hintNum >= 4) ? `${hintStyle} + bg-secondary-500` : `${hintStyle} + bg-white`}>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
     )
 }
 
