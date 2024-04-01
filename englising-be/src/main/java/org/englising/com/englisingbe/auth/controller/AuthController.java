@@ -2,7 +2,6 @@ package org.englising.com.englisingbe.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,13 +30,7 @@ public class AuthController {
             description = "게스트로 로그인합니다"
     )
     public ResponseEntity<DefaultResponseDto<?>> guest(HttpServletResponse response) throws Exception {
-
         JwtResponseDto jwtResponseDto = authService.guest();
-
-//        Cookie accessCookie = cookieUtil.createAccessCookie("Authorization", jwtResponseDto.getAccessToken());
-//        Cookie refreshCookie = cookieUtil.createRefreshCookie("Authorization-refresh", jwtResponseDto.getRefreshToken());
-//        response.addCookie(accessCookie);
-//        response.addCookie(refreshCookie);
 
         cookieUtil.addAccessCookie(response, "Authorization", jwtResponseDto.getAccessToken());
         cookieUtil.addRefreshCookie(response, "Authorization-refresh", jwtResponseDto.getRefreshToken());

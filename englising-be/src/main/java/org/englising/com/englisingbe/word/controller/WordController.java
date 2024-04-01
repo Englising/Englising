@@ -30,7 +30,7 @@ public class WordController {
     )
     @Parameters({
             @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
-            @Parameter(name = "type", description = "단어장 종류 : PLAYED(플레이한), LIKE(좋아요 한), SEARCHED(검색한)", in = ParameterIn.QUERY),
+            @Parameter(name = "type", description = "단어장 종류 : PLAYED(플레이한), LIKE(좋아요 한)", in = ParameterIn.QUERY),
             @Parameter(name = "page", description = "페이지 번호", in = ParameterIn.QUERY),
             @Parameter(name = "size", description = "(선택적) 페이지당 컨텐츠 개수, 기본 10", in = ParameterIn.QUERY)
     })
@@ -39,7 +39,6 @@ public class WordController {
             @RequestParam WordListType type, @RequestParam Integer page, @RequestParam Integer size) {
 
         WordListResponseDto wordListResponseDto = wordService.getWordList(type, page, size, Long.parseLong(userDetails.getUsername()));
-//        WordListResponseDto wordListResponseDto = wordService.getWordList(type, page, size, 1L);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -61,8 +60,6 @@ public class WordController {
 
         Long userId = Long.parseLong(userDetails.getUsername());
         WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordLikeRequestDto.getWordId(), userId);
-
-//        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordLikeRequestDto.getWordId(), 1L);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -43,7 +43,7 @@ public class CookieUtil {
 //        return cookie;
 //    }
 
-    // sameSite"None"설정을 위한 cookie ... 개발용
+    // sameSite"None"설정을 위한 cookie ... 개발용 todo 개발 끝나고는 sameSite = none 설정 지우기
     public void addAccessCookie(HttpServletResponse response, String key, String value) {
         ResponseCookie cookie = ResponseCookie.from(key, value)
                 .path("/")
@@ -82,7 +82,6 @@ public class CookieUtil {
                 }
             }
         }
-
         return accessToken;
     }
 
