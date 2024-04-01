@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import RandomButton from './RandomButton';
 
@@ -20,6 +20,8 @@ const SettingProfile: React.FC<SettingProfileProps> = (props) => {
 
     const { open, close, updateProfile } = props;
 
+    const inputRef = useRef < HTMLInputElement | null > (null);
+
     useEffect(() => {
         if (open) { // 모달 열때 프로필 데이터
             axios.get("https://j10a106.p.ssafy.io/api/user/profile", {withCredentials:true})
@@ -40,6 +42,17 @@ const SettingProfile: React.FC<SettingProfileProps> = (props) => {
     };
 
     const saveProfile = () => {
+        if (/^\s+/.test(profile.nickname) || profile.nickname == "") {
+            if (inputRef.current != null) {
+                setProfile({
+                    ...profile,
+                    nickname : ""
+                })
+                inputRef.current.placeholder = "공백 시작 금지!"
+            }
+            return;
+        }
+
         axios.put("https://j10a106.p.ssafy.io/api/user/profile", profile , {withCredentials:true}) // 프로필 정보 서버에 전송
             .then(() => {
                 updateProfile(profile); // 프로필 업데이트 함수 호출하여 사이드바 등에 반영
@@ -54,7 +67,17 @@ const SettingProfile: React.FC<SettingProfileProps> = (props) => {
                 }
                 // console.error('프로필 업데이트 실패', error);
             });
+
+        if (inputRef.current != null) {
+            inputRef.current.placeholder = ""
+        }
     };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if(e.key == 'Enter'){
+            saveProfile();
+        } 
+    }
 
     return (
         <div className={`modal ${open ? "openModal" : ""} bg-black bg-opacity-70 text-white h-screen w-full fixed left-0 top-0 flex justify-center items-center z-50`}>
@@ -80,8 +103,12 @@ const SettingProfile: React.FC<SettingProfileProps> = (props) => {
                             <div>닉네임</div>
                             <div className='flex flex-row gap-4'>
                                 <input 
-                                    placeholder={profile?.nickname} 
-                                    className='placeholder:text-primary-500 text-black h-14 w-36 rounded-xl pl-4' onChange={(e) => setProfile({ ...profile, nickname: e.target.value })}>
+                                    ref={inputRef}
+                                    value={profile.nickname}
+                                    placeholder=""
+                                    onKeyDown={(event) => handleKeyDown(event)}
+                                    className='placeholder:text-primary-500 text-black h-14 w-36 rounded-xl pl-4'
+                                    onChange={(e) => setProfile({ ...profile, nickname: e.target.value })}>
                                 </input>
                             </div>
                         </div>

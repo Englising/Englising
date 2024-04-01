@@ -145,7 +145,10 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
         }
         // 마지막 빈칸을 등록했을때 or 마지막 오답이 수정되었을때 넘어감
         if (blankNum == 1 || incorrectNum <= 1 && blankNum == 0) {
-            if(lyrics != undefined) handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime);
+            if (lyrics != undefined) {
+                if(idx >= lyrics.length-1) handleLyricsClick(0, lyrics[0].isBlank, lyrics[0].startTime, lyrics[0].endTime);
+                else handleLyricsClick(idx+1, lyrics[idx+1].isBlank, lyrics[idx+1].startTime, lyrics[idx+1].endTime);
+            }
         }
         
         //targetBlank?.classList.remove('backdrop-blur', 'border', 'border-secondary-500');
