@@ -39,8 +39,6 @@ public class WordController {
             @RequestParam WordListType type, @RequestParam Integer page, @RequestParam Integer size) {
 
         WordListResponseDto wordListResponseDto = wordService.getWordList(type, page, size, Long.parseLong(userDetails.getUsername()));
-//        WordListResponseDto wordListResponseDto = wordService.getWordList(type, page, size, 1L);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new DefaultResponseDto<>(WordResponseMessage.WORD_GETlIST_MESSAGE.getCode(),
@@ -61,9 +59,6 @@ public class WordController {
 
         Long userId = Long.parseLong(userDetails.getUsername());
         WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordLikeRequestDto.getWordId(), userId);
-
-//        WordLikeResponseDto wordLikeResponseDto = wordService.likeWord(wordLikeRequestDto.getWordId(), 1L);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new DefaultResponseDto<>(WordResponseMessage.WORD_LIKE_MESSAGE.getCode(),
