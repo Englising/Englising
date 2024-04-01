@@ -215,12 +215,14 @@ public class SinglePlayServiceImpl {
             }
             int total = 30+40+50;
             double rate = (double)totalScore / total * 100;
-            if (rate < 30) {
+            if (rate < 20) {
                 score = 0;
-            } else if (rate < 60) {
+            } else if (rate < 50) {
                 score = 1;
-            } else {
+            } else if (rate < 80){
                 score = 2;
+            } else {
+                score = 3;
             }
         }
         System.out.println("scores = " + scores);
