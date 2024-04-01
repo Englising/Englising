@@ -183,7 +183,7 @@ const SinglePage = () => {
                 setProgressInfo({
                     totalWord: singleData.data.totalWordCnt, // 나중에 axios로 받아올 것
                     rightWord: 0,
-                    hintNum: 3,            
+                    hintNum: 4,            
                 });
             } catch (error) {
                 console.error('Error fetching data:', error)
