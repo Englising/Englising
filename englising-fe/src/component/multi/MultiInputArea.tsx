@@ -34,7 +34,7 @@ const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alpha
     setChangedAnswer({ alphabetIndex: json.alphabetIndex, alphabet: json.alphabet });
   };
 
-  const [connect, disconnect] = useStomp(client, `answer/${multiId}`, callback);
+  const [connect, disconnect] = useStomp(client, `/sub/answer/${multiId}`, callback);
 
   const publish = (ans: Alphabet) => {
     if (!client.current?.connected) return;
@@ -52,6 +52,10 @@ const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alpha
 
   useEffect(() => {
     connect();
+    // if (isConnect && client.current) {
+    //   const answerSub = client.current.subscribe(`/sub/answer/${multiId}`, callback);
+    //   console.log();
+    // }
 
     return () => disconnect();
   }, []);
