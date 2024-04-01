@@ -11,6 +11,5 @@ public abstract class OAuth2Response {
     }
 
     public abstract String getId(); // 소셜 식별 값
-
     public abstract String getEmail();
 }
