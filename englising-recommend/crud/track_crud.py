@@ -1,5 +1,9 @@
+import os
+import pickle
+import time
 from typing import List
-
+import redis
+from dotenv import load_dotenv
 from sqlalchemy import desc, func, and_
 
 from database.mysql_manager import Session
@@ -8,14 +12,30 @@ from model.single_play import Singleplay
 from model.track_like import TrackLike
 
 
+load_dotenv()
+
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+REDIS_DB = int(os.getenv("REDIS_DB", 0))
+r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+
+
 def get_all_tracks(session: Session) -> List[Track]:
-    return session.query(Track) \
-        .join(Track.track_words) \
-        .filter(Track.youtube_id is not None and Track.youtube_id != 'NONE') \
-        .filter(Track.genre is not None) \
-        .filter(Track.lyric_status == 'DONE') \
-        .filter(Track.lyrics.any(Lyric.kr_text is not None)) \
-        .all()
+    cache_key = "Recommend:GetAllTracks"
+    cached_tracks = r.get(cache_key)
+
+    if cached_tracks is not None:
+        return pickle.loads(cached_tracks)
+    else:
+        tracks = session.query(Track) \
+            .join(Track.track_words) \
+            .filter(Track.youtube_id is not None and Track.youtube_id != 'NONE') \
+            .filter(Track.genre is not None) \
+            .filter(Track.lyric_status == 'DONE') \
+            .filter(Track.lyrics.any(Lyric.kr_text is not None)) \
+            .all()
+        r.set(cache_key, pickle.dumps(tracks), ex=43200)
+        return tracks
 
 
 def get_user_liked_track_ids(session, user_id, limit=5):
@@ -46,3 +66,12 @@ def get_tracks_by_single_played_count_and_spotify_popularity(session, limit=60):
               .all())
 
     return tracks
+
+
+def measure_execution_time():
+    start_time = time.time()
+    session = Session()
+    tracks = get_all_tracks(session)
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"Execution time: {execution_time} seconds")
