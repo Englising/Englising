@@ -56,9 +56,6 @@ public class WordService {
             case played -> {
                 return getPlayedWords(page, size, userId);
             }
-            case searched -> {
-                return getSearchedWords(page, size, userId);
-            }
         }
         return null;
     }
@@ -95,11 +92,6 @@ public class WordService {
                 .toList();
 
         return getWordListDtoByPageAndList(wordList, wordLikes);
-    }
-
-    private WordListResponseDto getSearchedWords(Integer page, Integer size, Long userId) {
-        // todo. 추후 가능하면 (검색한 단어)
-        return null;
     }
 
 
