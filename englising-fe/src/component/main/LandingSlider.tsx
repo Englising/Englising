@@ -14,7 +14,7 @@ import explain3 from '../../assets/explain3.jpg';
 const FullScreenSlider = () => {
     return (
         <div className="w-full h-full flex flex-col items-center justify-center relative pt-10">
-            <div className="bg-black bg-opacity-50 py-2 px-3 pr-5 text-white text-xl font-bold rounded-lg self-end">Englising은 무슨 게임인가요?</div>
+            <div className="bg-black bg-opacity-50 py-2 px-3 pr-12 text-white text-xl font-bold rounded-lg self-end">Englising은 무슨 게임인가요?</div>
             <Swiper
                 direction={'horizontal'} // 수직 방향으로 슬라이드 표시
                 slidesPerView={1} // 한 번에 보여지는 슬라이드 수를 1로 설정하여 한 페이지 단위로 넘어가도록 합니다.
