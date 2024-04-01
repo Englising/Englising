@@ -104,6 +104,8 @@ public class SinglePlayServiceImpl {
         }
         SinglePlayWord singlePlayWord = singlePlayWordService.checkWordAnswer(wordCheckRequestDto);
         RightWordCntDto rightWordCntDto = singlePlayWordService.getRightAndTotalCnt(wordCheckRequestDto.singleplayId);
+        // 정답 수 업데이트
+        singlePlayRepository.updateScoreAndCorrectRateById(wordCheckRequestDto.singleplayId, rightWordCntDto.getRightWordCnt(), 0);
         return WordCheckResponseDto.builder()
                 .word(WordResponseDto.builder()
                         .singleplayWordId(singlePlayWord.getSinglePlayWordId())
@@ -221,6 +223,7 @@ public class SinglePlayServiceImpl {
                 score = 2;
             }
         }
+        System.out.println("scores = " + scores);
         return score;
     }
 
