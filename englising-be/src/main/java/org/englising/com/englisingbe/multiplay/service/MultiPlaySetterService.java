@@ -18,7 +18,7 @@ import static org.englising.com.englisingbe.global.util.StringUtils.symbols;
 public class MultiPlaySetterService {
     private final LyricServiceImpl lyricService;
     private final int symbolIndex = -1;
-    private final int lyricTotal = 3;
+    private final int lyricTotal = 2;
     private int index = 1;
 
     public Map<Integer, String> getAnswerInputMapFromMultiPlaySentenceList(List<MultiPlaySentence> sentences, boolean answer){
