@@ -192,14 +192,14 @@ public class MultiPlayWorker {
             // HINT : 0.7 배속 듣기
             case 1:
                 // 노래 재생 시간 *0.7 설정
-                trackPlayTime = (int) (trackPlayTime*0.7);
+                trackPlayTime = (int) (trackPlayTime*0.7) + 1;
                 // 노래 재생 시작 알림 예약 (3초뒤)
                 scheduleNextTask(this::sendMusicStartAlert, bufferTime);
                 break;
             // HINT : 2 배속 듣기
             case 2:
                 // 노래 재생 시간 *0.5 설정
-                trackPlayTime = (int) (trackPlayTime*0.5);
+                trackPlayTime = (int) (trackPlayTime*0.5) + 1;
                 // 노래 재생 시작 알림 예약 (3초뒤)
                 scheduleNextTask(this::sendMusicStartAlert, bufferTime);
                 break;
