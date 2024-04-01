@@ -83,28 +83,6 @@ function MultiplayPage() {
     });
   };
 
-  // const fastPlay = () => {
-  //   // 특정시간에 도달하면 playInfo 값 넣어주기 (url, startTime, endTime, speed)
-  //   setPlayInfo({
-  //     ...playInfo,
-  //     startTime: 60,
-  //     endTime: 65,
-  //     speed: 2,
-  //     onPlay: (playInfo.onPlay + 1) % 2,
-  //   });
-  // };
-
-  // const slowPlay = () => {
-  //   // 특정시간에 도달하면 playInfo 값 넣어주기 (url, startTime, endTime, speed)
-  //   setPlayInfo({
-  //     ...playInfo,
-  //     startTime: 60,
-  //     endTime: 65,
-  //     speed: 0.7,
-  //     onPlay: (playInfo.onPlay + 1) % 2,
-  //   });
-  // };
-
   const roundCallback = (body: IMessage) => {
     const json = JSON.parse(body.body);
     console.log("round", json);
@@ -159,12 +137,6 @@ function MultiplayPage() {
         setRoom((prev) => {
           return { ...prev, result: json.data };
         });
-        if (json.round == 3) {
-          console.log("마지막");
-          setTimeout(() => {
-            basicPlay(1);
-          }, 1000);
-        }
         break;
       case "HINTRESULT":
         setHintResult(json.data);
@@ -230,6 +202,12 @@ function MultiplayPage() {
         }
       }
     }
+
+    console.log("모달", round, status);
+    if (round == 3 && status == "INPUTEND") {
+      console.log("노래 나와");
+      basicPlay(1);
+    }
   }, [modalOpen]);
 
   return (
@@ -266,7 +244,7 @@ function MultiplayPage() {
             <div className="bg-gradient-to-r from-secondary-400 to-purple-500 rounded-full p-px text-center">
               <div className="bg-gray-800 py-1 rounded-full">{track && track.beforeLyric}</div>
             </div>
-            <div className="h-full flex flex-col gap-4 justify-around">
+            <div className="h-full flex flex-col gap-10 justify-center">
               {quiz && <MultiInputArea quiz={quiz} hintResult={hintResult} />}
             </div>
             <div className="justify-self-end bg-gradient-to-r from-secondary-400 to-purple-500 rounded-full p-px text-center">
