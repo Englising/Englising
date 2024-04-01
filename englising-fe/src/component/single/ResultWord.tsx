@@ -7,8 +7,8 @@ interface Props {
     //wordId, isLike, isRight, word 이거만 씀
 }
 
-const rightStyle = "w-[7em] h-12 m-2 rounded-lg text-white text-bold bg-[#6DD66D] flex justify-center items-center opacity-70 cursor-pointer"
-const wrongStyle = "w-[7em] h-12 m-2 rounded-lg text-white text-bold bg-[#FF4646] flex justify-center items-center opacity-70 cursor-pointer"
+const rightStyle = "w-[7em] h-12 m-2 rounded-lg text-white text-bold bg-[#6DD66D] flex justify-center items-center opacity-70 cursor-pointer transition duration-300"
+const wrongStyle = "w-[7em] h-12 m-2 rounded-lg text-white text-bold bg-[#FF4646] flex justify-center items-center opacity-70 cursor-pointer transition duration-300"
 
 const ResultWord = ({ resultWord }: Props) => {
     const wordsRef = useRef<(HTMLDivElement | null)[]>([]);
