@@ -72,7 +72,7 @@ public class MultiPlayController {
     @PostMapping
     @Operation(
         summary = "멀티플레이 방 만들기",
-        description = "멀티플레이 방 생성 시 필요한 방 이름, 총 인원, 장르를 가져옵니다"
+        description = "멀티플레이 방 생성 요청을 합니다."
     )
     @Parameters({
         @Parameter(name = "token", description = "JWT AccessToken", in = ParameterIn.COOKIE),
