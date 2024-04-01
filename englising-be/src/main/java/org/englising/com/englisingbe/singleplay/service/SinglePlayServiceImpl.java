@@ -71,6 +71,16 @@ public class SinglePlayServiceImpl {
         return getTrackResponseDtoFromTrackAlbumArtist(userId, trackService.getTrackAlbumArtistsByTrackIds(tracks));
     }
 
+    public PlayListDto getSearchTracks(String keyword, Integer page, Integer size, Long userId){
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "spotifyPopularity"));
+        Page<Track> trackIds = trackService.getSearchTrackIds(keyword, pageable);
+        List<TrackAlbumArtistDto> tracks = trackService.getTrackAlbumArtistsByTrackIds(trackIds.getContent()
+                .stream()
+                .map(Track::getTrackId)
+                .toList());
+        return getPlayListDtoFromPageAndList(getTrackResponseDtoFromTrackAlbumArtist(userId, tracks),trackIds);
+    }
+
     public SinglePlayResponseDto createSinglePlay(Long userId, Long trackId, Integer singlePlayLevelId){
         // SinglePlay Repository에 Create
         SinglePlay singlePlay = singlePlayRepository.save(SinglePlay.builder()
@@ -152,16 +162,6 @@ public class SinglePlayServiceImpl {
                 .build();
     }
 
-    public PlayListDto getSearchTracks(String keyword, Integer page, Integer size, Long userId){
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "spotifyPopularity"));
-        Page<Track> trackIds = trackService.getSearchTrackIds(keyword, pageable);
-        List<TrackAlbumArtistDto> tracks = trackService.getTrackAlbumArtistsByTrackIds(trackIds.getContent()
-                .stream()
-                .map(Track::getTrackId)
-                .toList());
-        return getPlayListDtoFromPageAndList(getTrackResponseDtoFromTrackAlbumArtist(userId, tracks),trackIds);
-    }
-
     private SinglePlayHint getSinglePlayHintById(Integer singlePlayHintId){
         return singlePlayHintRepository.findSinglePlayHintBySingleplayLevelId(singlePlayHintId)
                 .orElseThrow(()-> new GlobalException(ErrorHttpStatus.NO_MATCHING_HINT));
@@ -175,7 +175,7 @@ public class SinglePlayServiceImpl {
                             return trackLike.getTrack().getTrackId();
                         }
                 ).collect(Collectors.toList()));
-        return getPlayListDtoFromPageAndList(getTrackResponseDtoFromTrackAlbumArtist(userId, tracks),trackLikes);
+        return getPlayListDtoFromPageAndList(getTrackResponseDtoFromTrackAlbumArtist(userId, tracks), trackLikes);
     }
 
     private PlayListDto getRecentTracks(Integer page, Integer size, Long userId){
