@@ -24,7 +24,6 @@ import java.io.PrintWriter;
 
 // OAuth2 로그인 성공 시 로직 처리
 // 로그인 성공했으면 accessToken, refreshToken 생성 후 헤더애 넣어주기
-// token 헤더에 넣어주기
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -43,10 +42,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         try {
             // CustomOauth2User로 캐스팅하여 인증된 사용자 정보 가져옴
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-//            log.info("OAuth2LoginSuccessHandler - oAuth2User 가져오나??" + oAuth2User);
 
             String email = oAuth2User.getEmail();
-//            log.info("OAuth2LoginSuccessHandler - email --> " + email);
 
             User user = userRepository.findByEmail(email).orElse(null);
 
@@ -63,7 +60,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 cookieUtil.addRefreshCookie(response, "Authorization-refresh", jwtResponseDto.getRefreshToken());
 
                 response.sendRedirect("https://j10a106.p.ssafy.io/englising/selectSingle1");
-//                response.sendRedirect("http://localhost:5173/englising/selectSingle1");
             } else {
                 log.info("OAuth2LoginSuccessHandler -> oAuth2User is null");
 
@@ -74,7 +70,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 objectMapper.writeValue(response.getWriter(), ErrorHttpStatus.OAUTH2_USER_NOT_FOUND);
 
                 response.sendRedirect("https://j10a106.p.ssafy.io");
-//                response.sendRedirect("http://localhost:5173");
             }
         } catch (Exception e) {
             throw e;

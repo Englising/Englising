@@ -13,8 +13,6 @@ public interface WordLikeRepository extends JpaRepository<WordLike, Long> {
     @Query(value = "SELECT * FROM word_like w WHERE w.word_id = :wordId and w.user_id = :userId", nativeQuery = true)
     Optional<WordLike> findByWordIdAndUserId(Long wordId, Long userId);
 
-    Page<WordLike> getWordLikeByUserUserId(Long userId, Pageable pageable);
-
     Page<WordLike> getWordLikeByUserUserIdAndIsLikedTrue(Long userId, Pageable pageable);
 
     boolean existsByUserUserIdAndWordWordIdAndIsLikedTrue(Long userId, Long wordId);

@@ -26,7 +26,6 @@ public class UserController {
     public ResponseEntity<DefaultResponseDto<?>> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
         Long userId = Long.parseLong(userDetails.getUsername());
         ProfileDto profileDto = userService.getProfile(userId);
-//        ProfileDto profileDto = userService.getProfile(474L); //todo. 추후 위로 수정
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -44,7 +43,6 @@ public class UserController {
                                                             @RequestBody ProfileDto profileDto) {
         Long userId = Long.parseLong(userDetails.getUsername());
         userService.updateProfile(userId, profileDto);
-//        userService.updateProfile(474L, profileDto);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -79,7 +77,6 @@ public class UserController {
                                                                @RequestBody NicknameRequestDto nicknameRequestDto) {
         Long userId = Long.parseLong(userDetails.getUsername());
         NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname(), userId);
-//        NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname(), 474L);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
