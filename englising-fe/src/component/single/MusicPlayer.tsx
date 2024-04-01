@@ -68,6 +68,10 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal, togg
         setTogglePlayButton(false);
     }
 
+    const handleEnded = () => {
+        // 노래 끝나면 다시 루프돌게 해주세연
+    }
+
     const handlePuase = () => {
         if (playing) setPlaying(false);
         setTogglePlayButton(true);
@@ -161,11 +165,11 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal, togg
                     url= {url}
                     playing = {playing} // 자동재생
                     volume={volume} // volume
-                    loop={true} // 노래가 끝나면 loop를 돈다.
                     controls = {true} // 기본 control를 띄울 것인지 - 나중에 지울것
                     progressInterval = {100} // onProgress의 텀을 설정한다.
                     onProgress={(e) => { handleProgress(e) }}
                     onPlay={handlePlay}
+                    onEnded={handleEnded}    
                     onPause={handlePuase}
                     onDuration={handleDuration}
                     onError={handleError}

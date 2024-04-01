@@ -1,21 +1,35 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SearchBar = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const inputRef = useRef<HTMLInputElement | null>(null);
     const navigate = useNavigate();
 
     const handleSearch = () => {
+        if (searchTerm == "") {
+            inputRef.current?.focus();
+            return;
+        }
         navigate(`/englising/searchResult/${searchTerm}`)
     };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key == 'Enter') {
+            handleSearch();
+        }
+    };
+
     return (
         <div className="h-11 w-3/5 rounded-lg bg-gradient-to-r from-[white] via-[#00ffff] to-[#3F4685] p-0.5 relative">
                     <div className="flex h-full w-full rounded-lg items-center bg-primary-950 back ">
                         <input
+                            ref={inputRef}
                             type="text"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+                            onKeyDown={(event) => {handleKeyDown(event)}} 
                             className="text-sm text-primary-200 font-thin pl-5 py-2 flex-1 outline-none bg-black"
                             placeholder="플레이하고 싶은 노래를 검색해보세요!"
                         />

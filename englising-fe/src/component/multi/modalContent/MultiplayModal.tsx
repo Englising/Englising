@@ -50,10 +50,15 @@ const MultiplayModal = ({ status, round, room, time, hintResult }: ModalProps) =
     return <Hint hint={room.hint} hintResult={hintResult} />;
   } else {
     return (
-      <div className="min-w-[45rem] py-8 text-center">
+      <div className="min-w-[45rem] flex flex-col gap-2 justify-center items-center py-14 text-xl">
         <p>다른 플레이어를 기다리는 중입니다</p>
         <p>잠시만 기다려 주세요</p>
-        <p>gif 넣기</p>
+        <img
+          src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Pleading%20Face.png"
+          alt="Pleading Face"
+          width="100"
+          height="100"
+        />
       </div>
     );
   }
