@@ -158,8 +158,15 @@ const SinglePage = () => {
     }
 
     const onLyricMove = (index: number): void => {
-        const lyric = singleData?.lyrics[index];
-        if (lyric != undefined) {
+        let lyric = singleData?.lyrics[index];
+        if (index < 0) {
+            lyric = singleData?.lyrics[0];
+            onSetInfo(0, lyric.isBlank, lyric.startTime, lyric.endTime);
+        }
+        else if (index == singleData?.lyrics.length) {
+            lyric = singleData?.lyrics[0];
+            onSetInfo(0, lyric.isBlank, lyric.startTime, lyric.endTime);
+        } else if (lyric != undefined) {
             onSetInfo(index, lyric.isBlank, lyric.startTime, lyric.endTime);
         }
     }
@@ -197,7 +204,7 @@ const SinglePage = () => {
         if (progressInfo.rightWord == progressInfo.totalWord) {
             navigate(`/SinglePlay/result/${singlePlayId}`, { state: { ...state } } );
         }
-    }, [progressInfo.totalWord])
+    }, [progressInfo.rightWord])
 
 return (
     <div className="bg-cover bg-center h-screen w-screen p-0 m-0 relative z-10" style={{ backgroundImage: `url(${img})` }}>
