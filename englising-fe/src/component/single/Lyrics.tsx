@@ -184,12 +184,12 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
 
         // 현재 문장에 답이 입력될 빈칸에 효과주기.
         const wordIdx = targetBlank?.dataset.word;
-        targetBlank?.classList.add('px-3', 'border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
+        targetBlank?.classList.add('px-3', 'border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200', 'transition', 'duration-500');
         targetBlank?.classList.replace('bg-opacity-60', 'bg-opacity-20');
         blanksRef.current.map(el => {
             const idx = el?.dataset.word;
             if (wordIdx != idx) {
-                el?.classList.remove('px-3', 'border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200');
+                el?.classList.remove('px-3', 'border-2', 'border-cyan-400', 'shadow-lg', 'shadow-cyan-200', 'transition', 'duration-500');
                 el?.classList.replace('bg-opacity-20', 'bg-opacity-60');
             }
         });
