@@ -14,7 +14,7 @@ const HintModal = ({hintWord, hintNum, onUse, onCancel}: Props) => {
                 {hintNum > 0 ?
                     (<div className="w-full h-full flex flex-col justify-center">
                         <div className="text-[1.2em]">힌트를 사용하시겠습니까?</div>
-                        <div className="my-3 text-[1.2em]">{hintNum} / 3</div> 
+                        <div className="my-3 text-[1.2em]">{hintNum} / 4</div> 
                         <div className="flex justify-center">
                             <div className="h-[2.2em] w-[4em] m-1 rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col" onClick={() => onUse(hintWord)}>
                                 <div className="m-auto">사용</div>

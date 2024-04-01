@@ -39,7 +39,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
     {/* 힌트 */ }
     const [showHintModal, setShowHintModal] = useState<boolean>(false);
     const [hintWord, setHintWord] = useState<string>("");
-    const [hintNum, setHintNum] = useState<number>(3);
+    const [hintNum, setHintNum] = useState<number>(4);
     
     {/* 오답간 구분을 위한 변수*/ }
     const preIdx = useRef<number>(-1);
