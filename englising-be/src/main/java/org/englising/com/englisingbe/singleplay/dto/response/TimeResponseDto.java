@@ -12,6 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TimeResponseDto {
-    public Long trackId;
-    public List<Float> startTime;
+    private Long trackId;
+    private List<Float> startTime;
 }

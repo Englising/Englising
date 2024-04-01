@@ -27,6 +27,7 @@ import org.englising.com.englisingbe.webclient.service.RecommendApiService;
 import org.englising.com.englisingbe.word.entity.TrackWord;
 import org.englising.com.englisingbe.word.repository.TrackWordRepository;
 import org.englising.com.englisingbe.word.service.TrackWordService;
+import org.englising.com.englisingbe.word.service.WordService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,8 +35,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +46,7 @@ public class SinglePlayServiceImpl {
     private final TrackServiceImpl trackService;
     private final UserService userService;
     private final LyricServiceImpl lyricService;
+    private final WordService wordService;
 
     private final SinglePlayRepository singlePlayRepository;
     private final SinglePlayHintRepository singlePlayHintRepository;
@@ -95,9 +97,15 @@ public class SinglePlayServiceImpl {
                 .build();
     }
 
-    public WordCheckResponseDto checkWord(WordCheckRequestDto wordCheckRequestDto){
+    public WordCheckResponseDto checkWord(WordCheckRequestDto wordCheckRequestDto, Long userId){
+        SinglePlayWord originWord = singlePlayWordService.getSinglePlayWordById(wordCheckRequestDto.getSingleplayWordId());
+        if(!originWord.getSinglePlay().getUser().getUserId().equals(userId)){
+            throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_TOKEN);
+        }
         SinglePlayWord singlePlayWord = singlePlayWordService.checkWordAnswer(wordCheckRequestDto);
         RightWordCntDto rightWordCntDto = singlePlayWordService.getRightAndTotalCnt(wordCheckRequestDto.singleplayId);
+        // 정답 수 업데이트
+        singlePlayRepository.updateScoreAndCorrectRateById(wordCheckRequestDto.singleplayId, rightWordCntDto.getRightWordCnt(), 0);
         return WordCheckResponseDto.builder()
                 .word(WordResponseDto.builder()
                         .singleplayWordId(singlePlayWord.getSinglePlayWordId())
@@ -111,21 +119,25 @@ public class SinglePlayServiceImpl {
                 .build();
     }
 
-    public SinglePlayResponseDto getSinglePlayResult(Long singlePlayId){
+    public SinglePlayResultResponseDto getSinglePlayResult(Long singlePlayId, Long userId){
         // SinglePlay Repository에서 조회
         SinglePlay singlePlay = getSinglePlayById(singlePlayId);
+        if(!singlePlay.getUser().getUserId().equals(userId)){
+            throw new GlobalException(ErrorHttpStatus.UNAUTHORIZED_TOKEN);
+        }
         // 해당 Track의 Lyrics 가져옴
         List<LyricDto> lyricWordSplitted = recommendApiService.getSplittedWordsOfLyricByTrackId(singlePlay.getTrack().getTrackId());
         // SinglePlay-Word 결과 조회
         List<SinglePlayWord> singlePlayWordList = singlePlayWordService.getAllSinglePlayWordsBySinglePlayId(singlePlayId);
         int totalWordCnt = singlePlayWordList.size();
         int rightWordCnt = (int) singlePlayWordList.stream().filter(SinglePlayWord::getIsRight).count();
-        singlePlayRepository.updateScoreAndCorrectRateById(singlePlayId, rightWordCnt, rightWordCnt / totalWordCnt * 100);
+        int correctRate = rightWordCnt == 0? 0 : rightWordCnt / totalWordCnt * 100;
+        singlePlayRepository.updateScoreAndCorrectRateById(singlePlayId, rightWordCnt, correctRate);
         // Dto 생성
-        return SinglePlayResponseDto.builder()
+        return SinglePlayResultResponseDto.builder()
                 .singlePlayId(singlePlay.getSinglePlayId())
                 .lyrics(getLyricDtoFromLyricList(lyricWordSplitted, singlePlayWordList))
-                .words(getWordDtoFromSinglePlayWord(singlePlayWordList))
+                .words(getWordResultDtoFromSinglePlayWord(singlePlayWordList, userId))
                 .totalWordCnt(totalWordCnt)
                 .rightWordCnt(rightWordCnt)
                 .build();
@@ -145,10 +157,8 @@ public class SinglePlayServiceImpl {
         Page<Track> trackIds = trackService.getSearchTrackIds(keyword, pageable);
         List<TrackAlbumArtistDto> tracks = trackService.getTrackAlbumArtistsByTrackIds(trackIds.getContent()
                 .stream()
-                .map( track -> {
-                            return track.getTrackId();
-                        }
-                ).collect(Collectors.toList()));
+                .map(Track::getTrackId)
+                .toList());
         return getPlayListDtoFromPageAndList(getTrackResponseDtoFromTrackAlbumArtist(userId, tracks),trackIds);
     }
 
@@ -204,15 +214,18 @@ public class SinglePlayServiceImpl {
                 return 0;
             }
             int total = 30+40+50;
-            int rate = totalScore / total * 100;
-            if(rate < 30){
+            double rate = (double)totalScore / total * 100;
+            if (rate < 20) {
                 score = 0;
-            } else if (rate < 60) {
+            } else if (rate < 50) {
                 score = 1;
-            } else {
+            } else if (rate < 80){
                 score = 2;
+            } else {
+                score = 3;
             }
         }
+        System.out.println("scores = " + scores);
         return score;
     }
 
@@ -240,7 +253,7 @@ public class SinglePlayServiceImpl {
     private List<WordResponseDto> getWordDtoFromSinglePlayWord(List<SinglePlayWord> singlePlayWordList){
         return singlePlayWordList.stream()
                 .map(singlePlayWord ->
-                    WordResponseDto.builder()
+                        WordResponseDto.builder()
                             .singleplayWordId(singlePlayWord.getSinglePlayWordId())
                             .sentenceIndex(singlePlayWord.getSentenceIndex())
                             .wordIndex(singlePlayWord.getWordIndex())
@@ -248,6 +261,29 @@ public class SinglePlayServiceImpl {
                             .isRight(singlePlayWord.getIsRight())
                             .build()
                 ).toList();
+    }
+    private List<WordResultResponseDto> getWordResultDtoFromSinglePlayWord(List<SinglePlayWord> singlePlayWordList, Long userId){
+        Map<Long, WordResultResponseDto> wordIdMap = singlePlayWordList.stream()
+                .map(singlePlayWord ->
+                        WordResultResponseDto.builder()
+                                .singleplayWordId(singlePlayWord.getSinglePlayWordId())
+                                .sentenceIndex(singlePlayWord.getSentenceIndex())
+                                .wordIndex(singlePlayWord.getWordIndex())
+                                .word(singlePlayWord.getOriginWord())
+                                .isRight(singlePlayWord.getIsRight())
+                                .wordId(singlePlayWord.getWord().getWordId())
+                                .isLike(wordService.isLikedByUserIdAndWordId(singlePlayWord.getWord().getWordId(), userId))
+                                .build()
+                )
+                .collect(Collectors.toMap(WordResultResponseDto::getWordId, Function.identity(), (existing, replacement) -> existing));
+        List<WordResultResponseDto> wordResultResponseDtoList = new ArrayList<>(wordIdMap.values());
+        Collections.sort(wordResultResponseDtoList, new Comparator<WordResultResponseDto>() {
+            @Override
+            public int compare(WordResultResponseDto o1, WordResultResponseDto o2) {
+                return (int) (o1.getSingleplayWordId() - o2.getSingleplayWordId());
+            }
+        });
+        return wordResultResponseDtoList;
     }
 
     private TrackWord trackWordFastApiDtoToTrackWord(TrackWordFastApiDto trackWordFastApiDto){

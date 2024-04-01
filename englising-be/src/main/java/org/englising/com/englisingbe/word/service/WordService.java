@@ -44,7 +44,7 @@ public class WordService {
 
     public Word getWordById(long wordId) {
         Word word = wordRepository.findById(wordId)
-                .orElseThrow(() -> new GlobalException(ErrorHttpStatus.WORD_NOT_FOUND));
+                .orElseThrow(() -> new GlobalException(ErrorHttpStatus.NO_MATCHING_WORD));
         return word;
     }
 
@@ -115,6 +115,10 @@ public class WordService {
         wordLike.updateWordLike(updatedLikeStatus);
 
         return new WordLikeResponseDto(wordLike.getIsLiked());
+    }
+
+    public boolean isLikedByUserIdAndWordId(Long wordId, Long userId){
+        return wordLikeRepository.existsByUserUserIdAndWordWordIdAndIsLikedTrue(userId, wordId);
     }
 
     private WordResponseDto getWordResponseDto(Word word, Long userId) {

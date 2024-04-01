@@ -3,6 +3,7 @@ package org.englising.com.englisingbe.music.service;
 import lombok.RequiredArgsConstructor;
 import org.englising.com.englisingbe.global.exception.ErrorHttpStatus;
 import org.englising.com.englisingbe.global.exception.GlobalException;
+import org.englising.com.englisingbe.global.util.Genre;
 import org.englising.com.englisingbe.music.dto.TrackAlbumArtistDto;
 import org.englising.com.englisingbe.music.entity.Track;
 import org.englising.com.englisingbe.music.repository.TrackRepository;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +26,7 @@ public class TrackServiceImpl {
         return trackIds.stream()
                 .map(trackId -> trackRepositorySupport.findTrackWithAlbumAndArtistsByTrackId(trackId)
                         .orElseThrow(() -> new GlobalException(ErrorHttpStatus.NO_MATCHING_TRACK)))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public TrackAlbumArtistDto getTrackAlbumArtistByTrackId(Long trackId) {
@@ -38,10 +40,12 @@ public class TrackServiceImpl {
     }
 
     public Page<Track> getSearchTrackIds(String keyword, Pageable pageable){
-        return trackRepository.findByTitleContainingAndYoutubeIdIsNotNull(keyword, pageable);
+        return trackRepositorySupport.findByTitleContainingAndYoutubeIdIsNotNullAndOtherConditions(keyword, pageable);
     }
 
-    public Track getRandomTrack(){
-        return trackRepository.findRandomTrackWithLyricsAndYoutubeId();
+    public Track getRandomTrack(Genre genre, int limit){
+        Random random = new Random();
+        List<Track> tracks = trackRepositorySupport.findTracksByGenreAndLyricStatus(genre, limit);
+        return tracks.get(random.nextInt(tracks.size()));
     }
 }

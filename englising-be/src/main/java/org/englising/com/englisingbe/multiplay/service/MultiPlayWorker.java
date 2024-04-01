@@ -48,7 +48,19 @@ public class MultiPlayWorker {
         timeDestination = WebSocketUrls.timeUrl+multiPlayGame.getMultiPlayId().toString();
     }
 
-    public void sendRoundStartAlert() {
+    public void sendGameStartAlert(){
+        this.multiPlayGame = redisService.updateRoundStatus(multiPlayGame.getMultiPlayId(), 1, MultiPlayStatus.GAMESTART);
+        messagingTemplate.convertAndSend(roundDestination,
+                RoundDto.<String>builder()
+                        .round(0)
+                        .status(MultiPlayStatus.GAMESTART)
+                        .data("게임이 시작되었습니다. 2초 뒤 1라운드 시작 알림이 갑니다.")
+                        .build());
+        // 2초 뒤 1라운드 시작 알림 예약
+        scheduleNextTask(this::sendRoundStartAlert, 2000);
+    }
+
+    private void sendRoundStartAlert(){
         switch (multiPlayGame.getRound()){
             case 1 :
                 // 라운드 정보 업데이트
@@ -93,7 +105,7 @@ public class MultiPlayWorker {
                         RoundDto.<String>builder()
                                 .round(multiPlayGame.getRound())
                                 .status(MultiPlayStatus.ROUNDSTART)
-                                .data("3라운드 시작") // 선택된 힌트 결과를 ??
+                                .data("3라운드 시작")
                                 .build());
                 // 힌트 결과 알림 예약 (3초 뒤)
                 scheduleNextTask(this::sendHintResult, bufferTime);
@@ -102,7 +114,7 @@ public class MultiPlayWorker {
         }
     }
 
-    public void sendMusicStartAlert() {
+    private void sendMusicStartAlert() {
         // 라운드 정보 업데이트
         this.multiPlayGame = redisService.updateRoundStatus(multiPlayGame.getMultiPlayId(), multiPlayGame.getRound(), MultiPlayStatus.MUSICSTART);
         // 음악 시작 알림
@@ -118,7 +130,7 @@ public class MultiPlayWorker {
         scheduleNextTask(this::sendInputStartAlert, trackPlayTime);
     }
 
-    public void sendInputStartAlert(){
+    private void sendInputStartAlert(){
         // 라운드 정보 업데이트
         this.multiPlayGame = redisService.updateRoundStatus(multiPlayGame.getMultiPlayId(), multiPlayGame.getRound(), MultiPlayStatus.INPUTSTART);
         // 입력 시작 알림
@@ -134,7 +146,7 @@ public class MultiPlayWorker {
         scheduleNextTask(this::sendInputEndAlert, inputTime);
     }
 
-    public void sendInputEndAlert(){
+    private void sendInputEndAlert(){
         // 라운드 정보 업데이트
         this.multiPlayGame = redisService.updateRoundStatus(multiPlayGame.getMultiPlayId(), multiPlayGame.getRound(), MultiPlayStatus.INPUTEND);
         // 입력 시작 알림
@@ -148,7 +160,7 @@ public class MultiPlayWorker {
         scheduleNextTask(this::roundResultAlert, bufferTime);
     }
 
-    public void roundResultAlert(){
+    private void roundResultAlert(){
         // 정답 확인 및 결과 전송
         boolean isCorrect = wrongAnswerCount() == 0;
         messagingTemplate.convertAndSend(roundDestination,
@@ -171,7 +183,7 @@ public class MultiPlayWorker {
         multiPlayGame.setRound(multiPlayGame.getRound()+1);
     }
 
-    public void sendHintResult(){
+    private void sendHintResult(){
         this.multiPlayGame = redisService.updateRoundStatus(multiPlayGame.getMultiPlayId(), multiPlayGame.getRound(), MultiPlayStatus.HINT);
         // 랜덤 힌트에 따라 분기
         // 노래일 경우 -> 3초 뒤에 노래 시작 알림
@@ -195,6 +207,7 @@ public class MultiPlayWorker {
             case 3:
                 // 오답 수 계산
                 int wrongAnswerCount = wrongAnswerCount();
+                System.out.println("wrongAnswerCount = " + wrongAnswerCount);
                 messagingTemplate.convertAndSend(roundDestination,
                         RoundDto.<Integer>builder()
                                 .round(multiPlayGame.getRound())
@@ -221,8 +234,8 @@ public class MultiPlayWorker {
     }
 
     private int wrongAnswerCount() {
-        Map<Integer, String> userAnswerMap = multiPlayGame.getAnswerAlphabets();
-        Map<Integer, String> correctAnswerMap = redisService.findMultiPlayAnswerMap(multiPlayGame.getMultiPlayId())
+        Map<Integer, String> correctAnswerMap = multiPlayGame.getAnswerAlphabets();
+        Map<Integer, String> userAnswerMap = redisService.findMultiPlayAnswerMap(multiPlayGame.getMultiPlayId())
                 .orElseThrow(()->new GlobalException(ErrorHttpStatus.NO_MATCHING_MULTIPLAYGAME));
         int wrongAnswerCount = 0;
         for (Map.Entry<Integer, String> entry : userAnswerMap.entrySet()) {
@@ -286,8 +299,8 @@ public class MultiPlayWorker {
     }
 
     private int getTrackPlayTime(){
-        BigDecimal startTime = multiPlayGame.getSentences().get(0).getStartTime();
-        BigDecimal endTime = multiPlayGame.getSentences().get(multiPlayGame.getSentences().size() - 1).getEndTime();
+        BigDecimal startTime = multiPlayGame.getBeforeLyricStartTime();
+        BigDecimal endTime = multiPlayGame.getAfterLyricEndTime();
         return endTime.subtract(startTime).multiply(new BigDecimal("1000")).intValue();
     }
 }

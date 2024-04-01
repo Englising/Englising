@@ -16,5 +16,4 @@ public interface WordLikeRepository extends JpaRepository<WordLike, Long> {
     Page<WordLike> getWordLikeByUserUserIdAndIsLikedTrue(Long userId, Pageable pageable);
 
     boolean existsByUserUserIdAndWordWordIdAndIsLikedTrue(Long userId, Long wordId);
-
 }
