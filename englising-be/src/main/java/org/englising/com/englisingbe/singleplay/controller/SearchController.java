@@ -53,7 +53,7 @@ public class SearchController {
                         DefaultResponseDto.<PlayListDto>builder()
                                 .status(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getCode())
                                 .message(ResponseMessage.SINGLEPLAY_PLAYLIST_SUCCESS.getMessage())
-                                .data(singlePlayService.getSearchTracks(keyword, page, size, 1L))
+                                .data(singlePlayService.getSearchTracks(keyword, page, size, Long.parseLong(userDetails.getUsername())))
                                 .build()
                 );
     }
