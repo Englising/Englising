@@ -56,7 +56,6 @@ function MultiplayPage() {
   const [status, setStatus] = useState<string>();
   const [round, setRound] = useState<number>(1);
   const [time, setTime] = useState<number>();
-  const [leftTime, setLeftTime] = useState<number>();
   const [quiz, setQuiz] = useState<Quiz[]>([]);
   const [track, setTrack] = useState<Track | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
@@ -85,7 +84,6 @@ function MultiplayPage() {
 
   const roundCallback = (body: IMessage) => {
     const json = JSON.parse(body.body);
-    console.log("round", json);
     setStatus(json.status);
     setRound(json.round);
 
@@ -143,13 +141,7 @@ function MultiplayPage() {
     }
   };
 
-  // const timeCallback = (body: IMessage) => {
-  //   const json = JSON.parse(body.body);
-  //   setLeftTime(json.leftTime);
-  // };
-
   const [roundConnect, roundDisconnect] = useStomp(roundClient, `/sub/round/${multiId}`, roundCallback);
-  // const [timeConnect, timeDiscconnect] = useStomp(timeClient, `time/${multiId}`, timeCallback);
 
   const handleLeaveGame = () => {
     if (confirm("게임을 종료하시겠습니까?")) {
@@ -159,12 +151,10 @@ function MultiplayPage() {
 
   useEffect(() => {
     roundConnect();
-    // timeConnect();
 
     // 참여 게임 정보 받기
     getMultiplayInfo(multiId as string)
       .then((res) => {
-        console.log(res.data.data.currentUser);
         setRoom({
           currentUser: res.data.data.currentUser,
           name: res.data.data.roomName,
@@ -202,13 +192,20 @@ function MultiplayPage() {
         }
       }
     }
-
-    console.log("모달", round, status);
-    if (round == 3 && status == "INPUTEND") {
-      console.log("노래 나와");
-      basicPlay(1);
-    }
   }, [modalOpen]);
+
+  useEffect(() => {
+    if (room?.result) {
+      basicPlay(1);
+      return;
+    }
+
+    if (round == 3 && status == "INPUTEND") {
+      setTimeout(() => {
+        basicPlay(1);
+      }, 3000);
+    }
+  }, [status]);
 
   return (
     <>
@@ -227,7 +224,7 @@ function MultiplayPage() {
                   <UserProfile
                     key={user.userId}
                     user={user}
-                    classes={`w-10 h-10 flex justify-center items-center   p-1.5`}
+                    classes={`w-10 h-10 flex justify-center items-center p-1.5`}
                   />
                 );
               })}
@@ -244,7 +241,7 @@ function MultiplayPage() {
             <div className="bg-gradient-to-r from-secondary-400 to-purple-500 rounded-full p-px text-center">
               <div className="bg-gray-800 py-1 rounded-full">{track && track.beforeLyric}</div>
             </div>
-            <div className="h-full flex flex-col gap-10 justify-center">
+            <div className="h-full flex flex-col gap-4 justify-center">
               {quiz && <MultiInputArea quiz={quiz} hintResult={hintResult} />}
             </div>
             <div className="justify-self-end bg-gradient-to-r from-secondary-400 to-purple-500 rounded-full p-px text-center">
