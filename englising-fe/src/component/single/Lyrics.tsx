@@ -235,7 +235,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
     const onCancel = () => { //힌트 취소 -> 힌트 모두 소진시 onCancel만 쓸거임
         setShowHintModal(!showHintModal);
     }
-
+    
     return(
         <div className="w-full h-[90%] flex flex-col items-center py-10 px-5 box-border text-center overflow-y-scroll scrollbar-webkit">
             {showHintModal ? (<div className="relative">
@@ -253,7 +253,8 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
                     handleLyricsClick(i, lyric.isBlank, lyric.startTime, lyric.endTime)}>
                         <div className="flex">
                             {lyric.lyric.map((word, j) => {
-                            if(word == " ") return <div>&nbsp;</div>
+                            if (word == " ") return <div>&nbsp;</div>
+                            let hidedWord = "x".repeat(word.length);    
                             let isBlank:boolean = false;
                             let blankIdx:number = 0;
                             let singlePlayWordId: number = 0;
@@ -272,23 +273,23 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
                                 isBlank ? 
                                     (<div 
                                         key={j} 
-                                        className={"mx-2 bg-white rounded-lg text-white bg-opacity-60 text-opacity-0"}
+                                        className={"mx-2 bg-white rounded-lg text-white bg-opacity-60 text-opacity-0 cursor-pointer"}
                                         ref={(el) => blanksRef.current[blankIdx] = el}
                                         data-wordid={singlePlayWordId}
                                         data-index={j}
                                         data-sentence={i}
                                         data-word={blankIdx} 
                                         data-solve="0"
-                                            onClick={(e) => {
-                                                if (idx == i) {
-                                                    const solve = e.currentTarget.getAttribute('data-solve');
-                                                    if (solve != "2") {
-                                                        handleHintClick(e, word)
-                                                    }
+                                        onClick={(e) => {
+                                            if (idx == i) {
+                                                const solve = e.currentTarget.getAttribute('data-solve');
+                                                if (solve != "2") {
+                                                    handleHintClick(e, word)
                                                 }
-                                            }}
+                                            }
+                                        }}
                                     > 
-                                        {word}
+                                        {hidedWord}
                                     </div>)
                                 : (<div key={j}> {word} </div>)
                             );
