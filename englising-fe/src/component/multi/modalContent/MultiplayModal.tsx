@@ -14,7 +14,6 @@ type ModalProps = {
 };
 
 const MultiplayModal = ({ status, round, room, time, hintResult }: ModalProps) => {
-  console.log(room);
   const roundTime = time;
   if (status == "ROUNDSTART") {
     if (round == 3) {

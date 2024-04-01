@@ -8,12 +8,12 @@ const Result = ({ room }: { room: Room }) => {
   const time = 5;
 
   useEffect(() => {
-    setTimeout(
-      () => {
-        navigate("/englising/selectMulti");
-      },
-      time * 1000 + room.track?.endTime - room.track?.startTime
-    );
+    // setTimeout(
+    //   () => {
+    //     navigate("/englising/selectMulti");
+    //   },
+    //   time * 1000 + room.track?.endTime - room.track?.startTime
+    // );
   }, []);
 
   return (
