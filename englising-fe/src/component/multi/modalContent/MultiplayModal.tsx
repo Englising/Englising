@@ -58,6 +58,7 @@ const MultiplayModal = ({ status, round, room, time, hintResult }: ModalProps) =
           alt="Pleading Face"
           width="100"
           height="100"
+          className="mt-4"
         />
       </div>
     );

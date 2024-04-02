@@ -48,7 +48,6 @@ export interface Room {
 
 function MultiplayPage() {
   const roundClient = useRef<Client>();
-  const timeClient = useRef<Client>();
   const dialog = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate();
   const { multiId } = useParams();
@@ -215,7 +214,8 @@ function MultiplayPage() {
       <div className="h-screen p-8 flex gap-10 bg-gray-800 text-white">
         <section className="shrink-0 grid grid-rows-[0.5fr_7fr_2fr] gap-4 justify-items-center">
           <p className="text-3xl font-bold text-secondary-400">
-            Round {round}/<span className="text-white">3</span>
+            Round {round}
+            <span className="text-white">/3</span>
           </p>
           <div className="flex flex-col gap-4 justify-self-start">
             {room?.currentUser &&
