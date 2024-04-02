@@ -21,7 +21,7 @@ function Hint({ hint, hintResult }: { hint: number; hintResult?: Alphabet[] | nu
   return (
     <>
       {rouletteEnd ? (
-        <div className="min-w-[45rem] flex flex-col justify-center items-center py-8">{hintList[hint]}</div>
+        <div className="min-w-[45rem] min-h-72 flex flex-col justify-center items-center py-8">{hintList[hint]}</div>
       ) : (
         <HintRoulette hint={hint} onRoulette={handleRoulette} />
       )}
