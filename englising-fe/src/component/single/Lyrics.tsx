@@ -246,12 +246,12 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
                     <div 
                     key={i} 
                     className={idx == i ? 
-                        `w-full min-h-[15%] text-[1.4em] flex justify-center items-center bg-black/50 rounded-xl text-white` : 
+                        `w-full min-h-[17.5%] text-[1.3em] flex justify-center items-center bg-black/50 rounded-xl text-white` : 
                         `w-full min-h-[15%] text-[1em] flex justify-center items-center text-primary-300`} 
                     ref={(el) => lyricsRef.current[i] = el} 
                     onClick={() => 
                     handleLyricsClick(i, lyric.isBlank, lyric.startTime, lyric.endTime)}>
-                        <div className="flex">
+                        <div className="flex flex-wrap items-center box-border px-3">
                             {lyric.lyric.map((word, j) => {
                             if (word == " ") return <div>&nbsp;</div>
                             let hidedWord = "x".repeat(word.length);    
@@ -273,7 +273,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
                                 isBlank ? 
                                     (<div 
                                         key={j} 
-                                        className={"mx-2 bg-white rounded-lg text-white bg-opacity-60 text-opacity-0 cursor-pointer"}
+                                        className={"my-2 mx-2 bg-white rounded-lg text-white bg-opacity-60 text-opacity-0 cursor-pointer"}
                                         ref={(el) => blanksRef.current[blankIdx] = el}
                                         data-wordid={singlePlayWordId}
                                         data-index={j}
@@ -291,7 +291,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
                                     > 
                                         {hidedWord}
                                     </div>)
-                                : (<div key={j}> {word} </div>)
+                                : (<div key={j} className="my-2"> {word} </div>)
                             );
                         })}
                         </div>
