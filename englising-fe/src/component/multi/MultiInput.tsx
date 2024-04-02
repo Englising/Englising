@@ -9,13 +9,13 @@ type InputProps = {
   changedAnswer?: Alphabet | undefined;
   hintResult?: Alphabet[] | number;
   onInputChange: (val: Alphabet) => void;
-  isOpen: boolean;
 };
 
-function MultiInput({ answer, index, changedAnswer, hintResult, onInputChange, isOpen }: InputProps) {
+function MultiInput({ answer, index, changedAnswer, hintResult, onInputChange }: InputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEmpty, setIsEmpty] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   function isHangeul(char: string) {
     const reg = /[^0-9a-zA-Z]/g;
@@ -66,6 +66,7 @@ function MultiInput({ answer, index, changedAnswer, hintResult, onInputChange, i
           inputRef.current.value = answer.alphabet;
           inputRef.current?.classList.remove("bg-secondary-100");
           inputRef.current?.classList.add("bg-purple-200");
+          setIsOpen(true);
           break;
         }
       }
