@@ -25,6 +25,10 @@ const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alpha
   const [changedAnswer, setChangedAnswer] = useState<Alphabet | undefined>();
 
   const handleInputChange = (val: Alphabet) => {
+    if (val.alphabet == val.alphabet.toUpperCase()) {
+      val.alphabet = val.alphabet.toLowerCase();
+    }
+
     setChangedAnswer(val);
     publish(val);
   };
@@ -52,10 +56,6 @@ const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alpha
 
   useEffect(() => {
     connect();
-    // if (isConnect && client.current) {
-    //   const answerSub = client.current.subscribe(`/sub/answer/${multiId}`, callback);
-    //   console.log();
-    // }
 
     return () => disconnect();
   }, []);
