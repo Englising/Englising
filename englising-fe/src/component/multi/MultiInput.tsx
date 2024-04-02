@@ -9,13 +9,13 @@ type InputProps = {
   changedAnswer?: Alphabet | undefined;
   hintResult?: Alphabet[] | number;
   onInputChange: (val: Alphabet) => void;
+  isOpen: boolean;
 };
 
-function MultiInput({ answer, index, changedAnswer, hintResult, onInputChange }: InputProps) {
+function MultiInput({ answer, index, changedAnswer, hintResult, onInputChange, isOpen }: InputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEmpty, setIsEmpty] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
 
   function isHangeul(char: string) {
     const reg = /[^0-9a-zA-Z]/g;
@@ -59,10 +59,13 @@ function MultiInput({ answer, index, changedAnswer, hintResult, onInputChange }:
 
   useEffect(() => {
     if (hintResult && typeof hintResult != "number") {
+      if (!inputRef.current) return;
+
       for (const hint of hintResult) {
         if (answer.alphabetIndex == hint.alphabetIndex) {
-          setIsOpen(true);
           inputRef.current.value = answer.alphabet;
+          inputRef.current?.classList.remove("bg-secondary-100");
+          inputRef.current?.classList.add("bg-purple-200");
           break;
         }
       }
@@ -96,7 +99,7 @@ function MultiInput({ answer, index, changedAnswer, hintResult, onInputChange }:
         ) : (
           <input
             type="text"
-            className={`w-9 p-2 font-bold text-xl text-black text-center rounded-lg focus:outline-none ${isEmpty ? "bg-gray-500" : "bg-secondary-100"} ${isOpen && "bg-purple-200"}`}
+            className={`w-9 p-2 font-bold text-xl text-black text-center rounded-lg focus:outline-none ${isEmpty ? "bg-gray-500" : "bg-secondary-100"} `}
             onChange={handleInputChange}
             readOnly={isOpen}
             ref={inputRef}
