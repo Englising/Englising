@@ -79,7 +79,7 @@ function ChatArea() {
     <section className="relative h-full flex flex-col p-2 bg-primary-400 rounded-lg">
       <p className="font-bold text-secondary-400 text-center">CHAT</p>
       <div
-        className={`absolute w-full h-[calc(100%_-_100px)] left-0 bottom-14 flex flex-col grow gap-2 my-1 px-1 overflow-y-scroll text-sm ${styles.scrollbar}`}
+        className={`absolute w-full h-[calc(100%_-_100px)] left-0 bottom-14 flex flex-col grow gap-2 my-1 px-2 overflow-y-scroll text-sm ${styles.scrollbar}`}
       >
         {chatList?.length > 0 &&
           chatList.map((chat, index) => {
