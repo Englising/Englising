@@ -7,10 +7,10 @@ import { Alphabet } from "../../MultiInputArea";
 
 function Hint({ hint, hintResult }: { hint: number; hintResult?: Alphabet[] | number }) {
   const [rouletteEnd, setRouletteEnd] = useState(false);
-  const hintList = {
+  const hintList: { [key: number]: JSX.Element } = {
     1: <MusicHint speed={0.7} />,
     2: <MusicHint speed={2} />,
-    3: <CountHint count={hintResult} />,
+    3: <CountHint count={hintResult as number} />,
     4: <OpenHint />,
   };
 
