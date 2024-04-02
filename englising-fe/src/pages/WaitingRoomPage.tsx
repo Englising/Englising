@@ -93,7 +93,7 @@ const WaitingRoomPage: React.FC = () => {
         console.log(`Unsubscribed from /sub/round/${params}.`);
       };
     }
-  }, [params, isConnected, participantMessageCallback, gameMessageCallback]);
+  }, [params, isConnected]);
 
   // TESTING FUNCTION ----------------------------------------------------------
   function participantMessageCallback(message: IMessage) {
