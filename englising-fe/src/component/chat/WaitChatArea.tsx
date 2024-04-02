@@ -83,33 +83,11 @@ function ChatArea() {
     <section className="relative h-[380px] flex flex-col p-2 bg-primary-400 rounded-lg">
       <p className="font-bold text-secondary-400 text-center">CHAT</p>
       <div
-        className={`absolute w-full h-[calc(100%_-_100px)] left-0 bottom-14 flex flex-col grow gap-2 my-1 px-1 overflow-y-scroll text-sm ${styles.scrollbar}`}
+        className={`absolute w-full h-[calc(100%_-_100px)] left-0 bottom-14 flex flex-col grow gap-2 my-1 px-2 overflow-y-scroll text-sm ${styles.scrollbar}`}
       >
         {chatList?.length > 0 &&
           chatList.map((chat, index) => {
-            let profileVisible = false;
-
-            if (index != 0) {
-              const prevChatUser = chatList[index - 1].userId;
-
-              if (prevChatUser != chat.userId) {
-                profileVisible = true;
-              }
-            } else {
-              profileVisible = true;
-            }
-
-            if (
-              chat.userId == loginUserId ||
-              (parseInt(chat.userId) - 1).toString() == loginUserId ||
-              (parseInt(chat.userId) + 1).toString() == loginUserId
-            ) {
-              profileVisible = false;
-            }
-
-            return (
-              <WaitChatMessage key={index} chat={chat} user={user} profileVisible={profileVisible} myMessage={chat.mine} />
-            );
+            return <WaitChatMessage key={index} chat={chat} myMessage={chat.mine} />;
           })}
         <div ref={chatEndRef}></div>
       </div>
