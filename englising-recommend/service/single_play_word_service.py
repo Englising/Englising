@@ -23,20 +23,33 @@ def __recommend_words__(all_track_words: List[TrackWord], level, liked_words: Li
     # 좋아한 단어와 유사도 판단
     # 단어의 난이도 판단
     # 최근 플레이 한 단어와 유사도 판단, 유사하지 않도록 함
-    played_avg_vector = np.mean([__get_word_vector__(word.en_text) for word in recently_played_words], axis=0)
-    played_avg_scalar = np.mean(played_avg_vector)
-    liked_avg_vector = np.mean([__get_word_vector__(word.en_text) for word in liked_words], axis=0)
-    liked_avg_scalar = np.mean(liked_avg_vector)
+    played_vectors = [__get_word_vector__(word.en_text) for word in recently_played_words if
+                      __get_word_vector__(word.en_text) is not None]
+    if played_vectors:
+        played_avg_vector = np.mean(played_vectors, axis=0)
+    else:
+        played_avg_vector = np.zeros(fast_text_model.vector_size)
+
+    liked_vectors = [__get_word_vector__(word.en_text) for word in liked_words if
+                     __get_word_vector__(word.en_text) is not None]
+    if liked_vectors:
+        liked_avg_vector = np.mean(liked_vectors, axis=0)
+    else:
+        liked_avg_vector = np.zeros(fast_text_model.vector_size)
+
     recommended_words = []
     for word in all_track_words:
         word_vector = __get_word_vector__(word.origin_word)
-        word_scalar = np.mean(word_vector)
-
-        score = (1 - __cosine_similarity__(word_vector, played_avg_scalar)) + __cosine_similarity__(word_vector, liked_avg_scalar)
-        difficulty_socre = 1 - abs(__evaluate_difficulty__(word.origin_word) - level)
-        total_score = score + difficulty_socre
-        recommended_words.append((word, total_score))
-
+        if word_vector is not None:
+            word_scalar = np.mean(word_vector)
+            score = (1 - __cosine_similarity__(word_vector, played_avg_vector)) + __cosine_similarity__(word_vector,
+                                                                                                        liked_avg_vector)
+            difficulty_score = 1 - abs(__evaluate_difficulty__(word.origin_word) - level)
+            total_score = score + difficulty_score
+            recommended_words.append((word, total_score))
+        else:
+            total_score = -1
+            recommended_words.append((word, total_score))
     recommended_words.sort(key=lambda x: x[1], reverse=True)
     return recommended_words
 
@@ -68,7 +81,11 @@ def __select_words_from_recommended__(level, recommended_words):
 
 
 def __get_word_vector__(word: str):
-    return np.mean(fast_text_model[word], axis=0)
+    try:
+        word_vector = np.mean(fast_text_model[word], axis=0)
+    except KeyError:
+        return None
+    return word_vector
 
 
 def __cosine_similarity__(vec1, vec2):
