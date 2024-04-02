@@ -54,6 +54,7 @@ public class TrackRepositorySupport {
         BooleanExpression genreCondition = genre.name().equals("all") ? null : QTrack.track.genre.eq(genre.name());
         BooleanExpression lyricsDoneCondition = QTrack.track.lyricStatus.eq("DONE");
         BooleanExpression youtubeIdNotNull = QTrack.track.youtubeId.isNotNull();
+        BooleanExpression youtubeIdNotNone = QTrack.track.youtubeId.ne("NONE");
 
         BooleanExpression hasLyrics = JPAExpressions.selectOne()
                 .from(QLyric.lyric)
@@ -62,7 +63,7 @@ public class TrackRepositorySupport {
 
         return queryFactory
                 .selectFrom(QTrack.track)
-                .where(youtubeIdNotNull, lyricsDoneCondition, genreCondition, hasLyrics)
+                .where(youtubeIdNotNull, lyricsDoneCondition, genreCondition, hasLyrics, youtubeIdNotNone)
                 .orderBy(QTrack.track.spotifyPopularity.desc())
                 .limit(limit)
                 .fetch();
