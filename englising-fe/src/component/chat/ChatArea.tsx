@@ -62,11 +62,7 @@ function ChatArea() {
     getMultiplayInfo(multiId)
       .then((res) => {
         for (const user of res.data.data.currentUser) {
-          if (
-            user.userId == loginUserId ||
-            (user.userId - 1).toString() == loginUserId ||
-            (user.userId + 1).toString() == loginUserId
-          ) {
+          if (user.userId == loginUserId) {
             setUser(user);
             break;
           }
@@ -87,29 +83,7 @@ function ChatArea() {
       >
         {chatList?.length > 0 &&
           chatList.map((chat, index) => {
-            let profileVisible = false;
-
-            if (index != 0) {
-              const prevChatUser = chatList[index - 1].userId;
-
-              if (prevChatUser != chat.userId) {
-                profileVisible = true;
-              }
-            } else {
-              profileVisible = true;
-            }
-
-            if (
-              chat.userId == loginUserId ||
-              (parseInt(chat.userId) - 1).toString() == loginUserId ||
-              (parseInt(chat.userId) + 1).toString() == loginUserId
-            ) {
-              profileVisible = false;
-            }
-
-            return (
-              <ChatMessage key={index} chat={chat} user={user} profileVisible={profileVisible} myMessage={chat.mine} />
-            );
+            return <ChatMessage key={index} chat={chat} myMessage={chat.mine} />;
           })}
         <div ref={chatEndRef}></div>
       </div>
