@@ -23,7 +23,6 @@ const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alpha
   const client = useRef<Client>();
   const { multiId } = useParams();
   const [changedAnswer, setChangedAnswer] = useState<Alphabet | undefined>();
-  const [isOpen, setIsOpen] = useState<boolean[]>([]);
 
   const handleInputChange = (val: Alphabet) => {
     if (val.alphabet == val.alphabet.toUpperCase()) {
@@ -61,18 +60,6 @@ const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alpha
     return () => disconnect();
   }, []);
 
-  useEffect(() => {
-    if (!hintResult || typeof hintResult == "number") return;
-
-    const arr = new Array(100);
-
-    for (const alphabet of hintResult) {
-      arr[alphabet.alphabetIndex] = true;
-    }
-
-    setIsOpen(arr);
-  }, [hintResult]);
-
   return (
     <>
       {quiz.map((words, index) => {
@@ -90,7 +77,6 @@ const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alpha
                         onInputChange={handleInputChange}
                         changedAnswer={changedAnswer}
                         hintResult={hintResult}
-                        isOpen={isOpen[index]}
                       />
                     );
                   })}

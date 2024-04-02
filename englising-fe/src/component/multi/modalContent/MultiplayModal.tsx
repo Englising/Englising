@@ -26,6 +26,7 @@ const MultiplayModal = ({ status, round, room, time, hintResult }: ModalProps) =
             <br />
             음악을 듣고 빈 칸을 채워보세요!
           </p>
+          <p className="mt-4 text-gray-400">노래는 문제 구간 앞문장부터 뒷문장까지 재생됩니다</p>
         </Timeout>
       );
     }
