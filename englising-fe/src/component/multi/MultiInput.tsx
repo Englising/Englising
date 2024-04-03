@@ -9,9 +9,19 @@ type InputProps = {
   changedAnswer?: Alphabet | undefined;
   hintResult?: Alphabet[] | number;
   onInputChange: (val: Alphabet) => void;
+  onFocusChange: (index: number) => void;
+  focusTarget: number;
 };
 
-function MultiInput({ answer, index, changedAnswer, hintResult, onInputChange }: InputProps) {
+function MultiInput({
+  answer,
+  index,
+  changedAnswer,
+  hintResult,
+  onInputChange,
+  onFocusChange,
+  focusTarget,
+}: InputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEmpty, setIsEmpty] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -46,6 +56,10 @@ function MultiInput({ answer, index, changedAnswer, hintResult, onInputChange }:
       inputRef.current.value = e.target.value.charAt(1);
     }
 
+    if (onFocusChange) {
+      onFocusChange(answer.alphabetIndex);
+    }
+
     if (onInputChange) {
       onInputChange({ alphabetIndex: answer.alphabetIndex, alphabet: inputRef.current.value });
     }
@@ -56,6 +70,12 @@ function MultiInput({ answer, index, changedAnswer, hintResult, onInputChange }:
       setIsEmpty(true);
     }
   }
+
+  useEffect(() => {
+    if (focusTarget == answer.alphabetIndex) {
+      inputRef.current?.focus();
+    }
+  }, [focusTarget]);
 
   useEffect(() => {
     if (hintResult && typeof hintResult != "number") {

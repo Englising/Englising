@@ -25,7 +25,6 @@ function ChatArea() {
 
   const callback = (body: IMessage) => {
     const json = JSON.parse(body.body);
-    console.log(json);
     setChatList((prev) => [...prev, json]);
   };
 
