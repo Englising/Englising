@@ -19,8 +19,6 @@ const SideBar: React.FC = () => {
             })
             .then((Response) => {
                 setProfile(Response.data.data);
-                console.log(Response.data.data);
-                console.log(profile?.color);
             })
             .catch((error) => {
                 console.error('프로필 가져오기 실패', error);
