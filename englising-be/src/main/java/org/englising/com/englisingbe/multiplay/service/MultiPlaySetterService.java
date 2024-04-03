@@ -78,7 +78,7 @@ public class MultiPlaySetterService {
         List<String> alphabets = Arrays.asList(word.split(""));
         List<MultiPlayAlphabet> result = new ArrayList<>();
         for(String alphabet: alphabets){
-            if(symbols.contains(alphabet)){
+            if(!alphabet.matches("[a-zA-Z]")){
                 result.add(MultiPlayAlphabet.builder()
                         .alphabetIndex(symbolIndex)
                         .alphabet(alphabet)
