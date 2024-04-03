@@ -26,7 +26,7 @@ export interface SinglePlayWordLike {
 export const getSinglePlayData = async (data: SinglePlayData): Promise<any> => {
     try {
         const response = await axios.post(`${BASE_URL}/singleplay`, data, {withCredentials:true});
-        console.log(response, "Success getSinglePlayData");
+        //console.log(response, "Success getSinglePlayData");
         return response.data; 
     } catch (error) {
         console.error(error, "Fail getSinglePlayData");
@@ -37,7 +37,7 @@ export const getSinglePlayData = async (data: SinglePlayData): Promise<any> => {
 export const getStartimeData =async (trackId:number): Promise<any> => {
     try {
         const response = await axios.get(`${BASE_URL}/singleplay/track/${trackId}`, {withCredentials:true});
-        console.log(response, "Success getStartimeData");
+        //console.log(response, "Success getStartimeData");
         return response.data; 
     } catch (error) {
         console.error(error, "Fail getStartimeData")
@@ -48,7 +48,7 @@ export const getStartimeData =async (trackId:number): Promise<any> => {
 export const getSinglePlayResultData = async (data: SinglePlayResultData): Promise<any> => {
     try {
         const response = await axios.post(`${BASE_URL}/singleplay/result`, data, {withCredentials:true});
-        console.log(response, "Success getSinglePlayResultData");
+        //console.log(response, "Success getSinglePlayResultData");
         return response.data; 
     } catch (error) {
         console.error(error, "Fail getSinglePlayResultData")
@@ -59,7 +59,7 @@ export const getSinglePlayResultData = async (data: SinglePlayResultData): Promi
 export const  singlePlayWordCheck =async (data:SinglePlayWordCheck) => {
     try {
         const response = await axios.post(`${BASE_URL}/singleplay/word-check`, data, {withCredentials:true});
-        console.log(response, "Success getSinglePlayResultData");
+        //console.log(response, "Success getSinglePlayResultData");
     }catch (error) {
         console.error(error, "Fail singlePlayWordCheck")
     }
@@ -68,7 +68,7 @@ export const  singlePlayWordCheck =async (data:SinglePlayWordCheck) => {
 export const singlePlayWordLike =async (data: SinglePlayWordLike) => {
     try {
         const response = await axios.post(`${BASE_URL}/word/like`, data, {withCredentials:true});
-        console.log(response, "Success singlePlayWordLike");
+        //console.log(response, "Success singlePlayWordLike");
     }catch (error) {
         console.error(error, "Fail singlePlayWordLike")
     }

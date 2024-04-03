@@ -28,7 +28,6 @@ const navigate = useNavigate();
     };
 
     useEffect(() => {
-        console.log(youtubeId);
         // 초기화 로직을 useEffect 내부에 넣어 한 번만 실행되도록 함
         selectLevel1();
     }, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행되도록 함
@@ -63,7 +62,6 @@ const navigate = useNavigate();
                 artists: artists,
             },
         })
-        console.log("게임시작성공");
     };
 
     return (
