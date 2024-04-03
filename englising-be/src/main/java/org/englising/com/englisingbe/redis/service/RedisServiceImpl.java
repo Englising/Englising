@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +23,7 @@ public class RedisServiceImpl {
 
     private final String answerPrefix = "multiplayanswer:";
     public void saveMultiPlayGame(MultiPlayGame game) {
-        redisTemplate.opsForValue().set(gamePrefix + game.getMultiPlayId(), game);
+        redisTemplate.opsForValue().set(gamePrefix + game.getMultiPlayId(), game,  1, TimeUnit.HOURS);
     }
 
     public Optional<MultiPlayGame> findMultiPlayGame(Long multiPlayId) {
