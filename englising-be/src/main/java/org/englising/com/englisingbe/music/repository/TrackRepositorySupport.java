@@ -61,9 +61,16 @@ public class TrackRepositorySupport {
                 .where(QLyric.lyric.track.trackId.eq(QTrack.track.trackId))
                 .exists();
 
+        BooleanExpression hasAtLeastFiveLyrics = JPAExpressions
+                .selectFrom(QLyric.lyric)
+                .where(QLyric.lyric.track.trackId.eq(QTrack.track.trackId))
+                .groupBy(QLyric.lyric.track.trackId)
+                .having(QLyric.lyric.count().goe(5))
+                .exists();
+
         return queryFactory
                 .selectFrom(QTrack.track)
-                .where(youtubeIdNotNull, lyricsDoneCondition, genreCondition, hasLyrics, youtubeIdNotNone)
+                .where(youtubeIdNotNull, lyricsDoneCondition, genreCondition, hasAtLeastFiveLyrics, youtubeIdNotNone)
                 .orderBy(QTrack.track.spotifyPopularity.desc())
                 .limit(limit)
                 .fetch();
