@@ -31,7 +31,6 @@ const SelectSinglePage: React.FC = () => {
     axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist?type=recent&page=0&size=1000", {withCredentials:true})
         .then((Response) => {
             setPlayList(Response.data.data.playList);
-            console.log(Response.data.data.playList);
         })
         .catch((error) => {
             console.error('Error fetching playlist:', error);

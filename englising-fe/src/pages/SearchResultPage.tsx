@@ -35,7 +35,6 @@ const SearchResultPage: React.FC = () => {
             withCredentials: true, 
         })
         .then((response) => {
-            console.log(response.data.data.playList)
             setSearchedMusic(response.data.data.playList);
         })
         .catch((error) => {
@@ -53,7 +52,6 @@ const SearchResultPage: React.FC = () => {
     
 
     const handleClickButton = (index: number): void => {
-        console.log(playList[index])
         setSelectedMusic({
             trackId: searchedMusic[index].trackId,
             trackTitle: searchedMusic[index].trackTitle,

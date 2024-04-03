@@ -38,10 +38,10 @@ const SingleResultPlage = () => {
         const getData = async () => {
             try {
                 const singleResultData = await getSinglePlayResultData(data);
-                console.log("결과 가사", singleResultData.data.lyrics);
+                //console.log("결과 가사", singleResultData.data.lyrics);
                 setLyrics([...singleResultData.data.lyrics]);
 
-                console.log("결과 단어", singleResultData.data.words);
+                //console.log("결과 단어", singleResultData.data.words);
                 setResultWord([...singleResultData.data.words]);
             } catch (error) {
                 console.error('Error fetching data:', error)
