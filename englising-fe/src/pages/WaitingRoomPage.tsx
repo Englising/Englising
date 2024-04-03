@@ -80,24 +80,24 @@ const WaitingRoomPage: React.FC = () => {
   useEffect(() => {
     if (isConnected && client.current) {
       const subscription1 = client.current.subscribe(`/sub/participant/${params}`, participantMessageCallback);
-      console.log(`Subscribed to /sub/participant/${params} successfully.`);
+      //console.log(`Subscribed to /sub/participant/${params} successfully.`);
 
       const subscription2 = client.current.subscribe(`/sub/round/${params}`, gameMessageCallback);
-      console.log(`Subscribed to /sub/round/${params} successfully.`);
+      //console.log(`Subscribed to /sub/round/${params} successfully.`);
 
       return () => {
         subscription1.unsubscribe();
-        console.log(`Unsubscribed from /sub/participant/${params}.`);
+        //console.log(`Unsubscribed from /sub/participant/${params}.`);
 
         subscription2.unsubscribe();
-        console.log(`Unsubscribed from /sub/round/${params}.`);
+        //console.log(`Unsubscribed from /sub/round/${params}.`);
       };
     }
   }, [params, isConnected]);
 
   // TESTING FUNCTION ----------------------------------------------------------
   function participantMessageCallback(message: IMessage) {
-    console.log("Received message:", message.body);
+   // console.log("Received message:", message.body);
     //메시지 주인공(?)의 userData
     const userData = JSON.parse(message.body);
     const state = userData.kind;
@@ -146,7 +146,7 @@ const WaitingRoomPage: React.FC = () => {
 
     if (state === "GAMESTART" && round === 0) {
       //게임방으로 보내주기
-      console.log(gameData.data);
+      //console.log(gameData.data);
       navigate(`/multiplay/${multiroom?.multiPlayId}`);
     }
   }
@@ -162,7 +162,7 @@ const WaitingRoomPage: React.FC = () => {
   //방장이 게임 시작 눌렀을 때
   const startGame = (): void => {
     axios.get(`https://j10a106.p.ssafy.io/api/multiplay/${params}/game`, { withCredentials: true }).then(() => {
-      console.log("시작요청");
+
       navigate(`/multiplay/${multiroom?.multiPlayId}`);
     });
   };

@@ -67,7 +67,6 @@ const SettingMulti = () => {
             alert("방 이름을 입력해주세요!");
         } 
         else{
-            console.log(roomInfo)
             // 방 생성
             axios.post("https://j10a106.p.ssafy.io/api/multiplay",{
                 roomName: roomInfo.roomName, // 방 이름
@@ -80,7 +79,6 @@ const SettingMulti = () => {
             }, {withCredentials:true})
             .then((Response) => {
                 roomInfo.roomId = Response.data.data;
-                console.log(roomInfo.roomId);
                 setRoomInfo({ ...roomInfo, roomId: roomInfo.roomId });
                 // 방 참여
                 axios.post(`https://j10a106.p.ssafy.io/api/multiplay/${roomInfo.roomId}`,{}, 

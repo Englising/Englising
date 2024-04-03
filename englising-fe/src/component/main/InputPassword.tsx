@@ -20,7 +20,7 @@ const InputPassword: React.FC<InputPasswordProps> = ({ onClose, correctPassword,
                 if (error.response && error.response.request.status === 404) {
                     alert("참여할 수 없는 방입니다.");
                 } else {
-                    console.error('참여 실패', error);
+                    console.error(error);
                 }
             });
         } else {

@@ -30,7 +30,6 @@ const SelectSinglePage: React.FC = () => {
     useEffect(() => {
     axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist?type=like&page=0&size=1000", {withCredentials:true})
         .then((Response) => {
-            console.log(Response.data)
             setPlayList(Response.data.data.playList);
         })
         .catch((error) => {
