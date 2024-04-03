@@ -23,6 +23,11 @@ const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alpha
   const client = useRef<Client>();
   const { multiId } = useParams();
   const [changedAnswer, setChangedAnswer] = useState<Alphabet | undefined>();
+  const [focusTarget, setFocustTarget] = useState<number>();
+
+  const handdleFocusChange = (index: number) => {
+    setFocustTarget(index + 1);
+  };
 
   const handleInputChange = (val: Alphabet) => {
     if (val.alphabet == val.alphabet.toUpperCase()) {
@@ -75,8 +80,10 @@ const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alpha
                         index={alphabet.alphabetIndex}
                         answer={alphabet}
                         onInputChange={handleInputChange}
+                        onFocusChange={handdleFocusChange}
                         changedAnswer={changedAnswer}
                         hintResult={hintResult}
+                        focusTarget={focusTarget as number}
                       />
                     );
                   })}
