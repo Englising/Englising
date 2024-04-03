@@ -105,7 +105,7 @@ const Lyrics = ({ onSetInfo, onSetProgressInfo, onSetIsBlank, answerInfo, playIn
             singleplayWordId: parseInt(targetBlank?.dataset.wordid || "0"),
             word: answer.toLowerCase()
         }
-        console.log(data.singleplayId, targetBlank?.dataset.wordid, data.word)
+
         singlePlayWordCheck(data);
 
         if(answer.toLowerCase() == solution.toLowerCase()){

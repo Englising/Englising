@@ -19,7 +19,7 @@ const IndexPage = () => {
             // 유저아이디 받아서 로컬에 저장
             localStorage.setItem("userId", response.data.data.userId.toString());
         })
-        console.log("로그인 성공")
+
         navigate("/englising/selectSingle1");
     }
 
