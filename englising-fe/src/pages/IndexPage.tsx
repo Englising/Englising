@@ -33,10 +33,10 @@ const IndexPage = () => {
       <div className="flex flex-row z-50 pb-24 pt-16 w-full h-full">
         <div className="flex flex-row gap-5 self-end pl-[135px] pr-[40px] pb-12">
           {/* 카카오로그인 */}
-          <img src={KakaoLogin} className="h-16 w-56" onClick={handleKakaoLogin} />
+          <img src={KakaoLogin} className="h-16 w-56 cursor-pointer" onClick={handleKakaoLogin} />
           {/* 게스트로그인 */}
           <div
-            className="flex flex-row items-center justify-center h-16 w-56 bg-gray-300 text-center text-black text-base font-normal rounded-lg z-50 "
+            className="flex flex-row items-center justify-center h-16 w-56 bg-gray-300 text-center text-black text-base font-normal rounded-lg z-50 cursor-pointer"
             onClick={guestLogin}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
