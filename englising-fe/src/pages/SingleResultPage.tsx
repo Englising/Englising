@@ -76,9 +76,11 @@ const SingleResultPlage = () => {
                             <ResultWord resultWord={resultWord} />
                         </div>
                         <div className="w-full h-[25%] flex justify-center items-center">
-                            <div className="h-[2.5em] w-[10em] rounded-lg bg-secondary-300 cursor-pointer hover:opacity-50 flex justify-center items-center">
-                                <div className="text-black font-bold" onClick={handleHomeClick}>흠으로!</div>
-                            </div>
+                            <div
+                                onClick={handleHomeClick}
+                                className="h-[2.5em] w-[10em] rounded-lg bg-secondary-300 cursor-pointer hover:opacity-50 flex justify-center items-center">
+                                <div className="text-black font-bold" >홈으로!</div>
+                            </div> 
                         </div>
                     </div>
                 </div>
