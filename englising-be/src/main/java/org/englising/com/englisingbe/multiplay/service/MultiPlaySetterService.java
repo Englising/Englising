@@ -18,7 +18,7 @@ import static org.englising.com.englisingbe.global.util.StringUtils.symbols;
 public class MultiPlaySetterService {
     private final LyricServiceImpl lyricService;
     private final int symbolIndex = -1;
-    private final int lyricTotal = 3;
+    private final int lyricTotal = 2;
     private int index = 1;
 
     public Map<Integer, String> getAnswerInputMapFromMultiPlaySentenceList(List<MultiPlaySentence> sentences, boolean answer){
@@ -50,7 +50,7 @@ public class MultiPlaySetterService {
 
     private int getRandomIndex(List<Lyric> lyrics){
         Random random = new Random();
-        return random.nextInt(lyrics.size() - lyricTotal +1);
+        return 1 + random.nextInt(lyrics.size() - lyricTotal + 2);
     }
 
     private List<MultiPlaySentence> getMultiPlaySentenceFromLyric(List<Lyric> lyrics){
@@ -78,7 +78,7 @@ public class MultiPlaySetterService {
         List<String> alphabets = Arrays.asList(word.split(""));
         List<MultiPlayAlphabet> result = new ArrayList<>();
         for(String alphabet: alphabets){
-            if(symbols.contains(alphabet)){
+            if(!alphabet.matches("[a-zA-Z]")){
                 result.add(MultiPlayAlphabet.builder()
                         .alphabetIndex(symbolIndex)
                         .alphabet(alphabet)

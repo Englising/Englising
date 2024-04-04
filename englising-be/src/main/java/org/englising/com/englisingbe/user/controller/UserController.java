@@ -24,8 +24,8 @@ public class UserController {
             description = "회원 프로필을 조회합니다"
     )
     public ResponseEntity<DefaultResponseDto<?>> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
-//        ProfileDto profileDto = userService.getProfile(userDetails.getUsername());
-        ProfileDto profileDto = userService.getProfile("100"); //todo. 추후 위로 수정
+        Long userId = Long.parseLong(userDetails.getUsername());
+        ProfileDto profileDto = userService.getProfile(userId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -41,9 +41,8 @@ public class UserController {
     )
     public ResponseEntity<DefaultResponseDto<?>> updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                             @RequestBody ProfileDto profileDto) {
-
-//        userService.updateProfile(userDetails.getUsername(), profileDto);
-        userService.updateProfile("100", profileDto);
+        Long userId = Long.parseLong(userDetails.getUsername());
+        userService.updateProfile(userId, profileDto);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -74,8 +73,10 @@ public class UserController {
             summary = "닉네임 중복 확인",
             description = "닉네임 중복 가능성을 확인합니다"
     )
-    public ResponseEntity<DefaultResponseDto<?>> checkNickname(@RequestBody NicknameRequestDto nicknameRequestDto) {
-        NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname());
+    public ResponseEntity<DefaultResponseDto<?>> checkNickname(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                               @RequestBody NicknameRequestDto nicknameRequestDto) {
+        Long userId = Long.parseLong(userDetails.getUsername());
+        NicknameResponseDto nicknameResponseDto = userService.checkNickname(nicknameRequestDto.getNickname(), userId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -83,8 +84,4 @@ public class UserController {
                         UserResponseMessage.USER_CHECKNICKNAME_MESSAGE.getMessage(),
                         nicknameResponseDto));
     }
-
-
-
-
 }

@@ -12,7 +12,10 @@ import lombok.NoArgsConstructor;
 public class WordResponseDto {
     public Long wordId;
     public String enText;
-    public String koText;
+    public String korText1;
+    public String korText2;
+    public String korText3;
     public String example;
-    public boolean isLiked;
+    public boolean liked;
+
 }

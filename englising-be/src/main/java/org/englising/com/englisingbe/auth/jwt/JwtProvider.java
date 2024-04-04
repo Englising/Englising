@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 // 토큰 생성하고 검증하는 서비스
 // 해당 컴포넌트는 Filter 클래스에서 사전 검증 거침
-// <JwtTokenProvider>
 @Component
 @RequiredArgsConstructor
 @Getter
@@ -44,14 +43,6 @@ public class JwtProvider {
 
     private final UserRepository userRepository;
     private final CustomUserDetailService customUserDetailService;
-
-    // secretKey 초기화
-    // secretKey는 토큰 생성하거나 토큰 파싱할 때 사용되는 정보로 보안에 유의
-//    @PostConstruct
-//    protected void init() {
-//        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-//    }
-
 
     // 권한 정보 획득 (Spring Security 인증과정에서 권한 확인을 위한 기능)
     //jwt 토큰에서 인증 정보 조회
@@ -150,67 +141,5 @@ public class JwtProvider {
                         .parseClaimsJws(token);
         return !claims.getBody().getExpiration().before(new Date());
     }
-
-    // 토큰 유효성 검사 + 만료일자 확인
-//    public boolean isTokenValid(String token) {
-//        try{
-//            Jws<Claims> claims =
-//                    Jwts.parserBuilder()
-//                            .setSigningKey(secretKey)
-//                            .build()
-//                            .parseClaimsJws(token);
-//            return !claims.getBody().getExpiration().before(new Date());
-//        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-//            log.info("Invalid JWT Token", e);
-//        } catch (ExpiredJwtException e) {
-//            log.info("Expired JWT Token", e);
-//        } catch (UnsupportedJwtException e) {
-//            log.info("Unsupported JWT Token", e);
-//        } catch (IllegalArgumentException e) {
-//            log.info("JWT claims string is empty.", e);
-//        }
-//        return false;
-//    }
-
-    // AccessToken + RefreshToken 헤더에 넣기 todo. 삭제
-//    public void setAccessAndRefreshToken (HttpServletResponse response, String accessToken, String refreshToken) {
-//        response.setStatus(HttpServletResponse.SC_OK);
-//
-//        response.setHeader(accessHeader, accessToken);
-//        response.setHeader(refreshHeader, refreshToken);
-//        log.info("Access Token, Refresh Token 헤더 설정 완료", accessToken, refreshToken);
-//    }
-//
-//    // AccessToken 헤더에 넣기
-//    public void setAccessToken(HttpServletResponse response, String accessToken) {
-//        response.setStatus(HttpServletResponse.SC_OK);
-//
-//        response.setHeader(accessHeader, accessToken);
-//        log.info("AccessToken 헤더 설정 완료 ", accessToken);
-//    }
-
-    /** todo. 삭제
-     * 헤더에서 순수 Token 추출
-     */
-//    public Optional<String> extractAccessTokenFromHeader(HttpServletRequest request) {
-//        return Optional.ofNullable(request.getHeader(accessHeader))
-//                .filter(token -> token.startsWith("Bearer "))
-//                .map(token -> token.replace("Bearer ", ""));
-//    }
-//
-//    public Optional<String> extractRefreshTokenFromHeader(HttpServletRequest request) {
-//        return Optional.ofNullable(request.getHeader(refreshHeader))
-//                .filter(token -> token.startsWith("Bearer "))
-//                .map(token -> token.replace("Bearer ", ""));
-//    }
-
-//      RefreshToken DB 저장 (업데이트) -> todo. Redis로 수정
-//    public void updateRefreshToken(String email, String refreshToken) {
-//        userRepository.findByEmail(email)
-//                .ifPresentOrElse(
-//                        user -> user.updateRefreshToken(refreshToken),
-//                        () -> new Exception("일치하는 회원이 없습니다.")
-//                );
-//    }
 
 }

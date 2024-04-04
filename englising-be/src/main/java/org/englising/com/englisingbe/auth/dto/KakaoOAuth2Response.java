@@ -3,11 +3,9 @@ package org.englising.com.englisingbe.auth.dto;
 import java.util.Map;
 
 public class KakaoOAuth2Response extends OAuth2Response{
-
     public KakaoOAuth2Response(Map<String, Object> attributes) {
         super(attributes);
     }
-
 
     @Override
     public String getId() {

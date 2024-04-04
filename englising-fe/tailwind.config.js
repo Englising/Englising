@@ -35,7 +35,7 @@ module.exports = {
         },
       },
       fontFamily:{
-        'Pretendard':['Pretendard-Regular']
+        'sans': ['Pretendard-Regular', 'sans-serif'],
       },
     },
   },

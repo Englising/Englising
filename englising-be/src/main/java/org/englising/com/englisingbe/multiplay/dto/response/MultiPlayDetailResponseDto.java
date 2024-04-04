@@ -17,7 +17,7 @@ public class MultiPlayDetailResponseDto {
     private String multiPlayImgUrl;
     private Genre genre;
     public Long managerUserId;
-    private List<MultiPlayUser> currentUser;
+    private List<MultiPlayUserResponseDto> currentUser;
     private Integer maxUser;
     private boolean isSecret;
 }
