@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +23,7 @@ public class RedisServiceImpl {
 
     private final String answerPrefix = "multiplayanswer:";
     public void saveMultiPlayGame(MultiPlayGame game) {
-        redisTemplate.opsForValue().set(gamePrefix + game.getMultiPlayId(), game);
+        redisTemplate.opsForValue().set(gamePrefix + game.getMultiPlayId(), game,  1, TimeUnit.HOURS);
     }
 
     public Optional<MultiPlayGame> findMultiPlayGame(Long multiPlayId) {
@@ -33,32 +34,22 @@ public class RedisServiceImpl {
         return Optional.empty();
     }
 
-    public List<MultiPlayGame> getWaitingMultiPlayGames(Genre genre, Integer page, Integer size) {
+    public List<MultiPlayGame> getWaitingMultiPlayGames(Genre genre) {
         List<Object> games = redisTemplate.opsForValue().multiGet(
                 redisTemplate.keys(gamePrefix+"*")
         );
+        if (genre.equals(Genre.all)){
+            return games.stream()
+                    .filter(MultiPlayGame.class::isInstance)
+                    .map(MultiPlayGame.class::cast)
+                    .filter(game -> game.getStatus() == MultiPlayStatus.WAITING)
+                    .toList();
+        }
         return games.stream()
                 .filter(MultiPlayGame.class::isInstance)
                 .map(MultiPlayGame.class::cast)
                 .filter(game -> game.getStatus() == MultiPlayStatus.WAITING && game.getGenre() == genre)
                 .toList();
-    }
-
-    public void addNewUserToMultiPlayGame(Long multiPlayId, MultiPlayUser user) {
-        MultiPlayGame game = getMultiPlayGameById(multiPlayId);
-        List<MultiPlayUser> users = game.getUsers();
-        if (users == null) {
-            users = new ArrayList<>();
-            game.setUsers(users);
-        }
-        boolean userExists = users.stream()
-                .anyMatch(existingUser -> existingUser.getUserId().equals(user.getUserId()));
-
-        if (userExists) {
-            throw new GlobalException(ErrorHttpStatus.USER_ALREADY_EXISTS);
-        }
-        users.add(user);
-        saveMultiPlayGame(game);
     }
 
     public MultiPlayGame updateRoundStatus(Long multiPlayId, int round, MultiPlayStatus status){
@@ -86,7 +77,7 @@ public class RedisServiceImpl {
     public void updateAlphabetInput(Long multiPlayId, AnswerDto answerDto){
         Map<Integer, String> answerMap = findMultiPlayAnswerMap(multiPlayId)
                 .orElseThrow(()->new GlobalException(ErrorHttpStatus.NO_MATCHING_MULTIPLAYGAME));
-        answerMap.put(answerDto.getAlphabetId(), answerDto.getAlphabet());
+        answerMap.put(answerDto.getAlphabetIndex(), answerDto.getAlphabet());
         System.out.println(answerMap);
         saveAnswerMap(multiPlayId, answerMap);
     }
@@ -105,5 +96,9 @@ public class RedisServiceImpl {
             return Optional.of(answerMap);
         }
         return Optional.empty();
+    }
+
+    public void deleteMultiPlayGame(Long multiPlayId){
+        redisTemplate.delete(gamePrefix + multiPlayId);
     }
 }

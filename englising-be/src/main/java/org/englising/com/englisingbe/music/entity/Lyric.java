@@ -22,7 +22,7 @@ public class Lyric {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lyric_id")
-    private Long albumId;
+    private Long lyricId;
 
     @ManyToOne
     @JoinColumn(name = "track_id", referencedColumnName = "track_id")

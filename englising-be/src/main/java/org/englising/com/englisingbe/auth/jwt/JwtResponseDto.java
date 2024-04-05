@@ -8,5 +8,4 @@ public class JwtResponseDto {
     Long userId;
     String accessToken;
     String refreshToken;
-
 }
