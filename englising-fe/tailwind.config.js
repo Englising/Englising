@@ -35,10 +35,33 @@ module.exports = {
         },
       },
       fontFamily:{
-        'Pretendard':['Pretendard-Regular']
+        'sans': ['Pretendard-Regular', 'sans-serif'],
       },
     },
   },
-  plugins: ["prettier-plugin-tailwindcss"],
+  plugins: ["prettier-plugin-tailwindcss",
+    function ({ addUtilities }) {
+      const newUtilities = {
+        ".scrollbar-webkit": {
+          "&::-webkit-scrollbar": {
+            width: "20px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "rgba(255, 255, 255, 0)",
+            borderRadius: "20px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "rgba(255, 255, 255, 0.3)",
+            borderRadius: "20px",
+            backgroundClip: "padding-box",
+            border: "6px solid transparent",
+            height: "20%"
+          }
+        }
+      }
+
+      addUtilities(newUtilities, ["responsive", "hover"])
+    }
+  ],
 }
 
