@@ -15,6 +15,9 @@
 
 &nbsp;
 
+## 🛠 아키텍쳐
+![아키텍쳐](./englising-fe/src/assets/readme/architecture.png)
+
 ## ✨ 기능 소개
 
 &nbsp;
