@@ -18,6 +18,7 @@ public class CorsMvcConfig implements WebMvcConfigurer {
                 .allowedOrigins("https://localhost:5173/")
                 .allowedOrigins("https://localhost:5174/")
                 .allowedOrigins("https://localhost:5175/")
+                .allowedOrigins("https://englising.com/")
                 .allowCredentials(true)
                 .allowedHeaders("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE");

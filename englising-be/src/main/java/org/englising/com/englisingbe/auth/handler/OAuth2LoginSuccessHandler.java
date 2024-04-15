@@ -59,7 +59,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 cookieUtil.addAccessCookie(response, "Authorization", jwtResponseDto.getAccessToken());
                 cookieUtil.addRefreshCookie(response, "Authorization-refresh", jwtResponseDto.getRefreshToken());
 
-                response.sendRedirect("https://j10a106.p.ssafy.io/englising/selectSingle1");
+                response.sendRedirect("https://englising.com//englising/selectSingle1");
             } else {
                 log.info("OAuth2LoginSuccessHandler -> oAuth2User is null");
 
@@ -69,7 +69,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.writeValue(response.getWriter(), ErrorHttpStatus.OAUTH2_USER_NOT_FOUND);
 
-                response.sendRedirect("https://j10a106.p.ssafy.io");
+                response.sendRedirect("https://englising.com/");
             }
         } catch (Exception e) {
             throw e;
