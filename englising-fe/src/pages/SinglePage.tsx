@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getSinglePlayData } from "../util/SinglePlayAPI";
 import Lyrics from "../component/single/Lyrics";
 import MusicPlayer from "../component/single/MusicPlayer";
@@ -34,7 +34,7 @@ export interface Lyric {
 }
 
 export interface Word {
-    singlePlayWordId: number;
+    singleplayWordId: number;
     sentenceIndex: number;
     wordIndex: number;
     word: string;
@@ -50,15 +50,23 @@ export interface SingleData {
 }
 
 const SinglePage = () => {
+    const navigate = useNavigate();
+
     const { state } = useLocation();
     const { img } = state;
-
-    const [showStartModal, setShowStartModal] = useState<boolean>(true);
 
     const { trackId, level } = useParams<{
         trackId: string,
         level: string,
     }>();
+
+    const [toggleCurrReplay, setToggleCurrReplay] = useState<number>(0);
+
+    const [togglePlayerControl, setTogglePlayerControl] = useState<number>(0);
+
+    const [showStartModal, setShowStartModal] = useState<boolean>(true);
+
+    const [singlePlayId, setSingPlayId] = useState<number>(0);
 
     const [singleData, setSingleData] = useState<SingleData>({
         lyrics: [],
@@ -86,6 +94,14 @@ const SinglePage = () => {
         rightWord: 0,
         hintNum: 0,
     });
+
+    const onPlayerControl = (): void => {
+        setTogglePlayerControl((togglePlayerControl + 1) % 2);
+    }
+
+    const onCurrReplay = (): void => {
+        setToggleCurrReplay((toggleCurrReplay + 1) % 2);
+    }
 
 
     const onSetInfo = (currIdx: number, blank: boolean, start: number, end: number): void => {
@@ -142,8 +158,15 @@ const SinglePage = () => {
     }
 
     const onLyricMove = (index: number): void => {
-        const lyric = singleData?.lyrics[index];
-        if (lyric != undefined) {
+        let lyric = singleData?.lyrics[index];
+        if (index < 0) {
+            lyric = singleData?.lyrics[0];
+            onSetInfo(0, lyric.isBlank, lyric.startTime, lyric.endTime);
+        }
+        else if (index == singleData?.lyrics.length) {
+            lyric = singleData?.lyrics[0];
+            onSetInfo(0, lyric.isBlank, lyric.startTime, lyric.endTime);
+        } else if (lyric != undefined) {
             onSetInfo(index, lyric.isBlank, lyric.startTime, lyric.endTime);
         }
     }
@@ -158,42 +181,47 @@ const SinglePage = () => {
             "trackId": parseInt(trackId || "0"),
             "level": parseInt(level || "1")
         }
-
       
         const getData = async () => {
             try {
                 const singleData = await getSinglePlayData(data);
+                setSingPlayId(singleData.data.singlePlayId);
                 setSingleData(singleData.data);
                 setProgressInfo({
                     totalWord: singleData.data.totalWordCnt, // 나중에 axios로 받아올 것
                     rightWord: 0,
-                    hintNum: 3,            
+                    hintNum: 4,            
                 });
             } catch (error) {
                 console.error('Error fetching data:', error)
             }
         }
         getData();
-    },[])
+    }, [])
+    
+    useEffect(() => {
+        if (progressInfo.totalWord == 0) return;
+        if (progressInfo.rightWord == progressInfo.totalWord) {
+            navigate(`/SinglePlay/result/${singlePlayId}`, { state: { ...state } } );
+        }
+    }, [progressInfo.rightWord])
 
 return (
-    <div className="bg-cover bg-center h-screen w-screen p-0 m-0" style={{ backgroundImage: `url(${img})` }}>        
-        <div className="h-svh w-screen flex flex-col bg-black bg-opacity-80 items-center">
-
-            {showStartModal ? (<div className="relative">
+    <div className="bg-cover bg-center h-screen w-screen p-0 m-0 relative z-10" style={{ backgroundImage: `url(${img})` }}>
+        <div className="h-svh w-screen flex flex-col bg-black bg-opacity-80 items-center select-none">
+            {showStartModal ? (<div className="relative z-10">
                 <StartModal onGameStart={onGameStart} />
             </div>) : (<></>)}
-
             <div className="h-[90%] w-9/12 flex">
                 <div className="w-2/5 h-full items-center">
-                    <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} showStartModal={showStartModal} /> 
+                    <MusicPlayer onSetInfoIdx={onSetInfoIdx} playInfo={playInfo} progressInfo={progressInfo} showStartModal={showStartModal} togglePlayerControl={togglePlayerControl} /> 
                 </div>
                 <div className="w-3/5 flex items-center justify-center">
-                    <Lyrics onSetInfo = {onSetInfo} onSetProgressInfo = {onSetProgressInfo} onSetIsBlank = {onSetIsBlank} playInfo = {playInfo} answerInfo = {answerInfo} singleData={singleData}/>
+                    <Lyrics onSetInfo={onSetInfo} onSetProgressInfo={onSetProgressInfo} onSetIsBlank={onSetIsBlank} playInfo={playInfo} answerInfo={answerInfo} singleData={singleData} showStartModal={showStartModal} toggleCurrReplay={toggleCurrReplay} />
                 </div>
             </div>
             <div className="w-full h-[10%] bg-black flex justify-center">
-                <FooterVar onSetAnswer={onSetAnswer} onLyricMove={onLyricMove} idx={playInfo.idx} />
+                <FooterVar onSetAnswer={onSetAnswer} onLyricMove={onLyricMove} onCurrReplay={onCurrReplay} onPlayerControl={onPlayerControl} playInfo={playInfo} singlePlayId={singlePlayId}/>
             </div>
         </div>
     </div>

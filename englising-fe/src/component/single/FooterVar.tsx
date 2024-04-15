@@ -1,16 +1,27 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { PlayInfo } from "../../pages/SinglePage";
 
 interface Props {
     onSetAnswer(answer: string): void;
     onLyricMove(index: number): void;
-    idx: number;
+    onCurrReplay(): void;
+    onPlayerControl(): void,
+    playInfo: PlayInfo
+    singlePlayId: number;
 }
 
-const FooterVar = ({onSetAnswer, onLyricMove, idx}:Props) => {
+const FooterVar = ({ onSetAnswer, onLyricMove, onCurrReplay, onPlayerControl, playInfo, singlePlayId }: Props) => {
+    const { state } = useLocation();
+    const navigate = useNavigate();
+
     const [answer, setAnswer] = useState<string>("");
     const inputRef = useRef<HTMLInputElement | null>(null);
 
+    const { idx, toggleNext } = playInfo
+    
     const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === ' ') return;
         setAnswer(e.target.value);
     }
 
@@ -27,36 +38,30 @@ const FooterVar = ({onSetAnswer, onLyricMove, idx}:Props) => {
             onLyricMove(idx - 1);
         } else if (e.key == 'ArrowDown') {
             onLyricMove(idx + 1);
+        } else if (e.key === ' ') {
+            onPlayerControl();
         }
     }
 
-    const handleDictionaryClick = () => {
-
-    }
-
-    const handleVocabularyClick = () => {
-
-    }
 
     const handleExitClick = () => {
+        navigate(`/SinglePlay/result/${singlePlayId}`, { state: { ...state } } );
+    }
 
+    const handleReplayClick = () => {
+        onCurrReplay();
+        inputRef.current?.focus();
     }
 
     useEffect(() => {
         inputRef.current?.focus();
-    }, [idx])
+    }, [idx,toggleNext])
     
     return (
         <div className="w-full h-full flex items-center justify-evenly ">
             <div className="w-1/3 flex pl-10 box-border text-white">
-                <div className="w-20" onClick={handleDictionaryClick}>
-                    사전
-                </div>
-                <div className="mx-10" onClick={handleVocabularyClick}>
-                    단어장
-                </div>
-                <div className="mx-10" onClick={handleExitClick}>
-                    종료하기
+                <div className="h-[2.5em] w-[5em] mr-[1em] rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col justify-center items-center" onClick={handleExitClick}>
+                    <div> 종료하기 </div>
                 </div>
             </div>
 
@@ -73,13 +78,15 @@ const FooterVar = ({onSetAnswer, onLyricMove, idx}:Props) => {
                     </input>
                 </div>
                 <div 
-                className="h-[2.5em] w-[5em] mr-[1em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"
+                className="h-[2.5em] w-[5em] mr-[1em] rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"
                 onClick={handleAnswerSubmit}> 
                     <div className="m-auto text-[1em]">입력</div>
                 </div>
                 <div 
-                    className="h-[2.5em] w-[5em] text-center rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"> 
-                    <div className="m-auto text-[1em]">공사중</div>
+                    className="h-[2.5em] w-[5em] rounded-lg bg-secondary-300 text-black font-bold cursor-pointer hover:opacity-50 flex flex-col"
+                    onClick={handleReplayClick}    
+                > 
+                    <div className="m-auto text-[1em]">다시듣기</div>
                 </div>
             </div> 
         </div>

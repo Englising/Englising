@@ -11,12 +11,13 @@ interface Props {
     onSetInfoIdx(currIdx: number):void,
     playInfo: PlayInfo,
     progressInfo: ProgressInfo,
-    showStartModal: boolean
+    showStartModal: boolean,
+    togglePlayerControl: number
 }
 
-const hintStyle = "w-[1.5em] h-[1.5em] mx-[0.4em] rounded-full"
+const hintStyle = "w-[1.75em] h-[1.75em] mr-[0.8em] rounded-full"
 
-const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Props ) => {
+const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal, togglePlayerControl}:Props ) => {
     // 현재 재생중인 가사 정보
     let { idx, isBlank, startTime, toggleNext } = playInfo
     
@@ -40,7 +41,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
 
     {/** 프로필 */}
     const { state } = useLocation();
-    const { title, img, artist } = state;
+    const { title, img, artists } = state;
 
     const player = useRef<ReactPlayer | null>(null);
 
@@ -54,7 +55,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
     const handleProgress = (e: OnProgressProps) => {
         setPlayed(e.played);
         setPlayedSeconds(e.playedSeconds);
-        if(timeData.current[idx+1] < e.playedSeconds+0.5){
+        if(timeData.current[idx+1] < e.playedSeconds+0.3){
             if(!isBlank){
                 onSetInfoIdx(idx+1);
             }else {
@@ -63,14 +64,21 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
         }
     }
     const handlePlay = () => {
+        if (!playing) setPlaying(true);
         setTogglePlayButton(false);
     }
 
+    const handleEnded = () => {
+        // 노래 끝나면 다시 루프돌게 해주세연
+    }
+
     const handlePuase = () => {
+        if (playing) setPlaying(false);
         setTogglePlayButton(true);
     }
     
     const handleError = () => {
+        if(playing) setPlaying(false)
         setTogglePlayButton(true);
     }
     
@@ -85,7 +93,7 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
         setPlaying(true);
         
         if (isBlank) {
-            if(timeData.current[idx+1] < playedSeconds-0.1){
+            if(timeData.current[idx+1] < playedSeconds+0.3){
             onSetInfoIdx(idx + 1);
             }      
         }
@@ -117,40 +125,51 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
     }, [])
 
     useEffect(() => {
-        if (!showStartModal) {
-            setPlaying(true);
-        }
+        if (showStartModal) return;
+        setPlaying(true);
+        onSetInfoIdx(0);
     },[showStartModal])
     
     // 특정 구간 가사를 누를 때 발생하는 이벤트
     useEffect(() => {
-        setTogglePlayButton(false);
+        if (showStartModal) return;
         setPlaying(true);
         player.current?.seekTo(startTime);
-    },[toggleNext])
-
-    // 힌트창이 켜졌을때 노래 일시중지
-
-
+    }, [toggleNext])
+    
+    useEffect(() => {
+        if (playing) setTogglePlayButton(false);
+        else setTogglePlayButton(true);
+    }, [playing])
+    
     useEffect(() => {
         setPercentage((rightWord / totalWord) * 100);
     },[progressInfo])
     
+    useEffect(() => {
+        if (showStartModal == true) return;
+        if (togglePlayButton) {
+            handlePlayClick();
+        } else {
+            handlePauseClick();
+        }
+    },[togglePlayerControl])
     return(
         <div className="w-full h-full flex flex-col items-center">
             <div className="w-full h-3/5 flex flex-col items-center justify-center">
-                <div className="text-[1.25em] my-[1em] text-white text-center">{artist} {title}</div>
+                <div className="text-[1.25em] text-white text-center">{title}</div>
+                <div className="text-[1em] mb-[1em] text-white text-center">{artists}</div>
                 <div className="hidden">
                     <ReactPlayer
                     ref={player}
                     url= {url}
                     playing = {playing} // 자동재생
                     volume={volume} // volume
-                    loop={true} // 노래가 끝나면 loop를 돈다.
                     controls = {true} // 기본 control를 띄울 것인지 - 나중에 지울것
                     progressInterval = {100} // onProgress의 텀을 설정한다.
                     onProgress={(e) => { handleProgress(e) }}
                     onPlay={handlePlay}
+                    onEnded={handleEnded}    
                     onPause={handlePuase}
                     onDuration={handleDuration}
                     onError={handleError}
@@ -167,8 +186,8 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
                     <div className="flex items-center justify-center my-2">
                         <div className="w-[10%]">
                             {volume != 0 ?
-                                <img className="h-4 mr-2 cursor-pointer" src={`/src/assets/volume.png`} onClick={handleMuteClick}></img> :
-                                <img className="h-4 mr-2" src={`/src/assets/enable-sound.png`} onClick={handleSoundClick}></img>
+                                <img className="h-4 mr-2 cursor-pointer" src="https://englising-bucket.s3.ap-northeast-2.amazonaws.com/volume.png" onClick={handleMuteClick}></img> :
+                                <img className="h-4 mr-2" src="https://englising-bucket.s3.ap-northeast-2.amazonaws.com/mute.png" onClick={handleSoundClick}></img>
                             }
                         </div>
                         <input type="range" value={volume} min={0} max={1} step="any"
@@ -183,8 +202,8 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
                     <div className="flex items-center justify-center my-1">
                         <div className="w-[10%]">
                             {togglePlayButton ? 
-                                <img className="h-3.5 mr-2 cursor-pointer" src={`/src/assets/play.png`} onClick={handlePlayClick}></img> :
-                                <img className="h-3.5 mr-2 cursor-pointer" src={`/src/assets/pause.png`} onClick={handlePauseClick}></img>
+                                <img className="h-3.5 mr-2 cursor-pointer" src="https://englising-bucket.s3.ap-northeast-2.amazonaws.com/play.png" onClick={handlePlayClick}></img> :
+                                <img className="h-3.5 mr-2 cursor-pointer" src="https://englising-bucket.s3.ap-northeast-2.amazonaws.com/pause.png" onClick={handlePauseClick}></img>
                             }
                         </div>
                         <div className="w-[90%] h-2.5 bg-gray-200 dark:bg-gray-700 rounded-md">
@@ -202,43 +221,49 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
                 </div>
             </div>
 
-            <div className="w-full h-2/5 flex flex-col items-center box-border ">
-                 <div className="w-full h-3/5 flex flex-row justify-center items-center">
-                            <div className=" flex text-[1em] text-white w-24">
-                                정답
-                            </div>
-                        <div className="h-20 w-24 pl-18">
-                            <CircularProgressbar
-                                value={(percentage == 0) ? 0.5 : percentage}
-                                
-                                text={`${rightWord}/${totalWord}`}
-                                strokeWidth={10} // 진행 바의 폭 조절
-
-                                styles={buildStyles({
-                                    // 게이지의 처음 위치
-                                    rotation: 0,
-
-                                    // 진행바 모서리 모양 'butt' or 'round'
-                                    strokeLinecap: 'round',
-
-                                    // 텍스트 사이즈
-                                    textSize: '1em',
-
-                                    // percent 게이지 차는 속도
-                                    pathTransitionDuration: 1,
-
-                                    // 색상
-                                    pathColor: `rgba(0, 255, 255, ${(percentage==0) ? 10 : percentage})`,
-                                    textColor: '#ffffff',
-                                    trailColor: '#d6d6d6', 
-                                    backgroundColor: '#00ffff',
-                                })}
-                            />
+            <div className="w-full h-2/5 flex flex-col ">
+                <div className="w-full h-3/5 mb-2 flex justify-center">
+                    <div className="w-[50%] h-full flex items-center">
+                        <div className="w-[30%] pr-[10%] text-xl text-center text-white">
+                            정답
                         </div>
+                        <div className="w-[55%]">
+                            <div className="w-[75%]">
+                                <CircularProgressbar
+                                    value={(percentage == 0) ? 0.5 : percentage}
+                                    
+                                    text={`${rightWord}/${totalWord}`}
+                                    strokeWidth={10} // 진행 바의 폭 조절
+
+                                    styles={buildStyles({
+                                        // 게이지의 처음 위치
+                                        rotation: 0,
+
+                                        // 진행바 모서리 모양 'butt' or 'round'
+                                        strokeLinecap: 'round',
+
+                                        // 텍스트 사이즈
+                                        textSize: '1em',
+
+                                        // percent 게이지 차는 속도
+                                        pathTransitionDuration: 1,
+
+                                        // 색상
+                                        pathColor: `rgba(0, 255, 255, ${(percentage==0) ? 10 : percentage})`,
+                                        textColor: '#ffffff',
+                                        trailColor: '#d6d6d6', 
+                                        backgroundColor: '#00ffff',
+                                    })}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
                 
-                <div className="flex flex-row items-center">
-                        <div className="w-20 text-white text text-[1em]">
+                <div className="w-full flex justify-center items-center">
+                    <div className="w-[50%] h-full flex justify-start items-center">
+                        <div className="w-[30%] pr-[10%] text-xl text-center text-white">
                                 힌트
                         </div>
                         <div className={(hintNum >= 1) ? `${hintStyle} + bg-secondary-500` : `${hintStyle} + bg-white`}>
@@ -247,9 +272,12 @@ const MusicPlayer = ({onSetInfoIdx, playInfo, progressInfo, showStartModal}:Prop
                         </div>
                         <div className={(hintNum >= 3) ? `${hintStyle} + bg-secondary-500` : `${hintStyle} + bg-white`}>
                         </div>
+                        <div className={(hintNum >= 4) ? `${hintStyle} + bg-secondary-500` : `${hintStyle} + bg-white`}>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
     )
 }
 

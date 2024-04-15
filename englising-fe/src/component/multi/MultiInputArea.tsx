@@ -19,12 +19,21 @@ export type Alphabet = {
   alphabet: string;
 };
 
-const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alphabet[] }) => {
+const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alphabet[] | number }) => {
   const client = useRef<Client>();
   const { multiId } = useParams();
   const [changedAnswer, setChangedAnswer] = useState<Alphabet | undefined>();
+  const [focusTarget, setFocustTarget] = useState<number>();
+
+  const handdleFocusChange = (index: number) => {
+    setFocustTarget(index + 1);
+  };
 
   const handleInputChange = (val: Alphabet) => {
+    if (val.alphabet == val.alphabet.toUpperCase()) {
+      val.alphabet = val.alphabet.toLowerCase();
+    }
+
     setChangedAnswer(val);
     publish(val);
   };
@@ -34,7 +43,7 @@ const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alpha
     setChangedAnswer({ alphabetIndex: json.alphabetIndex, alphabet: json.alphabet });
   };
 
-  const [connect, disconnect] = useStomp(client, `answer/${multiId}`, callback);
+  const [connect, disconnect] = useStomp(client, `/sub/answer/${multiId}`, callback);
 
   const publish = (ans: Alphabet) => {
     if (!client.current?.connected) return;
@@ -71,8 +80,10 @@ const MultiInputArea = ({ quiz, hintResult }: { quiz: Quiz[]; hintResult?: Alpha
                         index={alphabet.alphabetIndex}
                         answer={alphabet}
                         onInputChange={handleInputChange}
+                        onFocusChange={handdleFocusChange}
                         changedAnswer={changedAnswer}
                         hintResult={hintResult}
+                        focusTarget={focusTarget as number}
                       />
                     );
                   })}

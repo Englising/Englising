@@ -10,7 +10,7 @@ const SettingMulti = () => {
     
     //일단 이 페이지 들어오면 roomImg api로 요청해서 바꿈
     useEffect(() => {
-        axios.get("https://j10a106.p.ssafy.io/api/multiplay/image")
+        axios.get("https://j10a106.p.ssafy.io/api/multiplay/image", {withCredentials:true})
             .then((Response) => {
                 setRoomImg(Response.data.data);
                 setRoomInfo({ ...roomInfo, roomImg: Response.data.data});
@@ -18,7 +18,7 @@ const SettingMulti = () => {
     }, []);
 
     const changeRoomImg = async() => {
-        axios.get("https://j10a106.p.ssafy.io/api/multiplay/image")
+        axios.get("https://j10a106.p.ssafy.io/api/multiplay/image", {withCredentials:true})
             .then((Response) => {
                 setRoomImg(Response.data.data);
                 setRoomInfo({ ...roomInfo, roomImg: Response.data.data});
@@ -67,7 +67,7 @@ const SettingMulti = () => {
             alert("방 이름을 입력해주세요!");
         } 
         else{
-            console.log(roomInfo)
+            // 방 생성
             axios.post("https://j10a106.p.ssafy.io/api/multiplay",{
                 roomName: roomInfo.roomName, // 방 이름
                 maxUser: roomInfo.maxUser, // 최대 사용자 수
@@ -76,12 +76,25 @@ const SettingMulti = () => {
                 roomPw: roomInfo.password,
                 multiPlayImgUrl: roomInfo.roomImg,
                 genre: roomInfo.genre,
-            })
+            }, {withCredentials:true})
             .then((Response) => {
                 roomInfo.roomId = Response.data.data;
                 setRoomInfo({ ...roomInfo, roomId: roomInfo.roomId });
-                window.location.href = `/waitroom/${roomInfo.roomId}`;
+                // 방 참여
+                axios.post(`https://j10a106.p.ssafy.io/api/multiplay/${roomInfo.roomId}`,{}, 
+                {withCredentials : true})
+                .then(() => {
+                    window.location.href = `/waitroom/${roomInfo.roomId}`;
+                })
+                .catch((error) => {
+                    if (error.response && error.response.request.status === 404) {
+                        alert("참여할 수 없는 방입니다.");
+                    } else {
+                        console.error('참여 실패', error);
+                    }
+                });
             })
+
         }
     }
 
@@ -196,7 +209,6 @@ const SettingMulti = () => {
                             <button className='text-black bg-secondary-500 w-48 h-12 rounded-lg text-sm hover:opacity-50'>
                                 <p>
                                     방 설정 완료
-                                    {/* <Link to ={`/waitroom/${multiId}`}>방 설정 완료</Link> */}
                                 </p>        
                             </button>
                         </div>
@@ -208,7 +220,17 @@ const SettingMulti = () => {
                             <img src={roomInfo.roomImg} alt={roomInfo.roomName} className='w-52 h-48 rounded-t-lg '/>
                             <div className='flex flex-row'>
                                 <div className='pt-2 pl-2'>
-                                    <div className='text-lg font-extrabold text-white pt-3'>{roomInfo.roomName} </div>
+                                <div className='flex flex-col'>
+                            <div className='flex flex-row pt-1 pb-2 items-center'>
+                                <div className='pr-2'>
+                                    <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill='#00FFFF' className="w-4 h-4">
+                                        <path fillRule="evenodd" d="M19.952 1.651a.75.75 0 0 1 .298.599V16.303a3 3 0 0 1-2.176 2.884l-1.32.377a2.553 2.553 0 1 1-1.403-4.909l2.311-.66a1.5 1.5 0 0 0 1.088-1.442V6.994l-9 2.572v9.737a3 3 0 0 1-2.176 2.884l-1.32.377a2.553 2.553 0 1 1-1.402-4.909l2.31-.66a1.5 1.5 0 0 0 1.088-1.442V5.25a.75.75 0 0 1 .544-.721l10.5-3a.75.75 0 0 1 .658.122Z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div className='text-sm font-extrabold text-secondary-500 '>{roomInfo.genre} </div>
+                            </div>
+                            <div className='text-lg font-extrabold text-white'>{roomInfo.roomName} </div>
+                        </div>
                                     <div className='flex flex-row text-sm pb-4 gap-1'>
                                         <div className='text-secondary-500'> {roomInfo.currentUser} </div>
                                         <div>/</div>

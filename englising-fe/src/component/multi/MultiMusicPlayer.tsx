@@ -13,18 +13,17 @@ const MultiMusicPlayer = ({ playInfo }: Props) => {
   const [muted, setMuted] = useState<boolean>(true);
   const player = useRef<ReactPlayer | null>(null);
 
-
-  
   useEffect(() => {
     if (startTime == -1) return;
     player.current?.seekTo(startTime);
     setMuted(false);
-
+    setPlaying(true);
   }, [onPlay]);
 
   const handleProgress = (e: OnProgressProps) => {
     if (e.playedSeconds > endTime) {
-        setMuted(true);
+      setMuted(true);
+      setPlaying(false);
     }
   };
 
