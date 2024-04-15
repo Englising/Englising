@@ -32,7 +32,7 @@ const Multiroom: React.FC<MultiroomProps> = ({
     } else {
       // Navigate to the room without password check
       axios
-        .post(`https://j10a106.p.ssafy.io/api/multiplay/${roomId}`, {}, { withCredentials: true })
+        .post(`https://englising.com/api/multiplay/${roomId}`, {}, { withCredentials: true })
         .then(() => {
           window.location.href = `/waitroom/${roomId}`;
         })

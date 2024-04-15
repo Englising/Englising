@@ -10,7 +10,7 @@ const SettingMulti = () => {
     
     //일단 이 페이지 들어오면 roomImg api로 요청해서 바꿈
     useEffect(() => {
-        axios.get("https://j10a106.p.ssafy.io/api/multiplay/image", {withCredentials:true})
+        axios.get("https://englising.com/api/multiplay/image", {withCredentials:true})
             .then((Response) => {
                 setRoomImg(Response.data.data);
                 setRoomInfo({ ...roomInfo, roomImg: Response.data.data});
@@ -18,7 +18,7 @@ const SettingMulti = () => {
     }, []);
 
     const changeRoomImg = async() => {
-        axios.get("https://j10a106.p.ssafy.io/api/multiplay/image", {withCredentials:true})
+        axios.get("https://englising.com/api/multiplay/image", {withCredentials:true})
             .then((Response) => {
                 setRoomImg(Response.data.data);
                 setRoomInfo({ ...roomInfo, roomImg: Response.data.data});
@@ -68,7 +68,7 @@ const SettingMulti = () => {
         } 
         else{
             // 방 생성
-            axios.post("https://j10a106.p.ssafy.io/api/multiplay",{
+            axios.post("https://englising.com/api/multiplay",{
                 roomName: roomInfo.roomName, // 방 이름
                 maxUser: roomInfo.maxUser, // 최대 사용자 수
                 currentUser: roomInfo.currentUser, // 현재 사용자 수
@@ -81,7 +81,7 @@ const SettingMulti = () => {
                 roomInfo.roomId = Response.data.data;
                 setRoomInfo({ ...roomInfo, roomId: roomInfo.roomId });
                 // 방 참여
-                axios.post(`https://j10a106.p.ssafy.io/api/multiplay/${roomInfo.roomId}`,{}, 
+                axios.post(`https://englising.com/api/multiplay/${roomInfo.roomId}`,{}, 
                 {withCredentials : true})
                 .then(() => {
                     window.location.href = `/waitroom/${roomInfo.roomId}`;

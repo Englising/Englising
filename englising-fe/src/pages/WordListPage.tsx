@@ -24,7 +24,7 @@ const WordListPage = () => {
     const [selectedButton, setSelectedButton] = useState<string>('played'); // 선택된 버튼 상태
 
     useEffect(() => {
-        axios.get(`https://j10a106.p.ssafy.io/api/word/list?type=played&page=0&size=20`, {withCredentials:true})
+        axios.get(`https://englising.com/api/word/list?type=played&page=0&size=20`, {withCredentials:true})
             .then((response) => {
                 // 응답 받아서 리스트에 넣기
                 setWordList(response.data.data.wordResponseDto);
@@ -40,7 +40,7 @@ const WordListPage = () => {
     const handleClick = async (endpoint: string) => {
         try {
             // API 호출
-            const response = await axios.get(`https://j10a106.p.ssafy.io/api/word/list?type=${endpoint}&page=0&size=20`, {withCredentials:true});
+            const response = await axios.get(`https://englising.com/api/word/list?type=${endpoint}&page=0&size=20`, {withCredentials:true});
             // 응답 받아서 리스트에 넣기
             setWordList(response.data.data.wordResponseDto);
             setSelectedButton(endpoint);
@@ -66,7 +66,7 @@ const WordListPage = () => {
         try {
             // 즐겨찾기 상태를 서버에 업데이트
             const wordId = updatedWordlist[index].wordId;
-            axios.post("https://j10a106.p.ssafy.io/api/word/like",{
+            axios.post("https://englising.com/api/word/like",{
                 wordId : wordId
             }, {withCredentials:true});
             console.log('단어 즐겨찾기 업데이트 성공');
