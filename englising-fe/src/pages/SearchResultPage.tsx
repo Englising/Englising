@@ -31,7 +31,7 @@ const SearchResultPage: React.FC = () => {
     const searchTerm = useParams().searchTerm ?? '';
 
     useEffect(() => {
-        axios.get(`https://j10a106.p.ssafy.io/api/search?keyword=${searchTerm}&page=0&page-10`, {
+        axios.get(`https://englising.com/api/search?keyword=${searchTerm}&page=0&page-10`, {
             withCredentials: true, 
         })
         .then((response) => {
@@ -65,7 +65,7 @@ const SearchResultPage: React.FC = () => {
         const updatedPlaylist = [...searchedMusic];
         updatedPlaylist[index].isLike = !updatedPlaylist[index].isLike;
         setPlayList(updatedPlaylist);
-        axios.post('https://j10a106.p.ssafy.io/api/track/like', { trackId: searchedMusic[index].trackId } , {
+        axios.post('https://englising.com/api/track/like', { trackId: searchedMusic[index].trackId } , {
             withCredentials: true, // 이 옵션을 설정하여 쿠키와 인증 정보를 함께 보냄
             })
             .then(() => {

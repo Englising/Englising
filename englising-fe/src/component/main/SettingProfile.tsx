@@ -24,7 +24,7 @@ const SettingProfile: React.FC<SettingProfileProps> = (props) => {
 
     useEffect(() => {
         if (open) { // 모달 열때 프로필 데이터
-            axios.get("https://j10a106.p.ssafy.io/api/user/profile", {withCredentials:true})
+            axios.get("https://englising.com/api/user/profile", {withCredentials:true})
                 .then((response) => {
                     setProfile(response.data.data); // Response.data.data 대신 Response.data로 수정
                 })
@@ -35,7 +35,7 @@ const SettingProfile: React.FC<SettingProfileProps> = (props) => {
     }, [open]); // open 상태가 변경될 때마다 호출되도록 useEffect 의존성 배열에 추가
 
     const getRandomProfile = async () => {
-        axios.get("https://j10a106.p.ssafy.io/api/user/profile/random", {withCredentials:true})
+        axios.get("https://englising.com/api/user/profile/random", {withCredentials:true})
             .then((Response) => {
                 setProfile({ ...profile, profileImg: Response.data.data.profileImg, color: Response.data.data.color});
             })
@@ -53,7 +53,7 @@ const SettingProfile: React.FC<SettingProfileProps> = (props) => {
             return;
         }
 
-        axios.put("https://j10a106.p.ssafy.io/api/user/profile", profile , {withCredentials:true}) // 프로필 정보 서버에 전송
+        axios.put("https://englising.com/api/user/profile", profile , {withCredentials:true}) // 프로필 정보 서버에 전송
             .then(() => {
                 updateProfile(profile); // 프로필 업데이트 함수 호출하여 사이드바 등에 반영
                 close(); // 모달 닫기

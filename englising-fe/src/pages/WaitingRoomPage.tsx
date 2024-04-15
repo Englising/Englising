@@ -40,7 +40,7 @@ const WaitingRoomPage: React.FC = () => {
   //     return history.listen(() => {
   //         if(history.action === "POP"){
   //             console.log("뒤로가기누름!");
-  //             axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, {withCredentials:true})
+  //             axios.delete(`https://englising.com/api/multiplay/${params}`, {withCredentials:true})
   //             navigate("/englising/selectMulti");
   //             disconnect();
   //         }
@@ -50,7 +50,7 @@ const WaitingRoomPage: React.FC = () => {
   // STOMP CONNECTION
   useEffect(() => {
     client.current = new Client({
-      brokerURL: "wss://j10a106.p.ssafy.io/ws-stomp",
+      brokerURL: "wss://englising.com/ws-stomp",
       onConnect: () => {
         console.log("STOMP connect cucess");
         setIsConnected(true); // 연결 상태 업데이트
@@ -70,7 +70,7 @@ const WaitingRoomPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, { withCredentials: true }).then((response) => {
+    axios.get(`https://englising.com/api/multiplay/${params}`, { withCredentials: true }).then((response) => {
       setMultiRoom(response.data.data);
       // console.log(response.data.data);
     });
@@ -153,7 +153,7 @@ const WaitingRoomPage: React.FC = () => {
 
   //내가 나갈때
   const leaveRoom = (): void => {
-    axios.delete(`https://j10a106.p.ssafy.io/api/multiplay/${params}`, { withCredentials: true });
+    axios.delete(`https://englising.com/api/multiplay/${params}`, { withCredentials: true });
     navigate("/englising/selectMulti");
     // disconnect();
     // disconnectGame();
@@ -161,7 +161,7 @@ const WaitingRoomPage: React.FC = () => {
 
   //방장이 게임 시작 눌렀을 때
   const startGame = (): void => {
-    axios.get(`https://j10a106.p.ssafy.io/api/multiplay/${params}/game`, { withCredentials: true }).then(() => {
+    axios.get(`https://englising.com/api/multiplay/${params}/game`, { withCredentials: true }).then(() => {
 
       navigate(`/multiplay/${multiroom?.multiPlayId}`);
     });

@@ -28,7 +28,7 @@ const SelectSinglePage: React.FC = () => {
     const [playList, setPlayList] = useState<Music[]>([]);
 
     useEffect(() => {
-    axios.get("https://j10a106.p.ssafy.io/api/singleplay/playlist?type=like&page=0&size=1000", {withCredentials:true})
+    axios.get("https://englising.com/api/singleplay/playlist?type=like&page=0&size=1000", {withCredentials:true})
         .then((Response) => {
             setPlayList(Response.data.data.playList);
         })
@@ -57,7 +57,7 @@ const SelectSinglePage: React.FC = () => {
         const updatedPlaylist = [...playList];
         updatedPlaylist[index].isLike = !updatedPlaylist[index].isLike;
         setPlayList(updatedPlaylist);
-        axios.post('https://j10a106.p.ssafy.io/api/track/like', { trackId: playList[index].trackId }, {
+        axios.post('https://englising.com/api/track/like', { trackId: playList[index].trackId }, {
             withCredentials: true, // 이 옵션을 설정하여 쿠키와 인증 정보를 함께 보냄
             })
             .then(() => {
