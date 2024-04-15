@@ -8,12 +8,12 @@ import LandingSlider from "../component/main/LandingSlider";
 const IndexPage = () => {
   const navigate = useNavigate();
   const handleKakaoLogin = () => {
-    window.location.href = "https://j10a106.p.ssafy.io/api/oauth2/authorization/kakao";
+    window.location.href = "https://englising.com/api/oauth2/authorization/kakao";
   };
 
   const guestLogin = async () => {
     axios
-      .post("https://j10a106.p.ssafy.io/api/auth/guest", {
+      .post("https://englising.com/api/auth/guest", {
         withCredentials: true, // 이 옵션을 설정하여 쿠키와 인증 정보를 함께 보냄
       })
       .then((response) => {

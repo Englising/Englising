@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const BASE_URL = "https://j10a106.p.ssafy.io/api";
+const BASE_URL = "https://englising.com/api";
 
 //SinglePlay 시작
 export interface SinglePlayData {

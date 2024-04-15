@@ -26,7 +26,7 @@ const SelectMultiPage: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get(`https://j10a106.p.ssafy.io/api/multiplay/rooms?genre=all&page=0&size=1000`, {
+      .get(`https://englising.com/api/multiplay/rooms?genre=all&page=0&size=1000`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -45,7 +45,7 @@ const SelectMultiPage: React.FC = () => {
     try {
       // API 호출
       const response = await axios.get(
-        `https://j10a106.p.ssafy.io/api/multiplay/rooms?genre=${endpoint}&page=0&size=1000`,
+        `https://englising.com/api/multiplay/rooms?genre=${endpoint}&page=0&size=1000`,
         {
           withCredentials: true,
         }
