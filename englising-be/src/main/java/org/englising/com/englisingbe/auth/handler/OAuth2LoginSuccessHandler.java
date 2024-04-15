@@ -59,7 +59,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 cookieUtil.addAccessCookie(response, "Authorization", jwtResponseDto.getAccessToken());
                 cookieUtil.addRefreshCookie(response, "Authorization-refresh", jwtResponseDto.getRefreshToken());
 
-                response.sendRedirect("https://englising.com//englising/selectSingle1");
+                response.sendRedirect("https://englising.com/englising/selectSingle1");
             } else {
                 log.info("OAuth2LoginSuccessHandler -> oAuth2User is null");
 
