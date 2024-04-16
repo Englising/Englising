@@ -1,6 +1,6 @@
 # ![로고](./englising-fe/src/assets/E.png) 영어 공부를 즐겁게 Englising
 
-접속 URL: https://j10a106.p.ssafy.io/
+접속 URL: https://englising.com/
 
 ## 💡 프로젝트 소개
 
